@@ -14,13 +14,15 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Configuration
-MACHINE_HOST = '192.168.3.100'  # Machine IP
-MACHINE_PORT = 23               # TCP port for machine
+ARDUINO_HOST = '192.168.3.100'  # Arduino IP
+TCP_SERVER_PORT = 1053          # TCP port to listen on (matches your requirement)
+HTTP_PORT = 5000               # HTTP port for Flask (matches your requirement)
 SERVER_HOST = '192.168.3.120'   # Raspberry Pi server IP
 
-class MachineConnection:
+class ArduinoTCPServer:
     def __init__(self):
-        self.socket = None
+        self.server_socket = None
+        self.client_socket = None
         self.connected = False
         self.command_queue = queue.Queue()
         self.temperature = 0
@@ -41,88 +43,140 @@ class MachineConnection:
         self.ping_response_received = False
         self.estop_triggered = False
         
-    def connect(self):
+    def start_server(self):
         try:
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect((MACHINE_HOST, MACHINE_PORT))
-            self.connected = True
-            logging.info(f"Connected to machine at {MACHINE_HOST}:{MACHINE_PORT}")
+            if self.server_socket:
+                self.server_socket.close()
+            
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket.bind(('0.0.0.0', TCP_SERVER_PORT))
+            self.server_socket.listen(1)
+            self.server_socket.settimeout(1.0)  # Non-blocking accept
+            logging.info(f"TCP Server listening on port {TCP_SERVER_PORT}")
             return True
         except Exception as e:
-            logging.error(f"Failed to connect to machine: {e}")
-            self.connected = False
+            logging.error(f"Failed to start TCP server: {e}")
+            return False
+    
+    def wait_for_connection(self):
+        try:
+            if not self.server_socket:
+                return False
+                
+            self.client_socket, addr = self.server_socket.accept()
+            self.client_socket.settimeout(1.0)  # Non-blocking recv
+            self.connected = True
+            logging.info(f"Arduino connected from {addr}")
+            socketio.emit('connection_status', {'connected': True})
+            return True
+        except socket.timeout:
+            return False
+        except Exception as e:
+            logging.error(f"Failed to accept connection: {e}")
             return False
     
     def disconnect(self):
-        if self.socket:
-            self.socket.close()
         self.connected = False
+        if self.client_socket:
+            try:
+                self.client_socket.close()
+            except:
+                pass
+            self.client_socket = None
+        if self.server_socket:
+            try:
+                self.server_socket.close()
+            except:
+                pass
+            self.server_socket = None
+        socketio.emit('connection_status', {'connected': False})
         
     def send_command(self, command):
-        if not self.connected:
+        if not self.connected or not self.client_socket:
+            logging.warning(f"Cannot send command '{command}' - Arduino not connected")
             return False
         try:
-            self.socket.send(f"{command}\n".encode())
+            message = f"{command}\n"
+            self.client_socket.send(message.encode())
             logging.info(f"Sent command: {command}")
             return True
         except Exception as e:
-            logging.error(f"Failed to send command: {e}")
+            logging.error(f"Failed to send command '{command}': {e}")
             self.connected = False
+            socketio.emit('connection_status', {'connected': False})
             return False
     
     def read_response(self):
-        if not self.connected:
+        if not self.connected or not self.client_socket:
             return None
         try:
-            self.socket.settimeout(1.0)
-            response = self.socket.recv(1024).decode().strip()
+            response = self.client_socket.recv(1024).decode().strip()
+            if response:
+                logging.debug(f"Received response: {response}")
             return response
         except socket.timeout:
             return None
         except Exception as e:
-            logging.error(f"Failed to read response: {e}")
+            if e.errno != 11:  # Ignore "Resource temporarily unavailable" 
+                logging.error(f"Failed to read response: {e}")
+                self.connected = False
+                socketio.emit('connection_status', {'connected': False})
             return None
 
-machine = MachineConnection()
+arduino_server = ArduinoTCPServer()
 
-def machine_communication_thread():
-    """Background thread for machine communication"""
+def arduino_communication_thread():
+    """Background thread for Arduino communication"""
     while True:
         try:
+            # Try to start server if not connected
+            if not arduino_server.connected:
+                if not arduino_server.start_server():
+                    time.sleep(5)
+                    continue
+                    
+                # Try to accept connection (non-blocking)
+                if not arduino_server.wait_for_connection():
+                    time.sleep(0.1)
+                    continue
+            
             # Process command queue
-            if not machine.command_queue.empty():
-                command = machine.command_queue.get()
-                success = machine.send_command(command)
+            while not arduino_server.command_queue.empty():
+                command = arduino_server.command_queue.get()
+                success = arduino_server.send_command(command)
                 
                 if success:
-                    response = machine.read_response()
+                    # Wait a bit for response
+                    time.sleep(0.1)
+                    response = arduino_server.read_response()
                     if response:
                         # Try to parse JSON status updates
                         if response.startswith('{') and response.endswith('}'):
                             parse_json_status(response)
                         elif response == 'pong':
-                            machine.ping_response_received = True
+                            arduino_server.ping_response_received = True
                             logging.info("Ping successful")
                         else:
                             socketio.emit('machine_response', {'response': response})
+                            logging.info(f"Arduino response: {response}")
                 
             # Handle ping every 30 seconds
             current_time = time.time()
-            if current_time - machine.last_ping_time >= 30:
-                machine.ping_response_received = False
-                machine.send_command("ping")
-                machine.last_ping_time = current_time
+            if current_time - arduino_server.last_ping_time >= 30:
+                arduino_server.ping_response_received = False
+                arduino_server.send_command("ping")
+                arduino_server.last_ping_time = current_time
                 
                 # Check ping response after 2 seconds
                 time.sleep(2)
-                if not machine.ping_response_received:
-                    machine.connected = False
-                    socketio.emit('connection_status', {'connected': False})
-                    logging.info("Ping failed - disconnected")
+                if not arduino_server.ping_response_received:
+                    logging.warning("Ping failed - Arduino disconnected")
+                    arduino_server.disconnect()
                 
             # Read any incoming JSON status updates
-            if machine.connected:
-                response = machine.read_response()
+            if arduino_server.connected:
+                response = arduino_server.read_response()
                 if response and response.startswith('{') and response.endswith('}'):
                     parse_json_status(response)
             
@@ -130,160 +184,199 @@ def machine_communication_thread():
             
         except Exception as e:
             logging.error(f"Communication thread error: {e}")
+            arduino_server.connected = False
+            socketio.emit('connection_status', {'connected': False})
             time.sleep(1)
 
 def parse_json_status(json_string):
-    """Parse JSON status updates from machine"""
+    """Parse JSON status updates from Arduino"""
     try:
+        logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
         
         # Update position
         if 'x' in data and 'y' in data:
-            machine.position['x'] = data['x']
-            machine.position['y'] = data['y']
-            socketio.emit('position_update', machine.position)
+            arduino_server.position['x'] = float(data['x'])
+            arduino_server.position['y'] = float(data['y'])
+            socketio.emit('position_update', arduino_server.position)
+            logging.debug(f"Position update: {arduino_server.position}")
         
         # Update motor states
         motor_states_updated = False
         if 'stateX' in data:
-            machine.motor_states['x'] = data['stateX']
+            arduino_server.motor_states['x'] = str(data['stateX'])
             motor_states_updated = True
         if 'stateY' in data:
-            machine.motor_states['y'] = data['stateY']
+            arduino_server.motor_states['y'] = str(data['stateY'])
             motor_states_updated = True
         
         if motor_states_updated:
-            socketio.emit('motor_states_update', machine.motor_states)
+            socketio.emit('motor_states_update', arduino_server.motor_states)
+            logging.debug(f"Motor states update: {arduino_server.motor_states}")
         
         # Update tape motor status
         if 'tape' in data:
             tape_data = data['tape']
             if isinstance(tape_data, list) and len(tape_data) >= 2:
-                machine.tape['speed'] = tape_data[0]
-                machine.tape['torque'] = tape_data[1]
-                socketio.emit('tape_update', machine.tape)
+                arduino_server.tape['speed'] = int(tape_data[0])
+                arduino_server.tape['torque'] = int(tape_data[1])
+                socketio.emit('tape_update', arduino_server.tape)
+                logging.debug(f"Tape update: {arduino_server.tape}")
         
         # Update pneumatics
         pneumatics_updated = False
         if 'nozzle' in data:
-            machine.pneumatics['nozzle'] = data['nozzle']
+            arduino_server.pneumatics['nozzle'] = bool(data['nozzle'])
             pneumatics_updated = True
         if 'stage' in data:
-            machine.pneumatics['stage'] = data['stage']
+            arduino_server.pneumatics['stage'] = bool(data['stage'])
             pneumatics_updated = True
         if 'stamp' in data:
-            machine.pneumatics['stamp'] = data['stamp']
+            arduino_server.pneumatics['stamp'] = bool(data['stamp'])
             pneumatics_updated = True
         
         if pneumatics_updated:
-            socketio.emit('pneumatics_update', machine.pneumatics)
+            socketio.emit('pneumatics_update', arduino_server.pneumatics)
+            logging.debug(f"Pneumatics update: {arduino_server.pneumatics}")
         
         # Update vacuums
         vacuums_updated = False
         if 'vacnozzle' in data:
-            machine.vacuums['vacnozzle'] = data['vacnozzle']
+            arduino_server.vacuums['vacnozzle'] = bool(data['vacnozzle'])
             vacuums_updated = True
         if 'chuck' in data:
-            machine.vacuums['chuck'] = data['chuck']
+            arduino_server.vacuums['chuck'] = bool(data['chuck'])
             vacuums_updated = True
         
         if vacuums_updated:
-            socketio.emit('vacuums_update', machine.vacuums)
+            socketio.emit('vacuums_update', arduino_server.vacuums)
+            logging.debug(f"Vacuums update: {arduino_server.vacuums}")
         
         # Update temperatures
         temp_updated = False
         if 'temp' in data:
-            machine.temperature = data['temp']
+            arduino_server.temperature = float(data['temp'])
             temp_updated = True
         if 'settemp' in data:
-            machine.set_temperature = data['settemp']
+            arduino_server.set_temperature = float(data['settemp'])
             temp_updated = True
         
         if temp_updated:
             socketio.emit('temperature_update', {
-                'temperature': machine.temperature,
-                'set_temperature': machine.set_temperature
+                'temperature': arduino_server.temperature,
+                'set_temperature': arduino_server.set_temperature
             })
+            logging.debug(f"Temperature update: {arduino_server.temperature}°C (target: {arduino_server.set_temperature}°C)")
+        
         # Update emergency stop status
         if 'eStopTriggered' in data:
-            machine.estop_triggered = data['eStopTriggered']
-            socketio.emit('estop_update', {'triggered': machine.estop_triggered})
+            arduino_server.estop_triggered = bool(data['eStopTriggered'])
+            socketio.emit('estop_update', {'triggered': arduino_server.estop_triggered})
+            if arduino_server.estop_triggered:
+                logging.warning("Emergency stop triggered!")
             
     except json.JSONDecodeError as e:
-        logging.error(f"Failed to parse JSON status: {e}")
+        logging.error(f"Failed to parse JSON status: {json_string} - Error: {e}")
     except Exception as e:
         logging.error(f"Error processing JSON status: {e}")
 
-def parse_machine_response(response):
-    """Parse machine responses to update status (legacy)"""
-    # This function is now mostly handled by JSON parsing
-    pass
-
+# Web Routes
 @app.route('/')
 def index():
     return send_file('control.html')
 
 @app.route('/connect', methods=['POST'])
 def connect_machine():
-    success = machine.connect()
-    return jsonify({'success': success, 'connected': machine.connected})
+    # Connection is handled automatically by the TCP server
+    status = {'success': True, 'connected': arduino_server.connected}
+    logging.info(f"Connect request - Status: {status}")
+    return jsonify(status)
 
 @app.route('/disconnect', methods=['POST'])
 def disconnect_machine():
-    machine.disconnect()
-    return jsonify({'success': True, 'connected': machine.connected})
+    arduino_server.disconnect()
+    status = {'success': True, 'connected': arduino_server.connected}
+    logging.info(f"Disconnect request - Status: {status}")
+    return jsonify(status)
 
 @app.route('/status', methods=['GET'])
 def get_status():
-    return jsonify({
-        'connected': machine.connected,
-        'temperature': machine.temperature,
-        'set_temperature': machine.set_temperature,
-        'position': machine.position,
-        'motor_states': machine.motor_states,
-        'pneumatics': machine.pneumatics,
-        'vacuums': machine.vacuums,
-        'tape': machine.tape
-    })
+    status = {
+        'connected': arduino_server.connected,
+        'temperature': arduino_server.temperature,
+        'set_temperature': arduino_server.set_temperature,
+        'position': arduino_server.position,
+        'motor_states': arduino_server.motor_states,
+        'pneumatics': arduino_server.pneumatics,
+        'vacuums': arduino_server.vacuums,
+        'tape': arduino_server.tape
+    }
+    logging.debug(f"Status request: {status}")
+    return jsonify(status)
 
+# SocketIO Event Handlers with Button Press Logging
 @socketio.on('connect')
 def handle_connect():
-    emit('connection_status', {'connected': machine.connected})
+    logging.info("Client connected to SocketIO")
+    emit('connection_status', {'connected': arduino_server.connected})
     emit('temperature_update', {
-        'temperature': machine.temperature,
-        'set_temperature': machine.set_temperature
+        'temperature': arduino_server.temperature,
+        'set_temperature': arduino_server.set_temperature
     })
-    emit('position_update', machine.position)
-    emit('motor_states_update', machine.motor_states)
-    emit('pneumatics_update', machine.pneumatics)
-    emit('vacuums_update', machine.vacuums)
-    emit('tape_update', machine.tape)
+    emit('position_update', arduino_server.position)
+    emit('motor_states_update', arduino_server.motor_states)
+    emit('pneumatics_update', arduino_server.pneumatics)
+    emit('vacuums_update', arduino_server.vacuums)
+    emit('tape_update', arduino_server.tape)
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    logging.info("Client disconnected from SocketIO")
 
 @socketio.on('send_command')
 def handle_command(data):
     command = data.get('command', '')
+    logging.info(f"Button Press: Raw command '{command}' received from web interface")
+    
     if command:
-        machine.command_queue.put(command)
-        emit('command_sent', {'command': command})
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: Command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+    else:
+        logging.warning("Button Press: Empty command received")
 
 @socketio.on('move_position')
 def handle_move_position(data):
     axis = data.get('axis')
     position = data.get('position', 0)
     
+    logging.info(f"Button Press: Move {axis} axis to position {position}")
+    
     if axis == 'X':
         command = f"MoveX {position}"
     elif axis == 'Y':
         command = f"MoveY {position}"
     else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for move command")
         return
     
-    machine.command_queue.put(command)
-    emit('command_sent', {'command': command})
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Move command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Move command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('home_axis')
 def handle_home(data):
     axis = data.get('axis', '')
+    
+    logging.info(f"Button Press: Home axis '{axis}' requested")
     
     if axis == 'X':
         command = "HomeX"
@@ -291,26 +384,50 @@ def handle_home(data):
         command = "HomeY"
     else:
         command = "Home"  # Home all axes
+        logging.info("Button Press: Home all axes requested")
     
-    machine.command_queue.put(command)
-    emit('command_sent', {'command': command})
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Home command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Home command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('set_temperature')
 def handle_temperature(data):
     temperature = data.get('temperature', 0)
+    
+    logging.info(f"Button Press: Set temperature to {temperature}°C")
+    
     command = f"SetTemperature {temperature}"
-    machine.command_queue.put(command)
-    emit('command_sent', {'command': command})
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Temperature command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Temperature command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('get_temperature')
 def handle_get_temperature():
-    machine.command_queue.put("GetTemperature")
-    emit('command_sent', {'command': 'GetTemperature'})
+    logging.info("Button Press: Get temperature requested")
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put("GetTemperature")
+        logging.info("Button Press: GetTemperature command queued for Arduino")
+        emit('command_sent', {'command': 'GetTemperature', 'status': 'queued'})
+    else:
+        logging.warning("Button Press: GetTemperature requested but Arduino not connected")
+        emit('command_sent', {'command': 'GetTemperature', 'status': 'not_connected'})
 
 @socketio.on('pneumatic_control')
 def handle_pneumatic(data):
     component = data.get('component')  # 'nozzle', 'stage', 'stamp'
     action = data.get('action')        # 'extend', 'retract'
+    
+    logging.info(f"Button Press: Pneumatic control - {component} {action}")
     
     command_map = {
         'nozzle': {'extend': 'ExtendNozzle', 'retract': 'RetractNozzle'},
@@ -320,13 +437,22 @@ def handle_pneumatic(data):
     
     if component in command_map and action in command_map[component]:
         command = command_map[component][action]
-        machine.command_queue.put(command)
-        emit('command_sent', {'command': command})
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Pneumatic command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: Pneumatic command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+    else:
+        logging.warning(f"Button Press: Invalid pneumatic command - component: {component}, action: {action}")
 
 @socketio.on('vacuum_control')
 def handle_vacuum(data):
     component = data.get('component')  # 'vacnozzle', 'chuck'
     action = data.get('action')        # 'on', 'off'
+    
+    logging.info(f"Button Press: Vacuum control - {component} {action}")
     
     command_map = {
         'vacnozzle': {'on': 'VacNozzleOn', 'off': 'VacNozzleOff'},
@@ -335,27 +461,49 @@ def handle_vacuum(data):
     
     if component in command_map and action in command_map[component]:
         command = command_map[component][action]
-        machine.command_queue.put(command)
-        emit('command_sent', {'command': command})
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Vacuum command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: Vacuum command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+    else:
+        logging.warning(f"Button Press: Invalid vacuum command - component: {component}, action: {action}")
 
 @socketio.on('disable_motor')
 def handle_disable_motor(data):
     axis = data.get('axis')  # 'X' or 'Y'
+    
+    logging.info(f"Button Press: Disable {axis} motor")
     
     if axis == 'X':
         command = "DisableX"
     elif axis == 'Y':
         command = "DisableY"
     else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for disable motor")
         return
     
-    machine.command_queue.put(command)
-    emit('command_sent', {'command': command})
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Disable motor command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Disable motor command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('emergency_stop')
 def handle_emergency_stop():
-    machine.command_queue.put("STOP")
-    emit('command_sent', {'command': 'STOP - EMERGENCY STOP'})
+    logging.warning("Button Press: EMERGENCY STOP activated!")
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put("STOP")
+        logging.warning("Button Press: EMERGENCY STOP command queued for Arduino")
+        emit('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'queued'})
+    else:
+        logging.warning("Button Press: EMERGENCY STOP requested but Arduino not connected")
+        emit('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'not_connected'})
 
 @socketio.on('tape_motor')
 def handle_tape_motor(data):
@@ -363,20 +511,37 @@ def handle_tape_motor(data):
     torque = data.get('torque', 50)
     time_ms = data.get('time', 1000)
     
+    logging.info(f"Button Press: Tape motor - Speed: {speed}, Torque: {torque}, Time: {time_ms}ms")
+    
     command = f"Tape {speed} {torque} {time_ms}"
-    machine.command_queue.put(command)
-    emit('command_sent', {'command': command})
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Tape motor command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Tape motor command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 # Start the communication thread
-communication_thread = threading.Thread(target=machine_communication_thread, daemon=True)
+communication_thread = threading.Thread(target=arduino_communication_thread, daemon=True)
 communication_thread.start()
 
 if __name__ == '__main__':
-    # Setup logging
-    logging.basicConfig(level=logging.INFO)
+    # Setup logging with different levels for testing
+    logging.basicConfig(
+        level=logging.INFO,  # Change to DEBUG for more verbose output
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler('flask_app.log')
+        ]
+    )
     
-    # Try to connect to machine on startup
-    machine.connect()
+    logging.info("Starting Flask application...")
+    logging.info(f"HTTP Server will run on port {HTTP_PORT}")
+    logging.info(f"TCP Server will listen on port {TCP_SERVER_PORT}")
+    logging.info("Button press logging enabled - all UI interactions will be logged")
     
     # Run the Flask app with SocketIO
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=HTTP_PORT, debug=False)

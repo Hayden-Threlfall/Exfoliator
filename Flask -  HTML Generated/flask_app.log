@@ -1,0 +1,58 @@
+2025-08-26 00:38:07,222 - INFO - Starting Flask application...
+2025-08-26 00:38:07,222 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:07,222 - INFO - HTTP Server will run on port 5000
+2025-08-26 00:38:07,222 - INFO - TCP Server will listen on port 1053
+2025-08-26 00:38:07,223 - INFO - Button press logging enabled - all UI interactions will be logged
+2025-08-26 00:38:08,331 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:08,388 - INFO - 127.0.0.1 - - [2025-08-26 00:38:08] "GET /socket.io/?EIO=4&transport=polling&t=PZauZfB HTTP/1.1" 200 254 0.000304
+2025-08-26 00:38:08,390 - INFO - Client connected to SocketIO
+2025-08-26 00:38:08,391 - INFO - 127.0.0.1 - - [2025-08-26 00:38:08] "POST /socket.io/?EIO=4&transport=polling&t=PZauZk5&sid=Z2TlCAqsMPIC8HMBAAAA HTTP/1.1" 200 195 0.001568
+2025-08-26 00:38:08,392 - INFO - 127.0.0.1 - - [2025-08-26 00:38:08] "GET /socket.io/?EIO=4&transport=polling&t=PZauZk5.0&sid=Z2TlCAqsMPIC8HMBAAAA HTTP/1.1" 200 568 0.000080
+2025-08-26 00:38:08,701 - INFO - 127.0.0.1 - - [2025-08-26 00:38:08] "GET /socket.io/?EIO=4&transport=polling&t=PZauZk9&sid=Z2TlCAqsMPIC8HMBAAAA HTTP/1.1" 200 157 0.307440
+2025-08-26 00:38:09,433 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:10,086 - INFO - 127.0.0.1 - - [2025-08-26 00:38:10] "GET / HTTP/1.1" 304 219 0.016114
+2025-08-26 00:38:10,088 - INFO - Client disconnected from SocketIO
+2025-08-26 00:38:10,101 - INFO - 127.0.0.1 - - [2025-08-26 00:38:10] "GET /socket.io/?EIO=4&transport=polling&t=PZaua8q HTTP/1.1" 200 254 0.000212
+2025-08-26 00:38:10,109 - INFO - Client connected to SocketIO
+2025-08-26 00:38:10,109 - INFO - 127.0.0.1 - - [2025-08-26 00:38:10] "POST /socket.io/?EIO=4&transport=polling&t=PZaua8y&sid=AyhWNhGCWPH0Xd9BAAAC HTTP/1.1" 200 195 0.000726
+2025-08-26 00:38:10,110 - INFO - 127.0.0.1 - - [2025-08-26 00:38:10] "GET /socket.io/?EIO=4&transport=polling&t=PZaua8y.0&sid=AyhWNhGCWPH0Xd9BAAAC HTTP/1.1" 200 568 0.000080
+2025-08-26 00:38:10,426 - INFO - 127.0.0.1 - - [2025-08-26 00:38:10] "GET /socket.io/?EIO=4&transport=polling&t=PZaua90&sid=AyhWNhGCWPH0Xd9BAAAC HTTP/1.1" 200 157 0.313248
+2025-08-26 00:38:10,541 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:11,644 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:11,850 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-08-26 00:38:11,850 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-08-26 00:38:12,757 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:13,865 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:14,968 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:16,071 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:17,173 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:18,284 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:19,397 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:20,505 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:21,605 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:22,720 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:22,982 - INFO - Button Press: Pneumatic control - stamp extend
+2025-08-26 00:38:22,982 - WARNING - Button Press: Pneumatic command 'ExtendStamp' received but Arduino not connected
+2025-08-26 00:38:23,820 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:24,187 - INFO - Button Press: Vacuum control - vacnozzle on
+2025-08-26 00:38:24,188 - WARNING - Button Press: Vacuum command 'VacNozzleOn' received but Arduino not connected
+2025-08-26 00:38:24,925 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:26,038 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:27,150 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:27,224 - INFO - Button Press: Vacuum control - chuck on
+2025-08-26 00:38:27,225 - WARNING - Button Press: Vacuum command 'ChuckOn' received but Arduino not connected
+2025-08-26 00:38:28,254 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:29,371 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:30,487 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:31,589 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:32,695 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:33,810 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:34,911 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:36,015 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:37,128 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:38,230 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:39,331 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:40,446 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:41,554 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:42,655 - INFO - TCP Server listening on port 1053
+2025-08-26 00:38:43,761 - INFO - TCP Server listening on port 1053

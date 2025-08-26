@@ -272,10 +272,52 @@ void disableYMotor() {
 
 void disableTakeUpMotor() {
     TakeUpMotor.EnableRequest(false);
+    tapeVelocity(0);
     Serial.println("TakeUp Motor Disabled");
 }
 
 void disableSourceMotor() {
     SourceMotor.EnableRequest(false);
+    tapeTorque(0);
     Serial.println("Source Motor Disabled");
+}
+
+String getMotorXStateString() {
+    // Bind by reference, no copy
+    const volatile MotorDriver::StatusRegMotor &status = XAxis.StatusReg();
+
+    switch (status.bit.ReadyState) {
+        case MotorDriver::MOTOR_DISABLED:
+            return "Disabled";
+        case MotorDriver::MOTOR_ENABLING:
+            return "Enabled";
+        case MotorDriver::MOTOR_READY:
+            return "Ready";
+        case MotorDriver::MOTOR_MOVING:
+            return "Moving";
+        case MotorDriver::MOTOR_FAULTED:
+            return "Faulted";
+        default:
+            return "Unknown";
+    }
+}
+
+String getMotorYStateString() {
+    // Same fix here
+    const volatile MotorDriver::StatusRegMotor &status = YAxis.StatusReg();
+
+    switch (status.bit.ReadyState) {
+        case MotorDriver::MOTOR_DISABLED:
+            return "Disabled";
+        case MotorDriver::MOTOR_ENABLING:
+            return "Enabled";
+        case MotorDriver::MOTOR_READY:
+            return "Ready";
+        case MotorDriver::MOTOR_MOVING:
+            return "Moving";
+        case MotorDriver::MOTOR_FAULTED:
+            return "Faulted";
+        default:
+            return "Unknown";
+    }
 }

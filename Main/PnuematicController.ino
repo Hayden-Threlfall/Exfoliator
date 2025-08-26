@@ -12,60 +12,76 @@ void pnuematicSetup() {
     pinMode(IO3, OUTPUT);
     pinMode(IO4, OUTPUT);
 
-    DisableNozzleVacuum();
-    RaiseNozzle();
-    RaiseStamp();
-    DisableChuckVacuum();
-    ExtendStage();
+    disableNozzleVacuum();
+    raiseNozzle();
+    raiseStamp();
+    disableChuckVacuum();
+    extendStage();
 }
 
-void LowerNozzle(){
+bool getNozzleExtended() {
+  return nozzleExtended;
+}
+bool getNozzleVacuum() {
+  return nozzleVacuum;
+}
+bool getChuckVacuum () {
+  return chuckVacuum;
+}
+bool getStageExtended() {
+  return stageExtended;
+}
+bool getStampExtended() {
+  return stampExtended;
+}
+
+void lowerNozzle() {
     digitalWrite(IO0, true);
     nozzleExtended = false;
 }
 
-void RaiseNozzle(){
+void raiseNozzle() {
     digitalWrite(IO0, false);
     nozzleExtended = true;
 }
 
-void ExtendStage(){
+void extendStage() {
     digitalWrite(IO2, false);
     stageExtended = true;
 }
 
-void RetractStage(){
+void retractStage() {
     digitalWrite(IO2, true);
     stageExtended = false;
 }
 
-void RaiseStamp(){
+void raiseStamp() {
     digitalWrite(IO3, false);
     stampExtended = false;
 }
 
-void LowerStamp(){
+void lowerStamp() {
     digitalWrite(IO3, true);
     stampExtended = true;
 
 }
 
-void ActivateChuckVacuum(){
+void activateChuckVacuum() {
     digitalWrite(IO4, true);
     chuckVacuum = true;
 }
 
-void DisableChuckVacuum(){
+void disableChuckVacuum() {
     digitalWrite(IO4, false);
     chuckVacuum = false;
 }
 
-void ActivateNozzleVacuum(){
+void activateNozzleVacuum() {
     digitalWrite(IO1, true);
     nozzleVacuum = true;
 }
 
-void DisableNozzleVacuum(){
+void disableNozzleVacuum() {
     digitalWrite(IO1, false);
     nozzleVacuum = false;
 }

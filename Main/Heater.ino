@@ -28,6 +28,10 @@ void setTargetTemperature(double temperature) {
   heaterTimer = millis();
 }
 
+double getTargetTemperature() {
+    return targetTemp;
+}
+
 void heaterOff() {
     PID.stop();
     digitalWrite(HEATER_PIN, LOW);
