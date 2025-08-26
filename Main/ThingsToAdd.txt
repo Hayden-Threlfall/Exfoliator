@@ -1,0 +1,33 @@
+Estop button
+Estop buffer serial send and send to python
+Json sending to python
+String recieving (consider json recieving...) from python
+// Might need a buffer array for string data to handle string being sent to fast (UGHHHHHHHHHH) [Will TCP string ever be skipped later question, based on the protocol noooo]
+    this would also require a handle request like threading potentiallllly prbably mostly for motors.... Not sure if I should add this may stay as an IDEA
+
+
+EnableRequest (bool value) // disable motor?
+.StatusRegMotor() -> MotorReadyStates
+
+Enumerator
+MOTOR_DISABLED 	
+The motor is not enabled.
+
+MOTOR_ENABLING 	
+The motor is in the process of enabling.
+
+MOTOR_FAULTED 	
+The motor is enabled and not moving, but HLFB is not asserted.
+
+MOTOR_READY 	
+The motor is enabled and HLFB is not deasserted (asserted or has PWM).
+
+MOTOR_MOVING 	
+The motor is enabled and moving.
+
+APP::
+what is app.config['SECRET_KEY'] = 'your-secret-key' doing
+
+Raspi:
+set static ip for raspi
+sudo nmtui
