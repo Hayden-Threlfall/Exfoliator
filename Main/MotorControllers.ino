@@ -1,5 +1,4 @@
 #include "ClearCore.h"
-#include "GlobalVars.h"
 #include <Arduino.h>
 
 #define YAxis         ConnectorM0
@@ -10,6 +9,7 @@
 
 #define XAxisLimitMM 220
 #define YAxisLimitMM 70
+#define AxesPulsesPerMM 640
 
 
 // DEPRICIATED EXFOLIATE DEFINITIONS //
@@ -33,7 +33,6 @@ int rowOfWorkingChip = 0;
 1 Revolution per 10 MM. This is based on Bosch Rexroth linear rails
 1/640 or 0.0015625 Pulses per MM
 */
-// #define AxesPulsesPerMM 640
 // #define TRIGGER_PULSE_TIME 25
 
 /*
@@ -52,8 +51,8 @@ int rowOfWorkingChip = 0;
 // int lastIndexPosition = 0;
 // bool quadratureError = false;
 
-double XAxisPosition = 0;
-double YAxisPosition = 0;
+double XPosition = 0;
+double YPosition = 0;
 
 double tapeMaxTorque = 100;
 double tapeMaxSpeed = 100;
@@ -92,10 +91,10 @@ void motorSetup() {
     SourceMotor.EnableRequest(true);
     Serial.println("SourceMotor Enabled");
 
-    unsigned int startHomeTimer = 60000;
+    unsigned long startHomeTimer = 60000;
     // Waits up to 60 seconds for motors to home
     Serial.println("Waiting for motors to home...");
-    unsigned int startHomeTime = millis();
+    unsigned long startHomeTime = millis();
     while (!checkIfAxesAreReady()) {
         delay(250);
         if (checkTimer(startHomeTime, 5000)) {
@@ -136,19 +135,19 @@ void checkHBridgeOverload() {
 }
 
 double getXPosition() {
-    return XAxisPosition;
+    return XPosition;
 }
 
-void setXPosition(double updatedXAxisPosition) {
-    XAxisPosition = updatedXAxisPosition;
+void setXPosition(double updatedXPosition) {
+    XPosition = updatedXPosition;
 }
 
 double getYPosition() {
-    return YAxisPosition;
+    return YPosition;
 }
 
-void setYPosition(double updatedYAxisPosition) {
-    YAxisPosition = updatedYAxisPosition;
+void setYPosition(double updatedYPosition) {
+    YPosition = updatedYPosition;
 }
 
 bool tapeTorque(int commandedTorque) {
@@ -248,15 +247,35 @@ bool moveXandYAxes(double targetXPosition, double targetYPosition) {
     Serial.print(targetYPosition);
     Serial.println(" MM");
 
-    double relativeXMovement = GetXAxisPosition() - targetXPosition;
-    double relativeYMovement = GetYAxisPosition() - targetYPosition;
+    double relativeXMovement = getXPosition() - targetXPosition;
+    double relativeYMovement = getYPosition() - targetYPosition;
 
     // Command the move of incremental distance
     XAxis.Move(relativeXMovement * AxesPulsesPerMM);
     YAxis.Move(relativeYMovement * AxesPulsesPerMM);
 
-    SetXAxisPosition(targetXPosition);
-    SetYAxisPosition(targetYPosition);
+    setXPosition(targetXPosition);
+    setYPosition(targetYPosition);
 
     return true;
+}
+
+void disableXMotor() {
+    XAxis.EnableRequest(false);
+    Serial.println("X Motor Disabled");
+}
+
+void disableYMotor() {
+    YAxis.EnableRequest(false);
+    Serial.println("Y Motor Disabled");
+}
+
+void disableTakeUpMotor() {
+    TakeUpMotor.EnableRequest(false);
+    Serial.println("TakeUp Motor Disabled");
+}
+
+void disableSourceMotor() {
+    SourceMotor.EnableRequest(false);
+    Serial.println("Source Motor Disabled");
 }

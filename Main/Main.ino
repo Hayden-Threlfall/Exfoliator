@@ -1,5 +1,4 @@
 #include "ClearCore.h"
-#include "GlobalVars.h"
 #include <SPI.h>
 #include <Ethernet.h>
 
@@ -84,12 +83,10 @@ void loop() {
       if (cmd == "START") {
         // Simulate starting something
         Serial.println("Action: START");
-        exfoliateStart();
         client.println("Started");
       }
       else if (cmd == "STOP") {
         Serial.println("Action: STOP");
-        exfoliateStop();
         client.println("Stopped");
       }
       else if (cmd == "ping") {
@@ -101,8 +98,6 @@ void loop() {
         client.println("Unknown command");
       }
     }
-
-    exfoliateStep();
 
     heaterStep();
     //znPIDTunerStep();
@@ -120,19 +115,19 @@ void zeroEncoder() {
 
 }
 
-bool checkEncoder(double targetDistance) {
+// bool checkEncoder(double targetDistance) {
 
-  if ( (EncoderIn.Position() * EncoderPulsesPerMM - lastPosition) <= targetDistance ) {
+//   if ( (EncoderIn.Position() * EncoderPulsesPerMM - lastPosition) <= targetDistance ) {
 
-      return true;
+//       return true;
 
-    } else {
+//     } else {
 
-      return false;
+//       return false;
 
-    }
+//     }
 
-}
+// }
 
 bool checkTimer(unsigned long &lastTime, unsigned long duration) {
 
@@ -159,9 +154,9 @@ bool clientConnect() {
 
 void emergencyStop() {
     eStopTriggered = true;
-    XAxis.MotorStop();
-    YAxis.MotorStop();
-    TakeUpMotor.MotorInBDuty(0);
-    SourceMotor.MotorInBDuty(0);
+    disableXMotor();
+    disableYMotor();
+    disableTakeUpMotor();
+    disableSourceMotor();
     heaterOff();
 }

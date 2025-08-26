@@ -1,5 +1,4 @@
 #include "ClearCore.h"
-#include "GlobalVars.h"
 #include <math.h>
 
 // Configuration for 104GT-2 with 37kOhm pull-down resistor external and 30kOhm internal to the ClearCore

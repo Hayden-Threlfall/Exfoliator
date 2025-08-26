@@ -1,5 +1,4 @@
 #include "ClearCore.h"
-#include "GlobalVars.h"
 #include <math.h>
 #include <AutoPID.h>
 
@@ -90,8 +89,8 @@ void heaterStep() {
             digitalWrite(HEATER_PIN, LOW);
         }
         
-        sprintf(buffer, "Temp: %.1f °C | Target Temp: %.1f °C | PID Output: %.2f", inputTemp, targetTemp, outputValue);
-        Serial.println(buffer);
+        //sprintf(buffer, "Temp: %.1f °C | Target Temp: %.1f °C | PID Output: %.2f", inputTemp, targetTemp, outputValue);
+        //Serial.println(buffer);
     }
 
     
