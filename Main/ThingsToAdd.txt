@@ -3,7 +3,6 @@ Estop button
 
 
 APP::
-what is app.config['SECRET_KEY'] = 'your-secret-key' doing
 
 Raspi:
 set static ip for raspi
@@ -14,10 +13,6 @@ setup Tape Motor
 
 Disconnecting Issue?
 
-Heater send does not work?
-
 Get rid of Home replace with Enablex, EnableY
 
 Can you add flashing E stop button, with please "Restart Machine"
-
-stamp is reversed logic

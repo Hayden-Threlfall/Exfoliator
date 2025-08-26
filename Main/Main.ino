@@ -53,12 +53,11 @@ void setup() {
 void loop() {
     if (eStopTriggered) {
         emergencyStop();
-        Serial.println("EMERGENCY STOP!");
-        
         // Send emergency stop status in JSON
         sendStatusJson();
         
         while (true) {
+            Serial.println("EMERGENCY STOPPED. Reset required.");
             delay(1000); // Wait indefinitely
         }
     }
@@ -157,11 +156,11 @@ void processCommand(String cmd) {
         client.println("Chip Stage Retracted");
     }
     else if (cmd == "ExtendStamp") {
-        lowerStamp();
+        raiseStamp();
         client.println("Stamp Extended");
     }
     else if (cmd == "RetractStamp") {
-        raiseStamp();
+        lowerStamp();
         client.println("Stamp Retracted");
     }
     

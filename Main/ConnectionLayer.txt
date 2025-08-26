@@ -20,10 +20,8 @@ MoveX {pos mm}
 MoveY {pos mm}
 DisableX 
 DisableY
-Home
-HomeX
-HomeY
-
+EnableX
+EnableY
 ExtendNozzle
 ExtendChipStage
 ExtendStamp
