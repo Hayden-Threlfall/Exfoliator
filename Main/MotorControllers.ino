@@ -265,9 +265,19 @@ void disableXMotor() {
     Serial.println("X Motor Disabled");
 }
 
+void enableXMotor() {
+    XAxis.EnableRequest(true);
+    Serial.println("X Motor Enabled");
+}
+
 void disableYMotor() {
     YAxis.EnableRequest(false);
     Serial.println("Y Motor Disabled");
+}
+
+void enableYMotor() {
+    XAxis.EnableRequest(true);
+    Serial.println("Y Motor Enabled");
 }
 
 void disableTakeUpMotor() {

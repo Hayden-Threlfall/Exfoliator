@@ -120,12 +120,12 @@ void processCommand(String cmd) {
     }
     else if (cmd == "HomeX") {
         Serial.println("Homing X axis");
-        // Implement X homing functionality
+        enableXMotor();
         client.println("Homing X axis");
     }
     else if (cmd == "HomeY") {
         Serial.println("Homing Y axis");
-        // Implement Y homing functionality
+        enableYMotor();
         client.println("Homing Y axis");
     }
     
