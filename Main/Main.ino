@@ -48,6 +48,8 @@ void setup() {
     
     // Heater Setup
     heaterSetup();
+
+    eStopTriggered = false;
 }
 
 void loop() {

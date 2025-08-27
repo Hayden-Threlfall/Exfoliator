@@ -1,5 +1,5 @@
 Estop button
-?? Motors may need LOCK protocol ?? 
+?? Motors may need thread LOCK protocol while working ?? 
 
 
 APP::
@@ -11,8 +11,8 @@ sudo nmtui
 
 setup Tape Motor
 
-Disconnecting Issue?
-
 Get rid of Home replace with Enablex, EnableY
 
 Can you add flashing E stop button, with please "Restart Machine"
+
+Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged...
