@@ -39,8 +39,9 @@ class ArduinoTCPServer:
             'vacnozzle': False,
             'chuck': False
         }
-        self.last_ping_time = time.time()
-        self.ping_response_received = False
+        # JSON heartbeat tracking instead of ping
+        self.last_json_received = time.time()
+        self.json_timeout = 3.0  # Consider disconnected if no JSON for 3 seconds
         self.estop_triggered = False
         
     def start_server(self):
@@ -67,6 +68,7 @@ class ArduinoTCPServer:
             self.client_socket, addr = self.server_socket.accept()
             self.client_socket.settimeout(1.0)  # Non-blocking recv
             self.connected = True
+            self.last_json_received = time.time()  # Reset heartbeat timer
             logging.info(f"Arduino connected from {addr}")
             socketio.emit('connection_status', {'connected': True})
             return True
@@ -123,6 +125,18 @@ class ArduinoTCPServer:
                 self.connected = False
                 socketio.emit('connection_status', {'connected': False})
             return None
+    
+    def check_json_heartbeat(self):
+        """Check if we've received JSON recently enough to consider connection alive"""
+        if not self.connected:
+            return False
+            
+        time_since_last_json = time.time() - self.last_json_received
+        if time_since_last_json > self.json_timeout:
+            logging.warning(f"JSON heartbeat timeout - {time_since_last_json:.2f}s since last JSON")
+            self.disconnect()
+            return False
+        return True
 
 arduino_server = ArduinoTCPServer()
 
@@ -154,28 +168,17 @@ def arduino_communication_thread():
                         # Try to parse JSON status updates
                         if response.startswith('{') and response.endswith('}'):
                             parse_json_status(response)
-                        elif response == 'pong':
-                            arduino_server.ping_response_received = True
-                            logging.info("Ping successful")
                         else:
                             socketio.emit('machine_response', {'response': response})
                             logging.info(f"Arduino response: {response}")
                 
-            # Handle ping every 30 seconds
-            current_time = time.time()
-            if current_time - arduino_server.last_ping_time >= 30:
-                arduino_server.ping_response_received = False
-                arduino_server.send_command("ping")
-                arduino_server.last_ping_time = current_time
-                
-                # Check ping response after 2 seconds
-                time.sleep(2)
-                if not arduino_server.ping_response_received:
-                    logging.warning("Ping failed - Arduino disconnected")
-                    arduino_server.disconnect()
-                
-            # Read any incoming JSON status updates
+            # Check JSON heartbeat instead of sending ping
             if arduino_server.connected:
+                if not arduino_server.check_json_heartbeat():
+                    logging.warning("JSON heartbeat failed - Arduino disconnected")
+                    continue
+                
+                # Read any incoming JSON status updates
                 response = arduino_server.read_response()
                 if response and response.startswith('{') and response.endswith('}'):
                     parse_json_status(response)
@@ -193,6 +196,9 @@ def parse_json_status(json_string):
     try:
         logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
+        
+        # Update heartbeat timestamp whenever we receive valid JSON
+        arduino_server.last_json_received = time.time()
         
         # Update position
         if 'x' in data and 'y' in data:
@@ -541,7 +547,7 @@ if __name__ == '__main__':
     logging.info("Starting Flask application...")
     logging.info(f"HTTP Server will run on port {HTTP_PORT}")
     logging.info(f"TCP Server will listen on port {TCP_SERVER_PORT}")
-    logging.info("Button press logging enabled - all UI interactions will be logged")
+    logging.info("JSON heartbeat system enabled - using regular JSON updates as connection health indicator")
     
     # Run the Flask app with SocketIO
     socketio.run(app, host='0.0.0.0', port=HTTP_PORT, debug=False)

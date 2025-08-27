@@ -233,11 +233,6 @@ void processCommand(String cmd) {
         client.println("EMERGENCY STOP ACTIVATED");
     }
     
-    // Ping command
-    else if (cmd == "ping") {
-        client.println("pong");
-    }
-    
     // Unknown command
     else {
         Serial.print("Unknown command: ");
