@@ -41,7 +41,7 @@ class ArduinoTCPServer:
         }
         # JSON heartbeat tracking instead of ping
         self.last_json_received = time.time()
-        self.json_timeout = 3.0  # Consider disconnected if no JSON for 3 seconds
+        self.json_timeout = 7.0  # Consider disconnected if no JSON for 3 seconds
         self.estop_triggered = False
         
     def start_server(self):

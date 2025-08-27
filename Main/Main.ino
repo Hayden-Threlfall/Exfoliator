@@ -19,7 +19,7 @@ char buffer[100];
 
 double exfoliationStep = 0;
 unsigned long lastJsonSend = 0;
-const unsigned long JSON_SEND_INTERVAL = 1000; // Send JSON every 1 second
+const unsigned long JSON_SEND_INTERVAL = 500; // Send JSON every 1 second
 
 void setup() {
     Serial.begin(baudRate);
