@@ -302,9 +302,31 @@ void sendStatusJson() {
     
     // Send JSON
     client.println(outgoingJson);
+
+    if (!safeSend(outgoingJson) || !safeSend("\n")) {
+        Serial.println("JSON send failed - will reconnect");
+        return;
+    }
     
     Serial.print("Sent JSON: ");
     Serial.println(outgoingJson);
+}
+
+bool safeSend(const char* data) {
+    if (!client.connected()) {
+        return false;
+    }
+    
+    size_t written = client.print(data);
+    client.flush(); // Force send and wait for completion
+    
+    // If flush fails or no bytes written, connection is dead
+    if (written == 0 || !client.connected()) {
+        Serial.println("Send failed - connection lost");
+        client.stop();
+        return false;
+    }
+    return true;
 }
 
 bool checkTimer(unsigned long &lastTime, unsigned long duration) {
