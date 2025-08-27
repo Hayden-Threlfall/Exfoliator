@@ -1,21 +1,15 @@
+:: Hardware ::
 Estop button
-?? Motors may need thread LOCK protocol while working ?? 
 
-
-APP::
-
-Raspi:
+:: Raspi ::
 set static ip for raspi
 sudo nmtui
 
-Increase json timeout?
-Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged from raspi or server side...
-
+:: Back / Mid ::
+Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged from raspi or server side... (fixed?)
 setup Tape Motor and spool motor connected ughhhhhhh
 
-
-
-UI:
+:; UI::
 Can you clean up Tape Motor Inputs
 Get rid of Home replace with Enablex, EnableY (rename from homing)
 

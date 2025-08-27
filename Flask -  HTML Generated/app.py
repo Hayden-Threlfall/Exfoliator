@@ -39,9 +39,11 @@ class ArduinoTCPServer:
             'vacnozzle': False,
             'chuck': False
         }
-        # JSON heartbeat tracking instead of ping
-        self.last_json_received = time.time()
-        self.json_timeout = 7.0  # Consider disconnected if no JSON for 3 seconds
+        # PING/PONG heartbeat tracking
+        self.last_ping_sent = time.time()
+        self.ping_interval = 2.0  # Send PING every 2 seconds
+        self.last_response_received = time.time()  # Any response (JSON, PONG, etc.)
+        self.response_timeout = 7.0  # Consider disconnected if no response for 7 seconds
         self.estop_triggered = False
         
     def start_server(self):
@@ -68,7 +70,8 @@ class ArduinoTCPServer:
             self.client_socket, addr = self.server_socket.accept()
             self.client_socket.settimeout(1.0)  # Non-blocking recv
             self.connected = True
-            self.last_json_received = time.time()  # Reset heartbeat timer
+            self.last_ping_sent = time.time()
+            self.last_response_received = time.time()  # Reset heartbeat timer
             logging.info(f"Arduino connected from {addr}")
             socketio.emit('connection_status', {'connected': True})
             return True
@@ -116,6 +119,8 @@ class ArduinoTCPServer:
             response = self.client_socket.recv(1024).decode().strip()
             if response:
                 logging.debug(f"Received response: {response}")
+                # Update heartbeat for ANY response received
+                self.last_response_received = time.time()
             return response
         except socket.timeout:
             return None
@@ -126,14 +131,26 @@ class ArduinoTCPServer:
                 socketio.emit('connection_status', {'connected': False})
             return None
     
-    def check_json_heartbeat(self):
-        """Check if we've received JSON recently enough to consider connection alive"""
+    def should_send_ping(self):
+        """Check if it's time to send a PING"""
+        return (time.time() - self.last_ping_sent) >= self.ping_interval
+    
+    def send_ping(self):
+        """Send PING command and update timestamp"""
+        if self.send_command("PING"):
+            self.last_ping_sent = time.time()
+            logging.debug("PING sent")
+            return True
+        return False
+    
+    def check_connection_health(self):
+        """Check if we've received any response recently enough to consider connection alive"""
         if not self.connected:
             return False
             
-        time_since_last_json = time.time() - self.last_json_received
-        if time_since_last_json > self.json_timeout:
-            logging.warning(f"JSON heartbeat timeout - {time_since_last_json:.2f}s since last JSON")
+        time_since_last_response = time.time() - self.last_response_received
+        if time_since_last_response > self.response_timeout:
+            logging.warning(f"Connection timeout - {time_since_last_response:.2f}s since last response")
             self.disconnect()
             return False
         return True
@@ -155,6 +172,10 @@ def arduino_communication_thread():
                     time.sleep(0.1)
                     continue
             
+            # Send PING if it's time
+            if arduino_server.connected and arduino_server.should_send_ping():
+                arduino_server.send_ping()
+            
             # Process command queue
             while not arduino_server.command_queue.empty():
                 command = arduino_server.command_queue.get()
@@ -168,22 +189,32 @@ def arduino_communication_thread():
                         # Try to parse JSON status updates
                         if response.startswith('{') and response.endswith('}'):
                             parse_json_status(response)
+                        elif response == "PONG":
+                            logging.debug("PONG received")
+                            # PONG response already updated last_response_received in read_response()
                         else:
                             socketio.emit('machine_response', {'response': response})
                             logging.info(f"Arduino response: {response}")
                 
-            # Check JSON heartbeat instead of sending ping
+            # Check connection health
             if arduino_server.connected:
-                if not arduino_server.check_json_heartbeat():
-                    logging.warning("JSON heartbeat failed - Arduino disconnected")
+                if not arduino_server.check_connection_health():
+                    logging.warning("Connection health check failed - Arduino disconnected")
                     continue
                 
-                # Read any incoming JSON status updates
+                # Read any incoming responses (JSON, PONG, etc.)
                 response = arduino_server.read_response()
-                if response and response.startswith('{') and response.endswith('}'):
-                    parse_json_status(response)
+                if response:
+                    if response.startswith('{') and response.endswith('}'):
+                        parse_json_status(response)
+                    elif response == "PONG":
+                        logging.debug("PONG received")
+                        # Response timestamp already updated in read_response()
+                    else:
+                        socketio.emit('machine_response', {'response': response})
+                        logging.info(f"Arduino response: {response}")
             
-            time.sleep(0.1)  # Check more frequently for JSON updates
+            time.sleep(0.1)  # Check frequently for responses
             
         except Exception as e:
             logging.error(f"Communication thread error: {e}")
@@ -197,8 +228,8 @@ def parse_json_status(json_string):
         logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
         
-        # Update heartbeat timestamp whenever we receive valid JSON
-        arduino_server.last_json_received = time.time()
+        # Note: last_response_received is already updated in read_response() 
+        # when we receive ANY response, including JSON
         
         # Update position
         if 'x' in data and 'y' in data:
@@ -547,7 +578,7 @@ if __name__ == '__main__':
     logging.info("Starting Flask application...")
     logging.info(f"HTTP Server will run on port {HTTP_PORT}")
     logging.info(f"TCP Server will listen on port {TCP_SERVER_PORT}")
-    logging.info("JSON heartbeat system enabled - using regular JSON updates as connection health indicator")
+    logging.info("PING/PONG heartbeat system enabled - sending PING every 2 seconds")
     
     # Run the Flask app with SocketIO
     socketio.run(app, host='0.0.0.0', port=HTTP_PORT, debug=False)

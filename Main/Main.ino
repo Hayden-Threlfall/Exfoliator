@@ -17,9 +17,11 @@ char incomingData[300]; // Buffer for receiving commands
 char outgoingJson[512]; // Buffer for sending JSON
 char buffer[100];
 
-double exfoliationStep = 0;
+
 unsigned long lastJsonSend = 0;
-const unsigned long JSON_SEND_INTERVAL = 500; // Send JSON every 1 second
+unsigned long lastHeartbeat = 0;
+const unsigned long JSON_SEND_INTERVAL = 500; 
+const unsigned long HEARTBEAT_INTERVAL = 7000;
 
 void setup() {
     Serial.begin(baudRate);
@@ -49,6 +51,7 @@ void setup() {
     // Heater Setup
     heaterSetup();
 
+    lastHeartbeat = millis();
     eStopTriggered = false;
 }
 
@@ -67,7 +70,7 @@ void loop() {
     static unsigned long lastConnectionAttempt = 0;
 
     // Try to reconnect if not connected
-    if (!client.connected() && checkTimer(lastConnectionAttempt, 5000)) {
+    if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000)) || checkTimer(lastHeartbeat, HEARTBEAT_INTERVAL)) {
         connectToServer();
     }
 
@@ -220,6 +223,10 @@ void processCommand(String cmd) {
             startTapeOperation(speed, torque, duration);
             
             client.println("Tape motor operation started");
+        } 
+    else if (cmd == "PING") {
+          lastHeartbeat = millis();
+          client.println("PONG");
         } else {
             Serial.println("Invalid tape command format. Expected: Tape speed torque duration");
             client.println("Invalid tape command format");
