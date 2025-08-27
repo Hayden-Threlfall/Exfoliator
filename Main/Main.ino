@@ -8,7 +8,113 @@ volatile bool eStopTriggered = false;
 #define baudRate 9600
 
 #define SERVER_PORT 1053
-byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED}
+
+void sendStatusJson() {
+    if (!client.connected()) {
+        return;
+    }
+    
+    // Get motor states
+    String stateX = getMotorXStateString();
+    String stateY = getMotorYStateString();
+    
+    // Get pneumatic states
+    bool nozzleState = getNozzleExtended();
+    bool stageState = getStageExtended();
+    bool stampState = getStampExtended();
+    
+    // Get vacuum states
+    bool vacNozzleState = getNozzleVacuum();
+    bool chuckState = getChuckVacuum();
+    
+    // Get tape motor states (for now, return current commanded values)
+    // In a real implementation, you might track these values
+    int tapeSpeed = 0;  // You'd track this from tape commands
+    int tapeTorque = 0; // You'd track this from tape commands
+    
+    // Get temperature values
+    float currentTemp = getThermistor();
+    float setTemp = getTargetTemperature();
+    
+    // Build JSON string - this serves as both status update AND heartbeat
+    snprintf(outgoingJson, sizeof(outgoingJson),
+        "{"
+        "\"x\":%.2f,"
+        "\"y\":%.2f,"
+        "\"stateX\":\"%s\","
+        "\"stateY\":\"%s\","
+        "\"tape\":[%d,%d],"
+        "\"nozzle\":%s,"
+        "\"stage\":%s,"
+        "\"stamp\":%s,"
+        "\"vacnozzle\":%s,"
+        "\"chuck\":%s,"
+        "\"settemp\":%.2f,"
+        "\"temp\":%.2f,"
+        "\"eStopTriggered\":%s,"
+        "\"timestamp\":%lu"  // Added timestamp for better heartbeat tracking
+        "}",
+        getXPosition(),
+        getYPosition(),
+        stateX.c_str(),
+        stateY.c_str(),
+        tapeSpeed,
+        tapeTorque,
+        nozzleState ? "true" : "false",
+        stageState ? "true" : "false",
+        stampState ? "true" : "false",
+        vacNozzleState ? "true" : "false",
+        chuckState ? "true" : "false",
+        setTemp,
+        currentTemp,
+        eStopTriggered ? "true" : "false",
+        millis()  // Arduino uptime as timestamp
+    );
+    
+    // Send JSON - this acts as our heartbeat signal to the server
+    client.println(outgoingJson);
+    
+    Serial.print("Sent JSON heartbeat: ");
+    Serial.println(outgoingJson);
+}
+
+bool checkTimer(unsigned long &lastTime, unsigned long duration) {
+    if (millis() - lastTime >= duration) {
+        lastTime = millis();
+        return true;
+    }
+    return false;
+}
+
+bool connectToServer() {
+    if (client.connected()) {
+        return true;
+    }
+    
+    client.stop();
+    Serial.println("Connecting to server...");
+    
+    if (client.connect(serverIp, SERVER_PORT)) {
+        Serial.println("Connected to server!");
+        // Send an immediate JSON status to establish heartbeat
+        sendStatusJson();
+        return true;
+    } else {
+        Serial.println("Connection failed. Will retry...");
+        return false;
+    }
+}
+
+void emergencyStop() {
+    eStopTriggered = true;
+    disableXMotor();
+    disableYMotor();
+    disableTakeUpMotor();
+    disableSourceMotor();
+    heaterOff();
+};
+
 IPAddress ip(192, 168, 3, 100);           // Arduino IP
 IPAddress serverIp(192, 168, 3, 120);     // Python server IP
 
@@ -19,7 +125,8 @@ char buffer[100];
 
 double exfoliationStep = 0;
 unsigned long lastJsonSend = 0;
-const unsigned long JSON_SEND_INTERVAL = 1000; // Send JSON every 1 second
+// Reduced interval for more frequent heartbeat - this acts as our connection health indicator
+const unsigned long JSON_SEND_INTERVAL = 250; // Send JSON every 500ms instead of 1000ms
 
 void setup() {
     Serial.begin(baudRate);
@@ -83,7 +190,7 @@ void loop() {
         processCommand(cmd);
     }
 
-    // Send JSON status periodically
+    // Send JSON status more frequently - this serves as our heartbeat
     if (checkTimer(lastJsonSend, JSON_SEND_INTERVAL)) {
         sendStatusJson();
     }
@@ -233,10 +340,7 @@ void processCommand(String cmd) {
         client.println("EMERGENCY STOP ACTIVATED");
     }
     
-    // Ping command
-    else if (cmd == "ping") {
-        client.println("pong");
-    }
+    // Removed ping command handling - no longer needed with JSON heartbeat
     
     // Unknown command
     else {
@@ -244,105 +348,3 @@ void processCommand(String cmd) {
         Serial.println(cmd);
         client.println("Unknown command");
     }
-}
-
-void sendStatusJson() {
-    if (!client.connected()) {
-        return;
-    }
-    
-    // Get motor states
-    String stateX = getMotorXStateString();
-    String stateY = getMotorYStateString();
-    
-    // Get pneumatic states
-    bool nozzleState = getNozzleExtended();
-    bool stageState = getStageExtended();
-    bool stampState = getStampExtended();
-    
-    // Get vacuum states
-    bool vacNozzleState = getNozzleVacuum();
-    bool chuckState = getChuckVacuum();
-    
-    // Get tape motor states (for now, return current commanded values)
-    // In a real implementation, you might track these values
-    int tapeSpeed = 0;  // You'd track this from tape commands
-    int tapeTorque = 0; // You'd track this from tape commands
-    
-    // Get temperature values
-    float currentTemp = getThermistor();
-    float setTemp = getTargetTemperature();
-    
-    // Build JSON string
-    snprintf(outgoingJson, sizeof(outgoingJson),
-        "{"
-        "\"x\":%.2f,"
-        "\"y\":%.2f,"
-        "\"stateX\":\"%s\","
-        "\"stateY\":\"%s\","
-        "\"tape\":[%d,%d],"
-        "\"nozzle\":%s,"
-        "\"stage\":%s,"
-        "\"stamp\":%s,"
-        "\"vacnozzle\":%s,"
-        "\"chuck\":%s,"
-        "\"settemp\":%.2f,"
-        "\"temp\":%.2f,"
-        "\"eStopTriggered\":%s"
-        "}",
-        getXPosition(),
-        getYPosition(),
-        stateX.c_str(),
-        stateY.c_str(),
-        tapeSpeed,
-        tapeTorque,
-        nozzleState ? "true" : "false",
-        stageState ? "true" : "false",
-        stampState ? "true" : "false",
-        vacNozzleState ? "true" : "false",
-        chuckState ? "true" : "false",
-        setTemp,
-        currentTemp,
-        eStopTriggered ? "true" : "false"
-    );
-    
-    // Send JSON
-    client.println(outgoingJson);
-    
-    Serial.print("Sent JSON: ");
-    Serial.println(outgoingJson);
-}
-
-bool checkTimer(unsigned long &lastTime, unsigned long duration) {
-    if (millis() - lastTime >= duration) {
-        lastTime = millis();
-        return true;
-    }
-    return false;
-}
-
-bool connectToServer() {
-    if (client.connected()) {
-        return true;
-    }
-    
-    client.stop();
-    Serial.println("Connecting to server...");
-    
-    if (client.connect(serverIp, SERVER_PORT)) {
-        Serial.println("Connected to server!");
-        return true;
-    } else {
-        Serial.println("Connection failed. Will retry...");
-        return false;
-    }
-}
-
-void emergencyStop() {
-    eStopTriggered = true;
-    disableXMotor();
-    disableYMotor();
-    disableTakeUpMotor();
-    disableSourceMotor();
-    heaterOff();
-}
