@@ -10,9 +10,12 @@ sudo nmtui
 
 
 setup Tape Motor
+MotorControllers needs to be rubuilt slightly woth a MotorStep();, so tape motor can run not blocking, also not sure why but Tape send does not run the tape motor
 
-Get rid of Home replace with Enablex, EnableY
+
+Can you clean up Tape Motor Inputs
+Get rid of Home replace with Enablex, EnableY (rename from homing)
 
 Can you add flashing E stop button, with please "Restart Machine"
 
-Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged...
+Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged from raspi or server side...

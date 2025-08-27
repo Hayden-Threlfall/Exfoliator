@@ -92,6 +92,9 @@ void loop() {
 
     // Run heater control
     heaterStep();
+    
+    // Run tape motor control (NEW - handles timing for tape operations)
+    tapeMotorStep();
 
     delay(25);
 }
@@ -116,7 +119,8 @@ void processCommand(String cmd) {
     // Homing commands
     else if (cmd == "Home") {
         Serial.println("Homing all axes");
-        // Implement home all functionality
+        enableXMotor();
+        enableYMotor();
         client.println("Homing all axes");
     }
     else if (cmd == "HomeX") {
@@ -193,7 +197,7 @@ void processCommand(String cmd) {
         client.println("Temperature set");
     }
     
-    // Tape motor command
+    // Tape motor command (FIXED - now non-blocking)
     else if (cmd.startsWith("Tape ")) {
         // Parse: Tape {speed} {torque} {time}
         int firstSpace = cmd.indexOf(' ', 5);
@@ -204,27 +208,21 @@ void processCommand(String cmd) {
             int torque = cmd.substring(firstSpace + 1, secondSpace).toInt();
             int duration = cmd.substring(secondSpace + 1).toInt();
             
-            Serial.print("Tape motor - Speed: ");
+            Serial.print("Tape motor command - Speed: ");
             Serial.print(speed);
             Serial.print(", Torque: ");
             Serial.print(torque);
             Serial.print(", Duration: ");
-            Serial.println(duration);
+            Serial.print(duration);
+            Serial.println(" ms");
             
-            // Run tape motor for specified duration
-            unsigned long startTime = millis();
-            tapeVelocity(speed);
-            tapeTorque(torque);
+            // Start non-blocking tape operation
+            startTapeOperation(speed, torque, duration);
             
-            while (millis() - startTime < duration && !eStopTriggered) {
-                delay(10);
-            }
-            
-            // Stop tape motor
-            tapeVelocity(0);
-            tapeTorque(0);
-            
-            client.println("Tape motor operation complete");
+            client.println("Tape motor operation started");
+        } else {
+            Serial.println("Invalid tape command format. Expected: Tape speed torque duration");
+            client.println("Invalid tape command format");
         }
     }
     
@@ -261,10 +259,9 @@ void sendStatusJson() {
     bool vacNozzleState = getNozzleVacuum();
     bool chuckState = getChuckVacuum();
     
-    // Get tape motor states (for now, return current commanded values)
-    // In a real implementation, you might track these values
-    int tapeSpeed = 0;  // You'd track this from tape commands
-    int tapeTorque = 0; // You'd track this from tape commands
+    // Get current tape motor values (FIXED - now returns actual current values)
+    int tapeSpeed = getCurrentTapeSpeed();
+    int tapeTorque = getCurrentTapeTorque();
     
     // Get temperature values
     float currentTemp = getThermistor();

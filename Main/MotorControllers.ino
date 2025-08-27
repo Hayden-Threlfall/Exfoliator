@@ -11,51 +11,18 @@
 #define YAxisLimitMM 70
 #define AxesPulsesPerMM 640
 
-
-// DEPRICIATED EXFOLIATE DEFINITIONS //
-/*
-#define XAxisInitialChipwell 102.55 // 104
-#define YAxisInitialChipwell 6.5// 6.25
-#define ChipWellPitch 12.5
-
-// Exfoliate Varibles and Functions
-ProcessStep currentStep = IDLE;
-bool robotCurrentlyExfoliating = false;
-double targetChuckTemp = 30;
-int columnOfWorkingChip = 0;
-int rowOfWorkingChip = 0;
-*/
-
-
-// UNUSED ENCODER DEFINITIONS //
-/*
-6400 Pulses per Revolution. This is configured in Teknic motor configuration software.
-1 Revolution per 10 MM. This is based on Bosch Rexroth linear rails
-1/640 or 0.0015625 Pulses per MM
-*/
-// #define TRIGGER_PULSE_TIME 25
-
-/*
-1024 ppr encoder
-16mm OD shaft
-1 rev = pi * 16 mm
-20.371 pulses per mm
-*/
-// #define EncoderPulsesPerMM 20.371
-
-// bool swapDirection = false;
-// bool indexInverted = false;
-// int position = 0;
-// int velocity = 0;
-// int indexPosition = 0;
-// int lastIndexPosition = 0;
-// bool quadratureError = false;
-
 double XPosition = 0;
 double YPosition = 0;
 
 double tapeMaxTorque = 100;
 double tapeMaxSpeed = 100;
+
+// Tape motor state tracking
+int currentTapeSpeed = 0;
+int currentTapeTorque = 0;
+unsigned long tapeOperationStartTime = 0;
+unsigned long tapeOperationDuration = 0;
+bool tapeOperationActive = false;
 
 unsigned long hBridgeResetTimer = 0;
 bool hBridgeResetPending = false;
@@ -78,10 +45,10 @@ void motorSetup() {
     XAxis.AccelMax(INT32_MAX);
 
     YAxis.EnableRequest(true);
-    Serial.println("TakeUpMotor Enabled");
+    Serial.println("Y Motor Enabled");
 
     XAxis.EnableRequest(true);
-    Serial.println("SourceMotor Enabled");
+    Serial.println("X Motor Enabled");
 
     // Tension Motors Setup
     MotorMgr.MotorModeSet(MotorManager::MOTOR_M2M3, Connector::CPM_MODE_A_DIRECT_B_PWM);
@@ -91,31 +58,20 @@ void motorSetup() {
     SourceMotor.EnableRequest(true);
     Serial.println("SourceMotor Enabled");
 
-    unsigned long startHomeTimer = 60000;
-    // Waits up to 60 seconds for motors to home
+    // Wait for motors to home (with timeout)
     Serial.println("Waiting for motors to home...");
     unsigned long startHomeTime = millis();
     while (!checkIfAxesAreReady()) {
         delay(250);
-        if (checkTimer(startHomeTime, 5000)) {
+        if (millis() - startHomeTime > 60000) { // 60 second timeout
+            Serial.println("Motor homing timeout!");
             emergencyStop();
             break;
         }
     }
+    
+    Serial.println("Motor setup complete");
 }
-
-/*
-void encoderSetup() {
-    // Enable the encoder input feature
-    EncoderIn.Enable(true);
-    // Zero the position to start
-    EncoderIn.Position(0);
-    // Set the encoder direction
-    EncoderIn.SwapDirection(swapDirection);
-    // Set the sense of index detection (true = rising edge, false = falling edge)
-    EncoderIn.IndexInverted(indexInverted);
-}
-*/
 
 bool checkIfAxesAreReady() {
     return (YAxis.HlfbState() == MotorDriver::HLFB_ASSERTED) &&
@@ -166,19 +122,20 @@ bool tapeTorque(int commandedTorque) {
     if (newDirection != lastDirection) {
         TakeUpMotor.MotorInAState(newDirection);
         torqueDelayPending = true;
-        torqueDelayTimer = millis(); // start delay
+        torqueDelayTimer = millis();
         lastDirection = newDirection;
-        return false; // not ready yet
+        return false;
     }
 
     // Wait until delay passes
     if (torqueDelayPending && !checkTimer(torqueDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false; // still waiting
+        return false;
     }
     torqueDelayPending = false;
 
-    // Safe to apply torque
+    // Apply torque
     TakeUpMotor.MotorInBDuty(dutyRequest);
+    currentTapeTorque = commandedTorque; // Track current torque
 
     Serial.print("Torque command applied: ");
     Serial.println(commandedTorque);
@@ -187,7 +144,7 @@ bool tapeTorque(int commandedTorque) {
 }
 
 bool tapeVelocity(double commandedVelocity) {
-    if (abs(commandedVelocity) >= abs(tapeMaxSpeed)) {
+    if (abs(commandedVelocity) > abs(tapeMaxSpeed)) {
         Serial.println("Move rejected, requested velocity at or over the limit.");
         return false;
     }
@@ -202,24 +159,72 @@ bool tapeVelocity(double commandedVelocity) {
     if (newDirection != lastDirection) {
         SourceMotor.MotorInAState(newDirection);
         velocityDelayPending = true;
-        velocityDelayTimer = millis(); // start delay
+        velocityDelayTimer = millis();
         lastDirection = newDirection;
-        return false; // not ready yet
+        return false;
     }
 
     // Wait until delay passes
     if (velocityDelayPending && !checkTimer(velocityDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false; // still waiting
+        return false;
     }
     velocityDelayPending = false;
 
-    // Safe to apply velocity
+    // Apply velocity
     SourceMotor.MotorInBDuty(dutyRequest);
+    currentTapeSpeed = commandedVelocity; // Track current speed
 
     Serial.print("Velocity command applied: ");
     Serial.println(commandedVelocity);
 
     return true;
+}
+
+void startTapeOperation(int speed, int torque, unsigned long duration) {
+    Serial.print("Starting tape operation - Speed: ");
+    Serial.print(speed);
+    Serial.print(", Torque: ");
+    Serial.print(torque);
+    Serial.print(", Duration: ");
+    Serial.println(duration);
+
+    // Apply the commands
+    tapeVelocity(speed);
+    tapeTorque(torque);
+    
+    // Set up timing
+    tapeOperationStartTime = millis();
+    tapeOperationDuration = duration;
+    tapeOperationActive = true;
+}
+
+void stopTapeOperation() {
+    Serial.println("Stopping tape operation");
+    tapeVelocity(0);
+    tapeTorque(0);
+    tapeOperationActive = false;
+    currentTapeSpeed = 0;
+    currentTapeTorque = 0;
+}
+
+void tapeMotorStep() {
+    // Check if we have an active tape operation that should be stopped
+    if (tapeOperationActive) {
+        if (millis() - tapeOperationStartTime >= tapeOperationDuration) {
+            stopTapeOperation();
+        }
+    }
+    
+    // Handle any pending direction changes
+    checkHBridgeOverload();
+}
+
+int getCurrentTapeSpeed() {
+    return currentTapeSpeed;
+}
+
+int getCurrentTapeTorque() {
+    return currentTapeTorque;
 }
 
 bool moveXandYAxes(double targetXPosition, double targetYPosition) {
@@ -276,7 +281,7 @@ void disableYMotor() {
 }
 
 void enableYMotor() {
-    XAxis.EnableRequest(true);
+    YAxis.EnableRequest(true);
     Serial.println("Y Motor Enabled");
 }
 
@@ -293,7 +298,6 @@ void disableSourceMotor() {
 }
 
 String getMotorXStateString() {
-    // Bind by reference, no copy
     const volatile MotorDriver::StatusRegMotor &status = XAxis.StatusReg();
 
     switch (status.bit.ReadyState) {
@@ -313,7 +317,6 @@ String getMotorXStateString() {
 }
 
 String getMotorYStateString() {
-    // Same fix here
     const volatile MotorDriver::StatusRegMotor &status = YAxis.StatusReg();
 
     switch (status.bit.ReadyState) {
