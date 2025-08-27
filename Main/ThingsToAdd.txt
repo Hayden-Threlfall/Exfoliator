@@ -8,6 +8,7 @@ sudo nmtui
 :: Back / Mid ::
 Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged from raspi or server side... (fixed?)
 setup Tape Motor and spool motor connected ughhhhhhh
+unkown Command On server side ("pong")
 
 :; UI::
 Can you clean up Tape Motor Inputs
