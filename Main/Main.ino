@@ -23,6 +23,8 @@ unsigned long lastHeartbeat = 0;
 const unsigned long JSON_SEND_INTERVAL = 500; 
 const unsigned long HEARTBEAT_INTERVAL = 7000;
 
+#define EStopButton   ConnectorA11
+
 void setup() {
     Serial.begin(baudRate);
 
@@ -51,18 +53,24 @@ void setup() {
     // Heater Setup
     heaterSetup();
 
-    lastHeartbeat = millis();
+    //Estop Setup
+    EStopButton.Mode(Connector::INPUT_DIGITAL);
     eStopTriggered = false;
+
+    lastHeartbeat = millis();
+    
 }
 
 void loop() {
-    if (eStopTriggered) {
+    if (eStopTriggered || !EStopButton.State()) {
         emergencyStop();
         // Send emergency stop status in JSON
         sendStatusJson();
+        client.println("EMERGENCY STOPPED. Restart required.");
         
         while (true) {
-            Serial.println("EMERGENCY STOPPED. Reset required.");
+            Serial.println("EMERGENCY STOPPED. Restart required.");
+            sendStatusJson();
             delay(1000); // Wait indefinitely
         }
     }
@@ -231,7 +239,6 @@ void processCommand(String cmd) {
 
     else if (cmd == "PING") {
           lastHeartbeat = millis();
-          client.println("PONG");
     }
     // Emergency stop
     else if (cmd == "STOP") {
