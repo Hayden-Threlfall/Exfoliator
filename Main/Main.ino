@@ -223,16 +223,16 @@ void processCommand(String cmd) {
             startTapeOperation(speed, torque, duration);
             
             client.println("Tape motor operation started");
-        } 
-    else if (cmd == "PING") {
-          lastHeartbeat = millis();
-          client.println("PONG");
-        } else {
+        }  else {
             Serial.println("Invalid tape command format. Expected: Tape speed torque duration");
             client.println("Invalid tape command format");
         }
     }
-    
+
+    else if (cmd == "PING") {
+          lastHeartbeat = millis();
+          client.println("PONG");
+    }
     // Emergency stop
     else if (cmd == "STOP") {
         Serial.println("Emergency stop commanded");
