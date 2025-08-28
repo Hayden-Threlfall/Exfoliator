@@ -6,8 +6,8 @@ sudo nmtui
 setup Tape Motor and spool motor connected ughhhhhhh
 
 :; UI::
-Can you clean up Tape Motor Inputs
+Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
 Get rid of Home replace with Enablex, EnableY (rename from homing)
 
-Can you add flashing E stop button, with please "Restart Machine"
+Can you add flashing E stop button, with "Restart Machine"
 

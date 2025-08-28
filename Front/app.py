@@ -386,6 +386,18 @@ def handle_command(data):
     else:
         logging.warning("Button Press: Empty command received")
 
+@socketio.on('stop_command')
+def handle_stop_command():
+    logging.warning("Button Press: STOP command activated!")
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put("STOP")
+        logging.warning("Button Press: STOP command queued for Arduino")
+        emit('command_sent', {'command': 'STOP', 'status': 'queued'})
+    else:
+        logging.warning("Button Press: STOP command requested but Arduino not connected")
+        emit('command_sent', {'command': 'STOP', 'status': 'not_connected'})
+
 @socketio.on('move_position')
 def handle_move_position(data):
     axis = data.get('axis')
@@ -409,26 +421,26 @@ def handle_move_position(data):
         logging.warning(f"Button Press: Move command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
-@socketio.on('home_axis')
-def handle_home(data):
-    axis = data.get('axis', '')
+@socketio.on('enable_axis')
+def handle_enable_axis(data):
+    axis = data.get('axis')  # 'X' or 'Y'
     
-    logging.info(f"Button Press: Home axis '{axis}' requested")
+    logging.info(f"Button Press: Enable {axis} axis")
     
     if axis == 'X':
-        command = "HomeX"
+        command = "EnableX"
     elif axis == 'Y':
-        command = "HomeY"
+        command = "EnableY"
     else:
-        command = "Home"  # Home all axes
-        logging.info("Button Press: Home all axes requested")
+        logging.warning(f"Button Press: Invalid axis '{axis}' for enable axis")
+        return
     
     if arduino_server.connected:
         arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Home command '{command}' queued for Arduino")
+        logging.info(f"Button Press: Enable axis command '{command}' queued for Arduino")
         emit('command_sent', {'command': command, 'status': 'queued'})
     else:
-        logging.warning(f"Button Press: Home command '{command}' received but Arduino not connected")
+        logging.warning(f"Button Press: Enable axis command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('set_temperature')

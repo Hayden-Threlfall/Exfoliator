@@ -112,8 +112,7 @@ bool tapeTorque(int commandedTorque) {
         return false;
     }
 
-    double scaleFactor = 255.0 / tapeMaxTorque;
-    int dutyRequest = abs(commandedTorque) * scaleFactor;
+    int dutyRequest = abs(commandedTorque);
 
     bool newDirection = (commandedTorque < 0);
     static bool lastDirection = false;
@@ -149,8 +148,7 @@ bool tapeVelocity(double commandedVelocity) {
         return false;
     }
 
-    double scaleFactor = 255.0 / tapeMaxSpeed;
-    int dutyRequest = abs(commandedVelocity) * scaleFactor;
+    int dutyRequest = abs(commandedVelocity);
 
     bool newDirection = (commandedVelocity < 0);
     static bool lastDirection = false;
@@ -302,17 +300,17 @@ String getMotorXStateString() {
 
     switch (status.bit.ReadyState) {
         case MotorDriver::MOTOR_DISABLED:
-            return "Disabled";
+            return "MOTOR_DISABLED";
         case MotorDriver::MOTOR_ENABLING:
-            return "Enabled";
+            return "MOTOR_ENABLING";
         case MotorDriver::MOTOR_READY:
-            return "Ready";
+            return "MOTOR_READY";
         case MotorDriver::MOTOR_MOVING:
-            return "Moving";
+            return "MOTOR_MOVING";
         case MotorDriver::MOTOR_FAULTED:
-            return "Faulted";
+            return "MOTOR_FAULTED";
         default:
-            return "Unknown";
+            return "MOTOR_DISABLED";
     }
 }
 
@@ -321,16 +319,16 @@ String getMotorYStateString() {
 
     switch (status.bit.ReadyState) {
         case MotorDriver::MOTOR_DISABLED:
-            return "Disabled";
+            return "MOTOR_DISABLED";
         case MotorDriver::MOTOR_ENABLING:
-            return "Enabled";
+            return "MOTOR_ENABLING";
         case MotorDriver::MOTOR_READY:
-            return "Ready";
+            return "MOTOR_READY";
         case MotorDriver::MOTOR_MOVING:
-            return "Moving";
+            return "MOTOR_MOVING";
         case MotorDriver::MOTOR_FAULTED:
-            return "Faulted";
+            return "MOTOR_FAULTED";
         default:
-            return "Unknown";
+            return "MOTOR_DISABLED";
     }
 }
