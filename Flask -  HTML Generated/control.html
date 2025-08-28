@@ -6,59 +6,12 @@
     <title>Exfoliator Control Interface</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <style>
-        function updateTemperatureDisplay() {
-            document.getElementById('currentTemp').textContent = `${currentTemp}°C`;
-            document.getElementById('targetTemp').textContent = `${targetTemp}°C`;
-        }
-        
-        function updatePositionDisplay() {
-            document.getElementById('posX').textContent = `${position.x} mm`;
-            document.getElementById('posY').textContent = `${position.y} mm`;
-        }
-        
-        function updateMotorStatesDisplay() {
-            const stateClasses = {
-                'MOTOR_DISABLED': 'state-disabled',
-                'MOTOR_ENABLING': 'state-enabling', 
-                'MOTOR_FAULTED': 'state-faulted',
-                'MOTOR_READY': 'state-ready',
-                'MOTOR_MOVING': 'state-moving'
-            };
-            
-            Object.keys(motorStates).forEach(axis => {
-                const stateEl = document.getElementById(`motorState${axis.toUpperCase()}`);
-                if (stateEl) {
-                    const state = motorStates[axis];
-                    stateEl.textContent = state;
-                    stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
-                }
-            });
-        }
-        
-        function updatePneumaticsDisplay() {
-            Object.keys(pneumatics).forEach(component => {
-                const statusEl = document.getElementById(component + 'Status');
-                if (statusEl) {
-                    statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
-                }
-            });
-        }
-        
-        function updateVacuumsDisplay() {
-            Object.keys(vacuums).forEach(component => {
-                const statusEl = document.getElementById(component + 'Status');
-                if (statusEl) {
-                    statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
-                }
-            });
-        }
-        
-        function updateTapeDisplay() {
-            // Update tape motor input fields with current values
-            document.getElementById('tapeSpeed').value = tape.speed || 0;
-            document.getElementById('tapeTorque').value = tape.torque || 0;
-        }* {
+        <script src="script.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<style>
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -113,6 +66,7 @@
         
         .grid {
             display: grid;
+            flex-wrap: wrap;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 24px;
         }
@@ -165,12 +119,16 @@
         .btn-secondary { background-color: #4B5563; color: white; }
         .btn-danger { background-color: #DC2626; color: white; }
         .btn-success { background-color: #059669; color: white; }
+
+        
         .btn-emergency {
             background-color: #DC2626;
-            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            gap: 8px;
+            font-weight: 500;
             font-size: 1.2rem;
-            font-weight: bold;
-            padding: 12px 24px;
+            COLOR: WHITE;
             border: 3px solid #B91C1C;
         }
         
@@ -290,8 +248,40 @@
             background-color: #374151;
             border-radius: 6px;
         }
-    </style>
-</head>
+
+        .chip{
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            border: none;
+            border-radius: 2px;
+        }
+
+        .chip:hover{
+            background-color: rgb(126, 126, 126);
+        }
+
+        .selected{
+            background-color: rgb(126, 126, 126);
+        }
+        
+
+        .chips{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .row{
+            display: flex;
+            gap: 10px;
+        }
+
+
+
+
+</style>
 <body>
     <div class="container">
         <!-- Header -->
@@ -304,12 +294,17 @@
                 <div class="status-dot"></div>
                 <span>Disconnected</span>
             </div>
+
+
+
         </div>
 
         <!-- Emergency Stop -->
+
         <div class="emergency-container">
             <button class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
         </div>
+
 
         <div class="grid">
             <!-- Position Controls -->
@@ -507,11 +502,101 @@
                     <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
                 </div>
             </div>
+
+
+
+            <div class="card selector">
+                <h2 class="card-title">
+                    <span>⚙️</span>
+                    Selector
+                </h2>
+
+                    <div class="chips">
+                        <!-- Row A -->
+                        <div class="row">
+                            <button id="A1" class="chip A 1"></button>
+                            <button id="A2" class="chip A 2"></button>
+                            <button id="A3" class="chip A 3"></button>
+                            <button id="A4" class="chip A 4"></button>
+                            <button id="A5" class="chip A 5"></button>
+                            <button id="A6" class="chip A 6"></button>
+                            <button id="A7" class="chip A 7"></button>
+                            <button id="A8" class="chip A 8"></button>
+                            <button id="A9" class="chip A 9"></button>
+                            <button id="A10" class="chip A 10"></button>
+                        </div>
+                        <!-- Row B -->
+                        <div class="row">
+                            <button id="B1" class="chip B 1"></button>
+                            <button id="B2" class="chip B 2"></button>
+                            <button id="B3" class="chip B 3"></button>
+                            <button id="B4" class="chip B 4"></button>
+                            <button id="B5" class="chip B 5"></button>
+                            <button id="B6" class="chip B 6"></button>
+                            <button id="B7" class="chip B 7"></button>
+                            <button id="B8" class="chip B 8"></button>
+                            <button id="B9" class="chip B 9"></button>
+                            <button id="B10" class="chip B 10"></button>
+                        </div>
+                        <!-- Row C -->
+                        <div class="row">
+                            <button id="C1" class="chip C 1"></button>
+                            <button id="C2" class="chip C 2"></button>
+                            <button id="C3" class="chip C 3"></button>
+                            <button id="C4" class="chip C 4"></button>
+                            <button id="C5" class="chip C 5"></button>
+                            <button id="C6" class="chip C 6"></button>
+                            <button id="C7" class="chip C 7"></button>
+                            <button id="C8" class="chip C 8"></button>
+                            <button id="C9" class="chip C 9"></button>
+                            <button id="C10" class="chip C 10"></button>
+                        </div>
+                        <!-- Row D -->
+                        <div class="row">
+                            <button id="D1" class="chip D 1"></button>
+                            <button id="D2" class="chip D 2"></button>
+                            <button id="D3" class="chip D 3"></button>
+                            <button id="D4" class="chip D 4"></button>
+                            <button id="D5" class="chip D 5"></button>
+                            <button id="D6" class="chip D 6"></button>
+                            <button id="D7" class="chip D 7"></button>
+                            <button id="D8" class="chip D 8"></button>
+                            <button id="D9" class="chip D 9"></button>
+                            <button id="D10" class="chip D 10"></button>
+                        </div>
+                        <!-- Row E -->
+                        <div class="row">
+                            <button id="E1" class="chip E 1"></button>
+                            <button id="E2" class="chip E 2"></button>
+                            <button id="E3" class="chip E 3"></button>
+                            <button id="E4" class="chip E 4"></button>
+                            <button id="E5" class="chip E 5"></button>
+                            <button id="E6" class="chip E 6"></button>
+                            <button id="E7" class="chip E 7"></button>
+                            <button id="E8" class="chip E 8"></button>
+                            <button id="E9" class="chip E 9"></button>
+                            <button id="E10" class="chip E 10"></button>
+                        </div>
+                        <!-- Row F -->
+                        <div class="row">
+                            <button id="F1" class="chip F 1"></button>
+                            <button id="F2" class="chip F 2"></button>
+                            <button id="F3" class="chip F 3"></button>
+                            <button id="F4" class="chip F 4"></button>
+                            <button id="F5" class="chip F 5"></button>
+                            <button id="F6" class="chip F 6"></button>
+                            <button id="F7" class="chip F 7"></button>
+                            <button id="F8" class="chip F 8"></button>
+                            <button id="F9" class="chip F 9"></button>
+                            <button id="F10" class="chip F 10"></button>
+                        </div>
+                    </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Global variables
+                // Global variables
         let socket;
         let tempChart;
         let isConnected = false;
@@ -758,6 +843,63 @@
                 sendCustomCommand();
             }
         });
+       
+       
+       
+       
+       
+       function updateTemperatureDisplay() {
+            document.getElementById('currentTemp').textContent = `${currentTemp}°C`;
+            document.getElementById('targetTemp').textContent = `${targetTemp}°C`;
+        }
+        
+        function updatePositionDisplay() {
+            document.getElementById('posX').textContent = `${position.x} mm`;
+            document.getElementById('posY').textContent = `${position.y} mm`;
+        }
+        
+        function updateMotorStatesDisplay() {
+            const stateClasses = {
+                'MOTOR_DISABLED': 'state-disabled',
+                'MOTOR_ENABLING': 'state-enabling', 
+                'MOTOR_FAULTED': 'state-faulted',
+                'MOTOR_READY': 'state-ready',
+                'MOTOR_MOVING': 'state-moving'
+            };
+            
+            Object.keys(motorStates).forEach(axis => {
+                const stateEl = document.getElementById(`motorState${axis.toUpperCase()}`);
+                if (stateEl) {
+                    const state = motorStates[axis];
+                    stateEl.textContent = state;
+                    stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
+                }
+            });
+        }
+        
+        function updatePneumaticsDisplay() {
+            Object.keys(pneumatics).forEach(component => {
+                const statusEl = document.getElementById(component + 'Status');
+                if (statusEl) {
+                    statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
+                }
+            });
+        }
+        
+        function updateVacuumsDisplay() {
+            Object.keys(vacuums).forEach(component => {
+                const statusEl = document.getElementById(component + 'Status');
+                if (statusEl) {
+                    statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
+                }
+            });
+        }
+        
+        function updateTapeDisplay() {
+            // Update tape motor input fields with current values
+            document.getElementById('tapeSpeed').value = tape.speed || 0;
+            document.getElementById('tapeTorque').value = tape.torque || 0;
+        }
     </script>
 </body>
 </html>
