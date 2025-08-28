@@ -62,6 +62,7 @@ void setup() {
 }
 
 void loop() {
+    static unsigned long lastConnectionAttempt = 0;
     if (eStopTriggered || !EStopButton.State()) {
         emergencyStop();
         // Send emergency stop status in JSON
@@ -70,13 +71,13 @@ void loop() {
         
         while (true) {
             Serial.println("EMERGENCY STOPPED. Restart required.");
+            if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000))) {
+                connectToServer();
+            }
             sendStatusJson();
             delay(1000); // Wait indefinitely
         }
     }
-
-    static unsigned long lastConnectionAttempt = 0;
-
     // Try to reconnect if not connected
     if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000)) || checkTimer(lastHeartbeat, HEARTBEAT_INTERVAL)) {
         connectToServer();

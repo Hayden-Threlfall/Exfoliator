@@ -4,10 +4,15 @@ sudo nmtui
 
 :: Back / Mid ::
 setup Tape Motor and spool motor connected ughhhhhhh
+Tape motor auto update and new set of var
+
+
+
 
 :; UI::
 Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
-Get rid of Home replace with Enablex, EnableY (rename from homing)
 
-Can you add flashing E stop button, with "Restart Machine"
+Nozzle and chip stage LED flip
+Toggle button color text
+
 

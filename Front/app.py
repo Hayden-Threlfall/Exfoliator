@@ -556,9 +556,9 @@ def handle_emergency_stop():
 
 @socketio.on('tape_motor')
 def handle_tape_motor(data):
-    speed = data.get('speed', 100)
-    torque = data.get('torque', 50)
-    time_ms = data.get('time', 1000)
+    speed = data.get('speed', 0)
+    torque = data.get('torque', 0)
+    time_ms = data.get('time', 0)
     
     logging.info(f"Button Press: Tape motor - Speed: {speed}, Torque: {torque}, Time: {time_ms}ms")
     
