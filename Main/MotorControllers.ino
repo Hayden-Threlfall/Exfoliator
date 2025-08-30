@@ -113,31 +113,20 @@ bool tapeTorque(int commandedTorque) {
     }
 
     int dutyRequest = abs(commandedTorque);
-
-    bool newDirection = (commandedTorque < 0);
-    static bool lastDirection = false;
-
-    // Handle direction changes
-    if (newDirection != lastDirection) {
-        TakeUpMotor.MotorInAState(newDirection);
-        torqueDelayPending = true;
-        torqueDelayTimer = millis();
-        lastDirection = newDirection;
-        return false;
-    }
-
-    // Wait until delay passes
-    if (torqueDelayPending && !checkTimer(torqueDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false;
-    }
-    torqueDelayPending = false;
-
-    // Apply torque
+    bool direction = (commandedTorque >= 0); // Positive = false, Negative = true for direction
+    
+    // Set direction and apply torque
+    TakeUpMotor.MotorInAState(direction);
+    delay(25); // Ensure direction is set
     TakeUpMotor.MotorInBDuty(dutyRequest);
-    currentTapeTorque = commandedTorque; // Track current torque
+    
+    currentTapeTorque = commandedTorque;
 
     Serial.print("Torque command applied: ");
-    Serial.println(commandedTorque);
+    Serial.print(commandedTorque);
+    Serial.print(" (Direction: ");
+    Serial.print(direction ? "Reverse" : "Forward");
+    Serial.println(")");
 
     return true;
 }
@@ -149,31 +138,20 @@ bool tapeVelocity(double commandedVelocity) {
     }
 
     int dutyRequest = abs(commandedVelocity);
-
-    bool newDirection = (commandedVelocity < 0);
-    static bool lastDirection = false;
-
-    // Handle direction changes
-    if (newDirection != lastDirection) {
-        SourceMotor.MotorInAState(newDirection);
-        velocityDelayPending = true;
-        velocityDelayTimer = millis();
-        lastDirection = newDirection;
-        return false;
-    }
-
-    // Wait until delay passes
-    if (velocityDelayPending && !checkTimer(velocityDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false;
-    }
-    velocityDelayPending = false;
-
-    // Apply velocity
+    bool direction = (commandedVelocity >= 0); // Positive = false, Negative = true for direction
+    
+    // Set direction and apply velocity
+    SourceMotor.MotorInAState(direction);
+    delay(25); // Ensure direction is set
     SourceMotor.MotorInBDuty(dutyRequest);
-    currentTapeSpeed = commandedVelocity; // Track current speed
+    
+    currentTapeSpeed = commandedVelocity;
 
     Serial.print("Velocity command applied: ");
-    Serial.println(commandedVelocity);
+    Serial.print(commandedVelocity);
+    Serial.print(" (Direction: ");
+    Serial.print(direction ? "Reverse" : "Forward");
+    Serial.println(")");
 
     return true;
 }

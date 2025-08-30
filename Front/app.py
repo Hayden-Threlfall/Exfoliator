@@ -71,9 +71,8 @@ class ArduinoTCPServer:
             self.client_socket.settimeout(1.0)  # Non-blocking recv
             self.connected = True
             self.last_ping_sent = time.time()
-            self.last_response_received = time.time()  # Reset heartbeat timer
-            logging.info(f"Arduino connected from {addr}")
-            socketio.emit('connection_status', {'connected': True})
+            self.last_response_received = time.time()
+            logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
             return False
@@ -228,8 +227,9 @@ def parse_json_status(json_string):
         logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
         
-        # Note: last_response_received is already updated in read_response() 
-        # when we receive ANY response, including JSON
+        if not hasattr(arduino_server, '_first_json_received'):
+            arduino_server._first_json_received = True
+            socketio.emit('connection_status', {'connected': True})
         
         # Update position
         if 'x' in data and 'y' in data:
@@ -575,6 +575,20 @@ def handle_tape_motor(data):
 # Start the communication thread
 communication_thread = threading.Thread(target=arduino_communication_thread, daemon=True)
 communication_thread.start()
+
+@socketio.on('stop_tape')
+def handle_stop_tape():
+    logging.info("Button Press: Stop tape motor")
+    
+    command = "StopTape"
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Stop tape command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Stop tape command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 if __name__ == '__main__':
     # Setup logging with different levels for testing

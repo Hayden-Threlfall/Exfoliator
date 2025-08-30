@@ -29,6 +29,7 @@ RetractNozzle
 RetractChipStage
 RetractStamp
 Tape {speed} {torque} {time}
-VacNozzleOn // ?? Change this wording //
-ChuckOn // ?? Change this wording //
+VacNozzleOn
+ChuckOn
 SetTemperature {temp c}
+STOP

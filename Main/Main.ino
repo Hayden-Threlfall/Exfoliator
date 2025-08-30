@@ -150,6 +150,12 @@ void processCommand(String cmd) {
         client.println("Y Motor Disabled");
     }
     
+    else if (cmd == "StopTape") {
+        Serial.println("Stopping tape motor");
+        stopTapeOperation();
+        client.println("Tape motor stopped");
+    }
+
     // Pneumatic commands
     else if (cmd == "ExtendNozzle") {
         lowerNozzle();

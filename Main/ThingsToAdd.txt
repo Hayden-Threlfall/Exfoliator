@@ -3,19 +3,15 @@ set static ip for raspi
 sudo nmtui
 
 :: Back / Mid ::
-setup Tape Motor and spool motor connected ughhhhhhh
-Tape motor auto update and new set of var
-get rid of the stop button FOR NOW
-Move tape motor
-add tape motor current state without time
+Does tape motor even work with negative numbers
 
+Heater heats to high (try new pid library or slowly heat up)
 
 
 :: UI::
 Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
 
 Nozzle and chip stage LED flip
-Toggle button color text
 
 
 :: BUG ::
