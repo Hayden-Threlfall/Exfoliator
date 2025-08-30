@@ -8,33 +8,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-
-    <script src="..static/script.js"></script>
-    <link rel="stylesheet" href="..static/styles.css">
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1 class="title">
-                <span>🔬</span>
-                Exfoliator Control Interface
-            </h1>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <h1 class="title">
+                    <span>🔬</span>
+                    Exfoliator Control Interface
+                </h1>
+            </div>
             <div id="connectionStatus" class="status disconnected">
                 <div class="status-dot"></div>
                 <span>Disconnected</span>
             </div>
-
-
-
         </div>
 
         <!-- Emergency Stop -->
-
         <div class="emergency-container">
-            <button class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
+            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
+            <div id="restartMessage" class="restart-message" style="display: none;">
+                ⚠️ RESTART MACHINE ⚠️
+            </div>
         </div>
-
 
         <div class="grid">
             <!-- Position Controls -->
@@ -137,25 +134,6 @@
                     </div>
                 </div>
 
-                <!-- Tape Motor -->
-                <div class="mb-4">
-                    <h3 class="section-title">
-                        <span>🎞️</span>
-                        Tape Motor
-                    </h3>
-                    <div class="flex mb-2">
-                        <input type="number" id="tapeSpeed" class="input" placeholder="Speed" value="100">
-                        <label class="text-sm" style="white-space: nowrap; margin-right: 8px;">Speed</label>
-                        <input type="number" id="tapeTorque" class="input" placeholder="Torque" value="50">
-                        <label class="text-sm" style="white-space: nowrap;">Torque</label>
-                    </div>
-                    <div class="flex">
-                        <input type="number" id="tapeTime" class="input" placeholder="Time (ms)" value="1000">
-                        <label class="text-sm" style="white-space: nowrap; margin-right: 8px;">Time (ms)</label>
-                        <button class="button btn-warning" onclick="runTapeMotor()">Run Tape</button>
-                    </div>
-                </div>
-
                 <!-- Vacuum Controls -->
                 <div>
                     <h3 class="section-title">
@@ -189,6 +167,50 @@
                 </div>
             </div>
 
+            <!-- Tape Motor Control -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span>🎞️</span>
+                    Tape Motor Control
+                </h2>
+                
+                <!-- Current Tape State -->
+                <div class="mb-4">
+                    <h3 class="section-title">Current State</h3>
+                    <div class="tape-state-display">
+                        <span>Speed:</span>
+                        <span id="currentTapeSpeed">0</span>
+                    </div>
+                    <div class="tape-state-display">
+                        <span>Torque:</span>
+                        <span id="currentTapeTorque">0</span>
+                    </div>
+                </div>
+
+                <!-- Tape Motor Controls -->
+                <div>
+                    <h3 class="section-title">Set Parameters</h3>
+                    <div class="tape-control-grid">
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Speed</label>
+                            <input type="number" id="tapeSpeed" class="input" value="100">
+                        </div>
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Torque</label>
+                            <input type="number" id="tapeTorque" class="input" value="50">
+                        </div>
+                    </div>
+                    <div class="tape-time-control">
+                        <div class="tape-input-group tape-time-input">
+                            <label class="tape-input-label">Duration (ms)</label>
+                            <input type="number" id="tapeTime" class="input" value="1000">
+                        </div>
+                        <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
+                        <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Temperature Control -->
             <div class="card">
                 <h2 class="card-title">
@@ -217,30 +239,12 @@
                 </div>
             </div>
 
-            <!-- Console -->
-            <div class="card">
-                <h2 class="card-title">
-                    <span>💻</span>
-                    Console
-                </h2>
-                <div id="console" class="console">
-                    <div class="console-line">Machine control interface ready...</div>
-                </div>
-                
-                <div class="flex mt-3">
-                    <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
-                    <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
-                </div>
-            </div>
-
-
-
+            <!-- Selector -->
             <div class="card selector">
                 <h2 class="card-title">
                     <span>⚙️</span>
                     Selector
                 </h2>
-
                 <div class="chips">
                     <!-- Row A -->
                     <div class="row">
@@ -327,8 +331,23 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Console -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span>💻</span>
+                    Console
+                </h2>
+                <div id="console" class="console">
+                    <div class="console-line">Machine control interface ready...</div>
+                </div>
+                
+                <div class="flex mt-3">
+                    <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
+                    <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
+                </div>
+            </div>
         </div>
     </div>
-
 </body>
 </html>
