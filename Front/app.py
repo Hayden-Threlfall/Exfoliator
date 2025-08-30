@@ -15,8 +15,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Configuration
 ARDUINO_HOST = '192.168.3.100'  # Arduino IP
-TCP_SERVER_PORT = 1053          # TCP port to listen on (matches your requirement)
-HTTP_PORT = 5000               # HTTP port for Flask (matches your requirement)
+TCP_SERVER_PORT = 1053          # TCP port to listen on
+HTTP_PORT = 5000               # HTTP port for Flask
 SERVER_HOST = '192.168.3.120'   # Raspberry Pi server IP
 
 class ArduinoTCPServer:
@@ -71,9 +71,8 @@ class ArduinoTCPServer:
             self.client_socket.settimeout(1.0)  # Non-blocking recv
             self.connected = True
             self.last_ping_sent = time.time()
-            self.last_response_received = time.time()  # Reset heartbeat timer
-            logging.info(f"Arduino connected from {addr}")
-            socketio.emit('connection_status', {'connected': True})
+            self.last_response_received = time.time()
+            logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
             return False
@@ -228,8 +227,9 @@ def parse_json_status(json_string):
         logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
         
-        # Note: last_response_received is already updated in read_response() 
-        # when we receive ANY response, including JSON
+        if not hasattr(arduino_server, '_first_json_received'):
+            arduino_server._first_json_received = True
+            socketio.emit('connection_status', {'connected': True})
         
         # Update position
         if 'x' in data and 'y' in data:
@@ -386,6 +386,17 @@ def handle_command(data):
     else:
         logging.warning("Button Press: Empty command received")
 
+@socketio.on('stop_command')
+def handle_stop_command():
+    logging.warning("Button Press: STOP command activated!")
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put("STOP")
+        logging.warning("Button Press: STOP command queued for Arduino")
+        emit('command_sent', {'command': 'STOP', 'status': 'queued'})
+    else:
+        logging.warning("Button Press: STOP command requested but Arduino not connected")
+        emit('command_sent', {'command': 'STOP', 'status': 'not_connected'})
 
 @socketio.on('move_position')
 def handle_move_position(data):
@@ -412,38 +423,32 @@ def handle_move_position(data):
 
 @socketio.on('move_to_chip')
 def move_to_chip(data):
-
     chips = data.get('chips', [])
     for chip_id in chips:
-
         logging.info(f"Button Press: Move to chip '{chip_id}' requested")
         command = f"MoveToChip {chip_id}"
-
         if arduino_server.connected:
             arduino_server.command_queue.put(command)
             logging.info(f"Button Press: MoveToChip command '{command}' queued for Arduino")
             emit('command_sent', {'command': command, 'status': 'queued'})
-
         else:
             logging.warning(f"Button Press: MoveToChip command '{command}' received but Arduino not connected")
             emit('command_sent', {'command': command, 'status': 'not_connected'})
 
-
-
-
 @socketio.on('home_axis')
-def handle_home(data):
+def handle_home_axis(data):
     axis = data.get('axis', '')
+    logging.info(f"Button Press: Home axis '{axis}'")
     
-    logging.info(f"Button Press: Home axis '{axis}' requested")
-    
-    if axis == 'X':
+    if axis == '':
+        command = "HomeAll"
+    elif axis == 'X':
         command = "HomeX"
     elif axis == 'Y':
         command = "HomeY"
     else:
-        command = "Home"  # Home all axes
-        logging.info("Button Press: Home all axes requested")
+        logging.warning(f"Button Press: Invalid axis '{axis}' for home command")
+        return
     
     if arduino_server.connected:
         arduino_server.command_queue.put(command)
@@ -453,10 +458,30 @@ def handle_home(data):
         logging.warning(f"Button Press: Home command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
+@socketio.on('enable_axis')
+def handle_enable_axis(data):
+    axis = data.get('axis')  # 'X' or 'Y'
+    logging.info(f"Button Press: Enable {axis} axis")
+    
+    if axis == 'X':
+        command = "EnableX"
+    elif axis == 'Y':
+        command = "EnableY"
+    else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for enable axis")
+        return
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Enable axis command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Enable axis command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
+
 @socketio.on('set_temperature')
 def handle_temperature(data):
     temperature = data.get('temperature', 0)
-    
     logging.info(f"Button Press: Set temperature to {temperature}°C")
     
     command = f"SetTemperature {temperature}"
@@ -566,9 +591,9 @@ def handle_emergency_stop():
 
 @socketio.on('tape_motor')
 def handle_tape_motor(data):
-    speed = data.get('speed', 100)
-    torque = data.get('torque', 50)
-    time_ms = data.get('time', 1000)
+    speed = data.get('speed', 0)
+    torque = data.get('torque', 0)
+    time_ms = data.get('time', 0)
     
     logging.info(f"Button Press: Tape motor - Speed: {speed}, Torque: {torque}, Time: {time_ms}ms")
     
@@ -580,6 +605,20 @@ def handle_tape_motor(data):
         emit('command_sent', {'command': command, 'status': 'queued'})
     else:
         logging.warning(f"Button Press: Tape motor command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+@socketio.on('stop_tape')
+def handle_stop_tape():
+    logging.info("Button Press: Stop tape motor")
+    
+    command = "StopTape"
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Stop tape command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Stop tape command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 # Start the communication thread

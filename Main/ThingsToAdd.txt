@@ -1,6 +1,3 @@
-:: Hardware ::
-Estop button
-
 :: Raspi ::
 set static ip for raspi
 sudo nmtui
@@ -10,9 +7,15 @@ Client, does not reconnect and keeps sending json when ethernet cable is quick u
 setup Tape Motor and spool motor connected ughhhhhhh
 unkown Command On server side ("pong")
 
-:; UI::
-Can you clean up Tape Motor Inputs
-Get rid of Home replace with Enablex, EnableY (rename from homing)
+Heater heats to high (try new pid library or slowly heat up)
 
-Can you add flashing E stop button, with please "Restart Machine"
+
+:: UI::
+Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
+
+Nozzle and chip stage LED flip
+
+
+:: BUG ::
+WTF connected first time run of differnt machine???
 

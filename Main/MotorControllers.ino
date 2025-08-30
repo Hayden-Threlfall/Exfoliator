@@ -112,33 +112,21 @@ bool tapeTorque(int commandedTorque) {
         return false;
     }
 
-    double scaleFactor = 255.0 / tapeMaxTorque;
-    int dutyRequest = abs(commandedTorque) * scaleFactor;
-
-    bool newDirection = (commandedTorque < 0);
-    static bool lastDirection = false;
-
-    // Handle direction changes
-    if (newDirection != lastDirection) {
-        TakeUpMotor.MotorInAState(newDirection);
-        torqueDelayPending = true;
-        torqueDelayTimer = millis();
-        lastDirection = newDirection;
-        return false;
-    }
-
-    // Wait until delay passes
-    if (torqueDelayPending && !checkTimer(torqueDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false;
-    }
-    torqueDelayPending = false;
-
-    // Apply torque
+    int dutyRequest = abs(commandedTorque);
+    bool direction = (commandedTorque >= 0); // Positive = false, Negative = true for direction
+    
+    // Set direction and apply torque
+    TakeUpMotor.MotorInAState(direction);
+    delay(25); // Ensure direction is set
     TakeUpMotor.MotorInBDuty(dutyRequest);
-    currentTapeTorque = commandedTorque; // Track current torque
+    
+    currentTapeTorque = commandedTorque;
 
     Serial.print("Torque command applied: ");
-    Serial.println(commandedTorque);
+    Serial.print(commandedTorque);
+    Serial.print(" (Direction: ");
+    Serial.print(direction ? "Reverse" : "Forward");
+    Serial.println(")");
 
     return true;
 }
@@ -149,33 +137,21 @@ bool tapeVelocity(double commandedVelocity) {
         return false;
     }
 
-    double scaleFactor = 255.0 / tapeMaxSpeed;
-    int dutyRequest = abs(commandedVelocity) * scaleFactor;
-
-    bool newDirection = (commandedVelocity < 0);
-    static bool lastDirection = false;
-
-    // Handle direction changes
-    if (newDirection != lastDirection) {
-        SourceMotor.MotorInAState(newDirection);
-        velocityDelayPending = true;
-        velocityDelayTimer = millis();
-        lastDirection = newDirection;
-        return false;
-    }
-
-    // Wait until delay passes
-    if (velocityDelayPending && !checkTimer(velocityDelayTimer, (20 + INPUT_A_FILTER))) {
-        return false;
-    }
-    velocityDelayPending = false;
-
-    // Apply velocity
+    int dutyRequest = abs(commandedVelocity);
+    bool direction = (commandedVelocity >= 0); // Positive = false, Negative = true for direction
+    
+    // Set direction and apply velocity
+    SourceMotor.MotorInAState(direction);
+    delay(25); // Ensure direction is set
     SourceMotor.MotorInBDuty(dutyRequest);
-    currentTapeSpeed = commandedVelocity; // Track current speed
+    
+    currentTapeSpeed = commandedVelocity;
 
     Serial.print("Velocity command applied: ");
-    Serial.println(commandedVelocity);
+    Serial.print(commandedVelocity);
+    Serial.print(" (Direction: ");
+    Serial.print(direction ? "Reverse" : "Forward");
+    Serial.println(")");
 
     return true;
 }
@@ -302,17 +278,17 @@ String getMotorXStateString() {
 
     switch (status.bit.ReadyState) {
         case MotorDriver::MOTOR_DISABLED:
-            return "Disabled";
+            return "MOTOR_DISABLED";
         case MotorDriver::MOTOR_ENABLING:
-            return "Enabled";
+            return "MOTOR_ENABLING";
         case MotorDriver::MOTOR_READY:
-            return "Ready";
+            return "MOTOR_READY";
         case MotorDriver::MOTOR_MOVING:
-            return "Moving";
+            return "MOTOR_MOVING";
         case MotorDriver::MOTOR_FAULTED:
-            return "Faulted";
+            return "MOTOR_FAULTED";
         default:
-            return "Unknown";
+            return "MOTOR_DISABLED";
     }
 }
 
@@ -321,16 +297,16 @@ String getMotorYStateString() {
 
     switch (status.bit.ReadyState) {
         case MotorDriver::MOTOR_DISABLED:
-            return "Disabled";
+            return "MOTOR_DISABLED";
         case MotorDriver::MOTOR_ENABLING:
-            return "Enabled";
+            return "MOTOR_ENABLING";
         case MotorDriver::MOTOR_READY:
-            return "Ready";
+            return "MOTOR_READY";
         case MotorDriver::MOTOR_MOVING:
-            return "Moving";
+            return "MOTOR_MOVING";
         case MotorDriver::MOTOR_FAULTED:
-            return "Faulted";
+            return "MOTOR_FAULTED";
         default:
-            return "Unknown";
+            return "MOTOR_DISABLED";
     }
 }

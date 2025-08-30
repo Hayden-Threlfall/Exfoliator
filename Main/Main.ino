@@ -23,6 +23,8 @@ unsigned long lastHeartbeat = 0;
 const unsigned long JSON_SEND_INTERVAL = 500; 
 const unsigned long HEARTBEAT_INTERVAL = 7000;
 
+#define EStopButton   ConnectorA11
+
 void setup() {
     Serial.begin(baudRate);
 
@@ -51,24 +53,31 @@ void setup() {
     // Heater Setup
     heaterSetup();
 
-    lastHeartbeat = millis();
+    //Estop Setup
+    EStopButton.Mode(Connector::INPUT_DIGITAL);
     eStopTriggered = false;
+
+    lastHeartbeat = millis();
+    
 }
 
 void loop() {
-    if (eStopTriggered) {
+    static unsigned long lastConnectionAttempt = 0;
+    if (eStopTriggered || !EStopButton.State()) {
         emergencyStop();
         // Send emergency stop status in JSON
         sendStatusJson();
+        client.println("EMERGENCY STOPPED. Restart required.");
         
         while (true) {
-            Serial.println("EMERGENCY STOPPED. Reset required.");
+            Serial.println("EMERGENCY STOPPED. Restart required.");
+            if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000))) {
+                connectToServer();
+            }
+            sendStatusJson();
             delay(1000); // Wait indefinitely
         }
     }
-
-    static unsigned long lastConnectionAttempt = 0;
-
     // Try to reconnect if not connected
     if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000)) || checkTimer(lastHeartbeat, HEARTBEAT_INTERVAL)) {
         connectToServer();
@@ -120,18 +129,12 @@ void processCommand(String cmd) {
     }
     
     // Homing commands
-    else if (cmd == "Home") {
-        Serial.println("Homing all axes");
-        enableXMotor();
-        enableYMotor();
-        client.println("Homing all axes");
-    }
-    else if (cmd == "HomeX") {
+    else if (cmd == "EnableX") {
         Serial.println("Homing X axis");
         enableXMotor();
         client.println("Homing X axis");
     }
-    else if (cmd == "HomeY") {
+    else if (cmd == "EnableY") {
         Serial.println("Homing Y axis");
         enableYMotor();
         client.println("Homing Y axis");
@@ -147,6 +150,12 @@ void processCommand(String cmd) {
         client.println("Y Motor Disabled");
     }
     
+    else if (cmd == "StopTape") {
+        Serial.println("Stopping tape motor");
+        stopTapeOperation();
+        client.println("Tape motor stopped");
+    }
+
     // Pneumatic commands
     else if (cmd == "ExtendNozzle") {
         lowerNozzle();
@@ -223,16 +232,15 @@ void processCommand(String cmd) {
             startTapeOperation(speed, torque, duration);
             
             client.println("Tape motor operation started");
-        } 
-    else if (cmd == "PING") {
-          lastHeartbeat = millis();
-          client.println("PONG");
-        } else {
+        }  else {
             Serial.println("Invalid tape command format. Expected: Tape speed torque duration");
             client.println("Invalid tape command format");
         }
     }
-    
+
+    else if (cmd == "PING") {
+          lastHeartbeat = millis();
+    }
     // Emergency stop
     else if (cmd == "STOP") {
         Serial.println("Emergency stop commanded");
