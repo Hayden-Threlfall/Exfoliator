@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import socket
@@ -320,7 +320,7 @@ def parse_json_status(json_string):
 # Web Routes
 @app.route('/')
 def index():
-    return send_file('control.html')
+    return render_template('control.html')
 
 @app.route('/connect', methods=['POST'])
 def connect_machine():
@@ -385,6 +385,10 @@ def handle_command(data):
             emit('command_sent', {'command': command, 'status': 'not_connected'})
     else:
         logging.warning("Button Press: Empty command received")
+
+
+
+
 
 @socketio.on('move_position')
 def handle_move_position(data):
