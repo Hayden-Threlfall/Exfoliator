@@ -3,11 +3,17 @@ set static ip for raspi
 sudo nmtui
 
 :: Back / Mid ::
-setup Tape Motor and spool motor connected ughhhhhhh
+Does tape motor even work with negative numbers
 
-:; UI::
+Heater heats to high (try new pid library or slowly heat up)
+
+
+:: UI::
 Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
-Get rid of Home replace with Enablex, EnableY (rename from homing)
 
-Can you add flashing E stop button, with "Restart Machine"
+Nozzle and chip stage LED flip
+
+
+:: BUG ::
+WTF connected first time run of differnt machine???
 

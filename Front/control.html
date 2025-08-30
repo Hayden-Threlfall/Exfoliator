@@ -305,6 +305,16 @@
         .tape-time-input {
             flex: 1;
         }
+        
+        .tape-state-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background-color: #374151;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -312,9 +322,6 @@
         <!-- Header -->
         <div class="header">
             <div style="display: flex; align-items: center; gap: 16px;">
-                <button class="button btn-danger" onclick="sendStopCommand()" style="padding: 10px 16px; font-weight: bold;">
-                    ⏹️ STOP
-                </button>
                 <h1 class="title">
                     <span>🔬</span>
                     Exfoliator Control Interface
@@ -434,31 +441,6 @@
                     </div>
                 </div>
 
-                <!-- Tape Motor -->
-                <div class="mb-4">
-                    <h3 class="section-title">
-                        <span>🎞️</span>
-                        Tape Motor
-                    </h3>
-                    <div class="tape-control-grid">
-                        <div class="tape-input-group">
-                            <label class="tape-input-label">Speed</label>
-                            <input type="number" id="tapeSpeed" class="input" value="0">
-                        </div>
-                        <div class="tape-input-group">
-                            <label class="tape-input-label">Torque</label>
-                            <input type="number" id="tapeTorque" class="input" value="0">
-                        </div>
-                    </div>
-                    <div class="tape-time-control">
-                        <div class="tape-input-group tape-time-input">
-                            <label class="tape-input-label">Duration (ms)</label>
-                            <input type="number" id="tapeTime" class="input" value="1000">
-                        </div>
-                        <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
-                    </div>
-                </div>
-
                 <!-- Vacuum Controls -->
                 <div>
                     <h3 class="section-title">
@@ -488,6 +470,50 @@
                             <button class="button btn-success" onclick="controlVacuum('chuck', 'on')">On</button>
                             <button class="button btn-danger" onclick="controlVacuum('chuck', 'off')">Off</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tape Motor Control -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span>🎞️</span>
+                    Tape Motor Control
+                </h2>
+                
+                <!-- Current Tape State -->
+                <div class="mb-4">
+                    <h3 class="section-title">Current State</h3>
+                    <div class="tape-state-display">
+                        <span>Speed:</span>
+                        <span id="currentTapeSpeed">0</span>
+                    </div>
+                    <div class="tape-state-display">
+                        <span>Torque:</span>
+                        <span id="currentTapeTorque">0</span>
+                    </div>
+                </div>
+
+                <!-- Tape Motor Controls -->
+                <div>
+                    <h3 class="section-title">Set Parameters</h3>
+                    <div class="tape-control-grid">
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Speed</label>
+                            <input type="number" id="tapeSpeed" class="input" value="0">
+                        </div>
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Torque</label>
+                            <input type="number" id="tapeTorque" class="input" value="0">
+                        </div>
+                    </div>
+                    <div class="tape-time-control">
+                        <div class="tape-input-group tape-time-input">
+                            <label class="tape-input-label">Duration (ms)</label>
+                            <input type="number" id="tapeTime" class="input" value="1000">
+                        </div>
+                        <button class="button btn-primary" onclick="runTapeMotor()">Send Command</button>
+                        <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
                     </div>
                 </div>
             </div>
@@ -557,6 +583,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeSocket();
             initializeChart();
+            // Initialize all status indicators as red (inactive)
+            updatePneumaticsDisplay();
+            updateVacuumsDisplay();
         });
         
         function initializeSocket() {
@@ -605,19 +634,7 @@
             
             socket.on('tape_update', function(data) {
                 tape = data;
-                // Don't overwrite user inputs - only update if different from current inputs
-                const currentSpeedInput = parseInt(document.getElementById('tapeSpeed').value) || 0;
-                const currentTorqueInput = parseInt(document.getElementById('tapeTorque').value) || 0;
-                
-                if (data.speed !== currentSpeedInput || data.torque !== currentTorqueInput) {
-                    // Only update if the values are actually different (not just user typing)
-                    if (document.activeElement.id !== 'tapeSpeed') {
-                        document.getElementById('tapeSpeed').value = data.speed || 0;
-                    }
-                    if (document.activeElement.id !== 'tapeTorque') {
-                        document.getElementById('tapeTorque').value = data.torque || 0;
-                    }
-                }
+                updateTapeDisplay();
             });
             
             socket.on('estop_update', function(data) {
@@ -734,6 +751,19 @@
             });
         }
         
+        function updateTapeDisplay() {
+            document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
+            document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
+            
+            // Don't overwrite user inputs while they're typing
+            if (document.activeElement.id !== 'tapeSpeed') {
+                document.getElementById('tapeSpeed').value = tape.speed || 0;
+            }
+            if (document.activeElement.id !== 'tapeTorque') {
+                document.getElementById('tapeTorque').value = tape.torque || 0;
+            }
+        }
+        
         function updateEmergencyStopDisplay() {
             const emergencyButton = document.getElementById('emergencyButton');
             const restartMessage = document.getElementById('restartMessage');
@@ -809,15 +839,15 @@
             socket.emit('emergency_stop');
         }
         
-        function sendStopCommand() {
-            socket.emit('stop_command');
-        }
-        
         function runTapeMotor() {
             const speed = parseInt(document.getElementById('tapeSpeed').value);
             const torque = parseInt(document.getElementById('tapeTorque').value);
             const time = parseInt(document.getElementById('tapeTime').value);
             socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
+        }
+
+        function stopTapeMotor() {
+            socket.emit('send_command', { command: 'StopTape' });
         }
         
         function sendCustomCommand() {
