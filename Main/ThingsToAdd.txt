@@ -5,14 +5,19 @@ sudo nmtui
 :: Back / Mid ::
 setup Tape Motor and spool motor connected ughhhhhhh
 Tape motor auto update and new set of var
+get rid of the stop button FOR NOW
+Move tape motor
+add tape motor current state without time
 
 
 
-
-:; UI::
+:: UI::
 Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
 
 Nozzle and chip stage LED flip
 Toggle button color text
 
+
+:: BUG ::
+WTF connected first time run of differnt machine???
 
