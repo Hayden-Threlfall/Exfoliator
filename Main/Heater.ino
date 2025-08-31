@@ -2,7 +2,7 @@
 #include <math.h>
 #include <AutoPID.h>
 
-#define HEATER_PIN ConnectorIO0  // Use ConnectorIO0 instead of IO0
+#define HEATER_PIN IO0  // Use IO0 for PWM output
 #define heaterADCResolution 12
 
 unsigned long heaterTimer = 0.0;
@@ -20,14 +20,14 @@ AutoPID PID(&inputTemp, &targetTemp, &outputValue, 0, 255, Kp, Ki, Kd);
 void heaterSetup() {
     analogReadResolution(heaterADCResolution);
     
-    // Configure ConnectorIO0 for PWM output
-    ConnectorIO0.Mode(Connector::OUTPUT_PWM);
+    // Configure IO0 for PWM output using Arduino-style pinMode
+    pinMode(HEATER_PIN, OUTPUT);
     
     // Initialize PID - faster response for low thermal mass
     PID.setBangBang(0.2);        // Tighter deadband for precision
     PID.setTimeStep(100);        // 100ms for fast-responding thermal systems
     
-    Serial.println("Heater setup complete - PWM mode on ConnectorIO0");
+    Serial.println("Heater setup complete - PWM mode on IO0");
 }
 
 void setTargetTemperature(double temperature) {
@@ -49,7 +49,7 @@ double getTargetTemperature() {
 
 void heaterOff() {
     PID.stop();
-    ConnectorIO0.State(0);  // Turn off PWM output using State() method
+    analogWrite(HEATER_PIN, 0);  // Turn off PWM output using analogWrite
     heaterTimer = 0;
     lastTemp = 0;
     targetTemp = 0;
@@ -106,33 +106,24 @@ void heaterStep() {
     if (targetTemp > 0 && thermalCheck(inputTemp)) {
         PID.run();
         
-        // Convert PID output (0-255) to PWM duty cycle percentage (0-100)
-        // ClearCore PWM expects 0-100% duty cycle
-        double pwmPercent = constrain((outputValue * 100.0) / 255.0, 0, 100);
+        // Constrain PID output to valid PWM range (0-255)
+        int pwmValue = constrain((int)outputValue, 0, 255);
         
-        // Apply PWM output to heater
-        ConnectorIO0.State(pwmPercent);
+        // Apply PWM output to heater using analogWrite
+        analogWrite(HEATER_PIN, pwmValue);
         
         // Debug output every 5 seconds
         static unsigned long lastDebugOutput = 0;
         if (millis() - lastDebugOutput > 5000) {
-            Serial.print("Temp: ");
-            Serial.print(inputTemp, 1);
-            Serial.print("°C | Target: ");
-            Serial.print(targetTemp, 1);
-            Serial.print("°C | PWM: ");
-            Serial.print(pwmPercent, 1);
-            Serial.print("% | PID Output: ");
-            Serial.print(outputValue);
-            Serial.print("/255 | Error: ");
-            Serial.print(targetTemp - inputTemp, 2);
-            Serial.println("°C");
+            sprintf(buffer, "Temp: %.1f°C | Target: %.1f°C | PWM: %d/255 (%.1f%%) | Error: %.2f°C", 
+                    inputTemp, targetTemp, pwmValue, (pwmValue * 100.0) / 255.0, targetTemp - inputTemp);
+            Serial.println(buffer);
             
             lastDebugOutput = millis();
         }
     } else {
         // Turn off heater if no target set or thermal check failed
-        ConnectorIO0.State(0);
+        analogWrite(HEATER_PIN, 0);
         if (targetTemp <= 0) {
             PID.stop();
         }
