@@ -333,6 +333,7 @@
         <div class="header">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <h1 class="title">
+                    <span>🔬</span>
                     Exfoliator Control Interface
                 </h1>
             </div>
@@ -344,9 +345,9 @@
 
         <!-- Emergency Stop -->
         <div class="emergency-container">
-            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">EMERGENCY STOP</button>
+            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
             <div id="restartMessage" class="restart-message" style="display: none;">
-                RESTART MACHINE
+                ⚠️ RESTART MACHINE ⚠️
             </div>
         </div>
 
@@ -354,6 +355,7 @@
             <!-- Position Controls -->
             <div class="card">
                 <h2 class="card-title">
+                    <span>📍</span>
                     Position Control
                 </h2>
                 
@@ -379,6 +381,7 @@
                 <!-- Enable Controls -->
                 <div class="mb-4">
                     <h3 class="section-title">
+                        <span>🔌</span>
                         Motor Enable
                     </h3>
                     <div class="button-grid">
@@ -408,6 +411,7 @@
             <!-- Pneumatics Control -->
             <div class="card">
                 <h2 class="card-title">
+                    <span>💨</span>
                     Pneumatic Controls
                 </h2>
                 
@@ -450,6 +454,7 @@
                 <!-- Vacuum Controls -->
                 <div>
                     <h3 class="section-title">
+                        <span>🌪️</span>
                         Vacuum Controls
                     </h3>
                     
@@ -482,6 +487,7 @@
             <!-- Tape Motor Control -->
             <div class="card">
                 <h2 class="card-title">
+                    <span>🎞️</span>
                     Tape Motor Control
                 </h2>
                 
@@ -525,6 +531,7 @@
             <!-- Temperature Control -->
             <div class="card">
                 <h2 class="card-title">
+                    <span>🌡️</span>
                     Chip Temperature Control
                 </h2>
                 
@@ -552,6 +559,7 @@
             <!-- Console -->
             <div class="card">
                 <h2 class="card-title">
+                    <span>💻</span>
                     Console
                 </h2>
                 <div id="console" class="console">
@@ -607,13 +615,13 @@
             socket = io();
             
             socket.on('connect', function() {
-                addLog('Connected to server');
+                addLog('✅ Connected to server');
                 document.getElementById('socketStatus').textContent = 'Connected';
                 updateConnectionStatus(true);
             });
             
             socket.on('disconnect', function() {
-                addLog('Disconnected from server');
+                addLog('❌ Disconnected from server');
                 document.getElementById('socketStatus').textContent = 'Disconnected';
                 updateConnectionStatus(false);
             });
@@ -626,7 +634,7 @@
             });
             
             socket.on('temperature_update', function(data) {
-                addLog(`Temp update: ${data.temperature}°C (target: ${data.set_temperature}°C)`);
+                addLog(`🌡️ Temp update: ${data.temperature}°C (target: ${data.set_temperature}°C)`);
                 currentTemp = parseFloat(data.temperature) || 0;
                 targetTemp = parseFloat(data.set_temperature) || 0;
                 updateTemperatureDisplay();
@@ -636,7 +644,7 @@
             });
             
             socket.on('position_update', function(data) {
-                addLog(`Position update: X=${data.x}, Y=${data.y}`);
+                addLog(`📍 Position update: X=${data.x}, Y=${data.y}`);
                 position.x = parseFloat(data.x) || 0;
                 position.y = parseFloat(data.y) || 0;
                 updatePositionDisplay();
@@ -645,7 +653,7 @@
             });
             
             socket.on('motor_states_update', function(data) {
-                addLog(`Motor states: X=${data.x}, Y=${data.y}`);
+                addLog(`⚙️ Motor states: X=${data.x}, Y=${data.y}`);
                 motorStates = { ...data };
                 updateMotorStatesDisplay();
                 updateCount++;
@@ -653,7 +661,7 @@
             });
             
             socket.on('pneumatics_update', function(data) {
-                addLog(`Pneumatics: nozzle=${data.nozzle}, stage=${data.stage}, stamp=${data.stamp}`);
+                addLog(`💨 Pneumatics: nozzle=${data.nozzle}, stage=${data.stage}, stamp=${data.stamp}`);
                 pneumatics = { ...data };
                 updatePneumaticsDisplay();
                 updateCount++;
@@ -661,7 +669,7 @@
             });
             
             socket.on('vacuums_update', function(data) {
-                addLog(`Vacuums: nozzle=${data.vacnozzle}, chuck=${data.chuck}`);
+                addLog(`🌪️ Vacuums: nozzle=${data.vacnozzle}, chuck=${data.chuck}`);
                 vacuums = { ...data };
                 updateVacuumsDisplay();
                 updateCount++;
@@ -669,7 +677,7 @@
             });
             
             socket.on('tape_update', function(data) {
-                addLog(`Tape: speed=${data.speed}, torque=${data.torque}`);
+                addLog(`🎞️ Tape: speed=${data.speed}, torque=${data.torque}`);
                 tape = { ...data };
                 updateTapeDisplay();
                 updateCount++;
@@ -677,7 +685,7 @@
             });
             
             socket.on('estop_update', function(data) {
-                addLog(`E-Stop: ${data.triggered ? 'TRIGGERED' : 'Normal'}`);
+                addLog(`🛑 E-Stop: ${data.triggered ? 'TRIGGERED' : 'Normal'}`);
                 eStopTriggered = Boolean(data.triggered);
                 updateEmergencyStopDisplay();
                 updateCount++;
@@ -685,21 +693,21 @@
             });
             
             socket.on('command_sent', function(data) {
-                addLog(`Sent: ${data.command} (${data.status})`);
+                addLog(`📤 Sent: ${data.command} (${data.status})`);
             });
             
             socket.on('machine_response', function(data) {
-                addLog(`Response: ${data.response}`);
+                addLog(`📥 Response: ${data.response}`);
             });
             
             // Add error handlers
             socket.on('connect_error', function(error) {
-                addLog(`Connection error: ${error}`);
+                addLog(`❌ Connection error: ${error}`);
                 document.getElementById('socketStatus').textContent = 'Error';
             });
             
             socket.on('error', function(error) {
-                addLog(`Socket error: ${error}`);
+                addLog(`❌ Socket error: ${error}`);
             });
         }
         
@@ -829,96 +837,3 @@
         
         function updateTempChart() {
             const now = new Date().toLocaleTimeString();
-            
-            if (tempChart.data.labels.length >= 20) {
-                tempChart.data.labels.shift();
-                tempChart.data.datasets[0].data.shift();
-                tempChart.data.datasets[1].data.shift();
-            }
-            
-            tempChart.data.labels.push(now);
-            tempChart.data.datasets[0].data.push(currentTemp);
-            tempChart.data.datasets[1].data.push(targetTemp);
-            
-            tempChart.update('none');
-        }
-        
-        function updateDebugInfo() {
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
-            document.getElementById('updateCount').textContent = updateCount;
-        }
-        
-        function addLog(message) {
-            const console = document.getElementById('console');
-            const timestamp = new Date().toLocaleTimeString();
-            const logLine = document.createElement('div');
-            logLine.className = 'console-line';
-            logLine.textContent = `[${timestamp}] ${message}`;
-            console.appendChild(logLine);
-            console.scrollTop = console.scrollHeight;
-            
-            // Keep only last 10 lines
-            while (console.children.length > 10) {
-                console.removeChild(console.firstChild);
-            }
-        }
-        
-        function enableAxis(axis) {
-            socket.emit('enable_axis', { axis: axis });
-        }
-        
-        function disableMotor(axis) {
-            socket.emit('disable_motor', { axis: axis });
-        }
-        
-        function moveToPosition(axis) {
-            const inputId = axis.toLowerCase() + 'PositionInput';
-            const position = parseFloat(document.getElementById(inputId).value);
-            socket.emit('move_position', { axis: axis, position: position });
-        }
-        
-        function controlPneumatic(component, action) {
-            socket.emit('pneumatic_control', { component: component, action: action });
-        }
-        
-        function controlVacuum(component, action) {
-            socket.emit('vacuum_control', { component: component, action: action });
-        }
-        
-        function setTemperature() {
-            const temp = parseInt(document.getElementById('tempInput').value);
-            socket.emit('set_temperature', { temperature: temp });
-        }
-        
-        function emergencyStop() {
-            socket.emit('emergency_stop');
-        }
-        
-        function runTapeMotor() {
-            const speed = parseInt(document.getElementById('tapeSpeed').value);
-            const torque = parseInt(document.getElementById('tapeTorque').value);
-            const time = parseInt(document.getElementById('tapeTime').value);
-            socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
-        }
-
-        function stopTapeMotor() {
-            socket.emit('send_command', { command: 'StopTape' });
-        }
-        
-        function sendCustomCommand() {
-            const command = document.getElementById('customCommand').value;
-            if (command.trim()) {
-                socket.emit('send_command', { command: command });
-                document.getElementById('customCommand').value = '';
-            }
-        }
-        
-        // Allow Enter key to send custom commands
-        document.getElementById('customCommand').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendCustomCommand();
-            }
-        });
-    </script>
-</body>
-</html>
