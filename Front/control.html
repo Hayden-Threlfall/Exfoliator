@@ -856,6 +856,16 @@
                 sendCustomCommand();
             }
         });
+        [
+            ['xPositionInput', () => moveToPosition('X')],
+            ['yPositionInput', () => moveToPosition('Y')],
+            ['tempInput', setTemperature],
+            ['tapeSpeed', runTapeMotor],
+            ['tapeTorque', runTapeMotor],
+            ['tapeTime', runTapeMotor]
+        ].forEach(([id, fn]) => {
+            document.getElementById(id).addEventListener('keypress', e => e.key === 'Enter' && fn());
+        });
     </script>
 </body>
 </html>

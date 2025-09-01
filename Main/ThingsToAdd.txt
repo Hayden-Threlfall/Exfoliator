@@ -4,12 +4,9 @@ sudo nmtui
 
 :: Back / Mid ::
 Heater issue 10 deg over, pwm attempted keeps failing may need new library
-
+set red green for pneumatics to red default and flip (Chip stage is green, Nozzle is green -- Flip these)
 
 :: UI::
-Something in the reverts fixed my tape motor overwritten issue
-set red green for pneumatics to red default and flip
-
 
 
 :: BUG ::
