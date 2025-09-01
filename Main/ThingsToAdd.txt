@@ -3,17 +3,15 @@ set static ip for raspi
 sudo nmtui
 
 :: Back / Mid ::
-Does tape motor even work with negative numbers
-
-Heater heats to high (try new pid library or slowly heat up)
+Heater issue 10 deg over, pwm attempted keeps failing may need new library
 
 
 :: UI::
-Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
+Something in the reverts fixed my tape motor overwritten issue
+set red green for pneumatics to red default and flip
 
-Nozzle and chip stage LED flip
 
 
 :: BUG ::
-WTF connected first time run of differnt machine???
+Try differnt computers Ui may not update?
 
