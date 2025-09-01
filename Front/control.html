@@ -315,16 +315,6 @@
             background-color: #374151;
             border-radius: 6px;
         }
-        
-        .debug-info {
-            background-color: #1F2937;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 16px;
-            font-family: monospace;
-            font-size: 0.75rem;
-            color: #9CA3AF;
-        }
     </style>
 </head>
 <body>
@@ -570,13 +560,6 @@
                     <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
                     <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
                 </div>
-                
-                <!-- Debug Info -->
-                <div class="debug-info">
-                    <div>Last Update: <span id="lastUpdate">Never</span></div>
-                    <div>Socket Status: <span id="socketStatus">Initializing</span></div>
-                    <div>Updates Received: <span id="updateCount">0</span></div>
-                </div>
             </div>
         </div>
     </div>
@@ -595,119 +578,76 @@
         let tape = { speed: 0, torque: 0 };
         let tempData = [];
         let eStopTriggered = false;
-        let updateCount = 0;
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            addLog('Initializing application...');
             initializeSocket();
             initializeChart();
             // Initialize all status indicators as red (inactive)
             updatePneumaticsDisplay();
             updateVacuumsDisplay();
-            updateDebugInfo();
         });
         
         function initializeSocket() {
-            addLog('Connecting to server...');
-            document.getElementById('socketStatus').textContent = 'Connecting...';
-            
             socket = io();
             
             socket.on('connect', function() {
-                addLog('✅ Connected to server');
-                document.getElementById('socketStatus').textContent = 'Connected';
                 updateConnectionStatus(true);
+                addLog('Connected to server');
             });
             
             socket.on('disconnect', function() {
-                addLog('❌ Disconnected from server');
-                document.getElementById('socketStatus').textContent = 'Disconnected';
                 updateConnectionStatus(false);
+                addLog('Disconnected from server');
             });
             
             socket.on('connection_status', function(data) {
-                addLog(`Arduino connection: ${data.connected ? 'Connected' : 'Disconnected'}`);
                 updateConnectionStatus(data.connected);
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('temperature_update', function(data) {
-                addLog(`🌡️ Temp update: ${data.temperature}°C (target: ${data.set_temperature}°C)`);
-                currentTemp = parseFloat(data.temperature) || 0;
-                targetTemp = parseFloat(data.set_temperature) || 0;
+                currentTemp = data.temperature || 0;
+                targetTemp = data.set_temperature || 0;
                 updateTemperatureDisplay();
                 updateTempChart();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('position_update', function(data) {
-                addLog(`📍 Position update: X=${data.x}, Y=${data.y}`);
-                position.x = parseFloat(data.x) || 0;
-                position.y = parseFloat(data.y) || 0;
+                position = data;
                 updatePositionDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('motor_states_update', function(data) {
-                addLog(`⚙️ Motor states: X=${data.x}, Y=${data.y}`);
-                motorStates = { ...data };
+                motorStates = data;
                 updateMotorStatesDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('pneumatics_update', function(data) {
-                addLog(`💨 Pneumatics: nozzle=${data.nozzle}, stage=${data.stage}, stamp=${data.stamp}`);
-                pneumatics = { ...data };
+                pneumatics = data;
                 updatePneumaticsDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('vacuums_update', function(data) {
-                addLog(`🌪️ Vacuums: nozzle=${data.vacnozzle}, chuck=${data.chuck}`);
-                vacuums = { ...data };
+                vacuums = data;
                 updateVacuumsDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('tape_update', function(data) {
-                addLog(`🎞️ Tape: speed=${data.speed}, torque=${data.torque}`);
-                tape = { ...data };
+                tape = data;
                 updateTapeDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('estop_update', function(data) {
-                addLog(`🛑 E-Stop: ${data.triggered ? 'TRIGGERED' : 'Normal'}`);
-                eStopTriggered = Boolean(data.triggered);
+                eStopTriggered = data.triggered;
                 updateEmergencyStopDisplay();
-                updateCount++;
-                updateDebugInfo();
             });
             
             socket.on('command_sent', function(data) {
-                addLog(`📤 Sent: ${data.command} (${data.status})`);
+                addLog(`Sent: ${data.command}`);
             });
             
             socket.on('machine_response', function(data) {
-                addLog(`📥 Response: ${data.response}`);
-            });
-            
-            // Add error handlers
-            socket.on('connect_error', function(error) {
-                addLog(`❌ Connection error: ${error}`);
-                document.getElementById('socketStatus').textContent = 'Error';
-            });
-            
-            socket.on('error', function(error) {
-                addLog(`❌ Socket error: ${error}`);
+                addLog(`Response: ${data.response}`);
             });
         }
         
@@ -765,13 +705,13 @@
         }
         
         function updateTemperatureDisplay() {
-            document.getElementById('currentTemp').textContent = `${currentTemp.toFixed(1)}°C`;
-            document.getElementById('targetTemp').textContent = `${targetTemp.toFixed(1)}°C`;
+            document.getElementById('currentTemp').textContent = `${currentTemp}°C`;
+            document.getElementById('targetTemp').textContent = `${targetTemp}°C`;
         }
         
         function updatePositionDisplay() {
-            document.getElementById('posX').textContent = `${position.x.toFixed(2)} mm`;
-            document.getElementById('posY').textContent = `${position.y.toFixed(2)} mm`;
+            document.getElementById('posX').textContent = `${position.x} mm`;
+            document.getElementById('posY').textContent = `${position.y} mm`;
         }
         
         function updateMotorStatesDisplay() {
@@ -783,36 +723,30 @@
                 'MOTOR_MOVING': 'state-moving'
             };
             
-            ['x', 'y'].forEach(axis => {
+            Object.keys(motorStates).forEach(axis => {
                 const stateEl = document.getElementById(`motorState${axis.toUpperCase()}`);
-                if (stateEl && motorStates[axis]) {
+                if (stateEl) {
                     const state = motorStates[axis];
                     stateEl.textContent = state;
-                    // Remove all state classes
-                    Object.values(stateClasses).forEach(cls => stateEl.classList.remove(cls));
-                    // Add current state class
-                    const stateClass = stateClasses[state] || 'state-disabled';
-                    stateEl.className = `motor-state ${stateClass}`;
+                    stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
                 }
             });
         }
         
         function updatePneumaticsDisplay() {
-            ['nozzle', 'stage', 'stamp'].forEach(component => {
+            Object.keys(pneumatics).forEach(component => {
                 const statusEl = document.getElementById(component + 'Status');
                 if (statusEl) {
-                    const isActive = pneumatics[component] || false;
-                    statusEl.className = `status-indicator ${isActive ? 'active' : ''}`;
+                    statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
                 }
             });
         }
         
         function updateVacuumsDisplay() {
-            ['vacnozzle', 'chuck'].forEach(component => {
+            Object.keys(vacuums).forEach(component => {
                 const statusEl = document.getElementById(component + 'Status');
                 if (statusEl) {
-                    const isActive = vacuums[component] || false;
-                    statusEl.className = `status-indicator ${isActive ? 'active' : ''}`;
+                    statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
                 }
             });
         }
@@ -820,6 +754,14 @@
         function updateTapeDisplay() {
             document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
             document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
+            
+            // Don't overwrite user inputs while they're typing
+            if (document.activeElement.id !== 'tapeSpeed') {
+                document.getElementById('tapeSpeed').value = tape.speed || 0;
+            }
+            if (document.activeElement.id !== 'tapeTorque') {
+                document.getElementById('tapeTorque').value = tape.torque || 0;
+            }
         }
         
         function updateEmergencyStopDisplay() {
@@ -837,3 +779,91 @@
         
         function updateTempChart() {
             const now = new Date().toLocaleTimeString();
+            
+            if (tempChart.data.labels.length >= 20) {
+                tempChart.data.labels.shift();
+                tempChart.data.datasets[0].data.shift();
+                tempChart.data.datasets[1].data.shift();
+            }
+            
+            tempChart.data.labels.push(now);
+            tempChart.data.datasets[0].data.push(currentTemp);
+            tempChart.data.datasets[1].data.push(targetTemp);
+            
+            tempChart.update('none');
+        }
+        
+        function addLog(message) {
+            const console = document.getElementById('console');
+            const timestamp = new Date().toLocaleTimeString();
+            const logLine = document.createElement('div');
+            logLine.className = 'console-line';
+            logLine.textContent = `[${timestamp}] ${message}`;
+            console.appendChild(logLine);
+            console.scrollTop = console.scrollHeight;
+            
+            // Keep only last 10 lines
+            while (console.children.length > 10) {
+                console.removeChild(console.firstChild);
+            }
+        }
+        
+        function enableAxis(axis) {
+            socket.emit('enable_axis', { axis: axis });
+        }
+        
+        function disableMotor(axis) {
+            socket.emit('disable_motor', { axis: axis });
+        }
+        
+        function moveToPosition(axis) {
+            const inputId = axis.toLowerCase() + 'PositionInput';
+            const position = parseFloat(document.getElementById(inputId).value);
+            socket.emit('move_position', { axis: axis, position: position });
+        }
+        
+        function controlPneumatic(component, action) {
+            socket.emit('pneumatic_control', { component: component, action: action });
+        }
+        
+        function controlVacuum(component, action) {
+            socket.emit('vacuum_control', { component: component, action: action });
+        }
+        
+        function setTemperature() {
+            const temp = parseInt(document.getElementById('tempInput').value);
+            socket.emit('set_temperature', { temperature: temp });
+        }
+        
+        function emergencyStop() {
+            socket.emit('emergency_stop');
+        }
+        
+        function runTapeMotor() {
+            const speed = parseInt(document.getElementById('tapeSpeed').value);
+            const torque = parseInt(document.getElementById('tapeTorque').value);
+            const time = parseInt(document.getElementById('tapeTime').value);
+            socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
+        }
+
+        function stopTapeMotor() {
+            socket.emit('send_command', { command: 'StopTape' });
+        }
+        
+        function sendCustomCommand() {
+            const command = document.getElementById('customCommand').value;
+            if (command.trim()) {
+                socket.emit('send_command', { command: command });
+                document.getElementById('customCommand').value = '';
+            }
+        }
+        
+        // Allow Enter key to send custom commands
+        document.getElementById('customCommand').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendCustomCommand();
+            }
+        });
+    </script>
+</body>
+</html>
