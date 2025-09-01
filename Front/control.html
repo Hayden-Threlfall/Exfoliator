@@ -752,9 +752,17 @@
         }
         
         function updateTapeDisplay() {
-        document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
-        document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
-    }
+            document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
+            document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
+            
+            // Don't overwrite user inputs while they're typing
+            if (document.activeElement.id !== 'tapeSpeed') {
+                document.getElementById('tapeSpeed').value = tape.speed || 0;
+            }
+            if (document.activeElement.id !== 'tapeTorque') {
+                document.getElementById('tapeTorque').value = tape.torque || 0;
+            }
+        }
         
         function updateEmergencyStopDisplay() {
             const emergencyButton = document.getElementById('emergencyButton');
