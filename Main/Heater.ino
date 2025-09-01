@@ -2,7 +2,7 @@
 #include <math.h>
 #include <AutoPID.h>
 
-#define HEATER_PIN ConnectorIO5
+#define HEATER_PIN IO0  // Use IO0 for PWM output
 #define heaterADCResolution 12
 
 unsigned long heaterTimer = 0.0;
@@ -21,7 +21,7 @@ void heaterSetup() {
     analogReadResolution(heaterADCResolution);
     
     // Configure IO0 for PWM output using Arduino-style pinMode
-    HEATER_PIN.Mode(Connector::OUTPUT_PWM);
+    pinMode(HEATER_PIN, OUTPUT);
     
     // Initialize PID - faster response for low thermal mass
     PID.setBangBang(0.2);        // Tighter deadband for precision
@@ -49,7 +49,7 @@ double getTargetTemperature() {
 
 void heaterOff() {
     PID.stop();
-    HEATER_PIN.PwmDuty(0);
+    analogWrite(HEATER_PIN, 0);  // Turn off PWM output using analogWrite
     heaterTimer = 0;
     lastTemp = 0;
     targetTemp = 0;
@@ -101,28 +101,29 @@ bool thermalCheck(double temperature) {
 
 void heaterStep() {
     inputTemp = getThermistor();
-
+    
+    // Only run heater if target is set and thermal checks pass
     if (targetTemp > 0 && thermalCheck(inputTemp)) {
         PID.run();
-
-        // Constrain PID output
+        
+        // Constrain PID output to valid PWM range (0-255)
         int pwmValue = constrain((int)outputValue, 0, 255);
-
-        // Apply to ClearCore PWM
-        HEATER_PIN.PwmDuty((float)pwmValue / 255.0f);
-
-        // Debug every 5 sec
+        
+        // Apply PWM output to heater using analogWrite
+        analogWrite(HEATER_PIN, pwmValue);
+        
+        // Debug output every 5 seconds
         static unsigned long lastDebugOutput = 0;
         if (millis() - lastDebugOutput > 5000) {
-            sprintf(buffer,
-                    "Temp: %.1f°C | Target: %.1f°C | PWM: %d/255 (%.1f%%) | Error: %.2f°C", 
+            sprintf(buffer, "Temp: %.1f°C | Target: %.1f°C | PWM: %d/255 (%.1f%%) | Error: %.2f°C", 
                     inputTemp, targetTemp, pwmValue, (pwmValue * 100.0) / 255.0, targetTemp - inputTemp);
             Serial.println(buffer);
+            
             lastDebugOutput = millis();
         }
-    }
-    else {
-        HEATER_PIN.PwmDuty(0.0f);  // Heater off
+    } else {
+        // Turn off heater if no target set or thermal check failed
+        analogWrite(HEATER_PIN, 0);
         if (targetTemp <= 0) {
             PID.stop();
         }
