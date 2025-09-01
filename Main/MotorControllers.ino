@@ -138,7 +138,7 @@ bool tapeVelocity(double commandedVelocity) {
     }
 
     int dutyRequest = abs(commandedVelocity);
-    bool direction = (commandedVelocity < 0); // Positive = false, Negative = true for direction
+    bool direction = (commandedVelocity >= 0); // Positive = false, Negative = true for direction
     
     // Set direction and apply velocity
     SourceMotor.MotorInAState(direction);
