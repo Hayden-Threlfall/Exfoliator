@@ -849,12 +849,31 @@
                 document.getElementById('customCommand').value = '';
             }
         }
+
+        function addEnterSend(inputId, callback) {
+            const el = document.getElementById(inputId);
+            if (!el) return;
+            el.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    callback();
+                }
+        });
+        }
         
         // Allow Enter key to send custom commands
-        document.getElementById('customCommand').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendCustomCommand();
-            }
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeSocket();
+            initializeChart();
+            updatePneumaticsDisplay();
+            updateVacuumsDisplay();
+
+            // Attach enter-to-send
+            addEnterSend('customCommand', sendCustomCommand);
+            addEnterSend('tempInput', setTemperature);
+            addEnterSend('tapeSpeed', runTapeMotor);
+            addEnterSend('tapeTorque', runTapeMotor);
+            addEnterSend('tapeTime', runTapeMotor);
         });
     </script>
 </body>
