@@ -3,10 +3,8 @@ set static ip for raspi
 sudo nmtui
 
 :: Back / Mid ::
-Heater issue 10 deg over, pwm attempted keeps failing may need new library
 
 :: UI::
-
 
 :: BUG ::
 Try differnt computers Ui may not update?
