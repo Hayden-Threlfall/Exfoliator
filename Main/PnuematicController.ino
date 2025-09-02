@@ -1,7 +1,7 @@
 bool nozzleExtended = false;
 bool nozzleVacuum = false;
 bool chuckVacuum = false;
-bool stageExtended = true;
+bool stageRetracted = false;
 bool stampExtended = false;
 
 
@@ -28,8 +28,8 @@ bool getNozzleVacuum() {
 bool getChuckVacuum () {
   return chuckVacuum;
 }
-bool getStageExtended() {
-  return stageExtended;
+bool getStageRetracted() {
+  return stageRetracted;
 }
 bool getStampExtended() {
   return stampExtended;
@@ -37,22 +37,22 @@ bool getStampExtended() {
 
 void lowerNozzle() {
     digitalWrite(IO0, true);
-    nozzleExtended = false;
+    nozzleExtended = true;
 }
 
 void raiseNozzle() {
     digitalWrite(IO0, false);
-    nozzleExtended = true;
-}
-
-void extendStage() {
-    digitalWrite(IO2, false);
-    stageExtended = true;
+    nozzleExtended = false;
 }
 
 void retractStage() {
     digitalWrite(IO2, true);
-    stageExtended = false;
+    stageRetracted = false;
+}
+
+void extendStage() {
+    digitalWrite(IO2, false);
+    stageRetracted = true;
 }
 
 void raiseStamp() {

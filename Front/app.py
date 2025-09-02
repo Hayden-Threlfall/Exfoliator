@@ -72,6 +72,7 @@ class ArduinoTCPServer:
             self.connected = True
             self.last_ping_sent = time.time()
             self.last_response_received = time.time()
+            socketio.emit('connection_status', {'connected': True})
             logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
@@ -226,10 +227,6 @@ def parse_json_status(json_string):
     try:
         logging.debug(f"Parsing JSON: {json_string}")
         data = json.loads(json_string)
-        
-        if not hasattr(arduino_server, '_first_json_received'):
-            arduino_server._first_json_received = True
-            socketio.emit('connection_status', {'connected': True})
         
         # Update position
         if 'x' in data and 'y' in data:

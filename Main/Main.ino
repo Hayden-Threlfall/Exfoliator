@@ -267,7 +267,7 @@ void sendStatusJson() {
     
     // Get pneumatic states
     bool nozzleState = getNozzleExtended();
-    bool stageState = getStageExtended();
+    bool stageState = getStageRetracted();
     bool stampState = getStampExtended();
     
     // Get vacuum states
