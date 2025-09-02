@@ -7,58 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        function updateTemperatureDisplay() {
-            document.getElementById('currentTemp').textContent = `${currentTemp}°C`;
-            document.getElementById('targetTemp').textContent = `${targetTemp}°C`;
-        }
-        
-        function updatePositionDisplay() {
-            document.getElementById('posX').textContent = `${position.x} mm`;
-            document.getElementById('posY').textContent = `${position.y} mm`;
-        }
-        
-        function updateMotorStatesDisplay() {
-            const stateClasses = {
-                'MOTOR_DISABLED': 'state-disabled',
-                'MOTOR_ENABLING': 'state-enabling', 
-                'MOTOR_FAULTED': 'state-faulted',
-                'MOTOR_READY': 'state-ready',
-                'MOTOR_MOVING': 'state-moving'
-            };
-            
-            Object.keys(motorStates).forEach(axis => {
-                const stateEl = document.getElementById(`motorState${axis.toUpperCase()}`);
-                if (stateEl) {
-                    const state = motorStates[axis];
-                    stateEl.textContent = state;
-                    stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
-                }
-            });
-        }
-        
-        function updatePneumaticsDisplay() {
-            Object.keys(pneumatics).forEach(component => {
-                const statusEl = document.getElementById(component + 'Status');
-                if (statusEl) {
-                    statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
-                }
-            });
-        }
-        
-        function updateVacuumsDisplay() {
-            Object.keys(vacuums).forEach(component => {
-                const statusEl = document.getElementById(component + 'Status');
-                if (statusEl) {
-                    statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
-                }
-            });
-        }
-        
-        function updateTapeDisplay() {
-            // Update tape motor input fields with current values
-            document.getElementById('tapeSpeed').value = tape.speed || 0;
-            document.getElementById('tapeTorque').value = tape.torque || 0;
-        }* {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -172,6 +121,7 @@
             font-weight: bold;
             padding: 12px 24px;
             border: 3px solid #B91C1C;
+            transition: all 0.3s ease;
         }
         
         .btn-emergency:hover {
@@ -179,10 +129,43 @@
             transform: none;
         }
         
+        .btn-emergency.estop-active {
+            animation: flashRed 1s ease-in-out infinite alternate;
+        }
+        
+        @keyframes flashRed {
+            0% { 
+                background-color: #DC2626; 
+                border-color: #B91C1C;
+                box-shadow: 0 0 10px #DC2626;
+            }
+            100% { 
+                background-color: #EF4444; 
+                border-color: #DC2626;
+                box-shadow: 0 0 20px #EF4444;
+            }
+        }
+        
         .emergency-container {
             display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
             margin-bottom: 24px;
+            gap: 8px;
+        }
+        
+        .restart-message {
+            color: #EF4444;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
         
         .input {
@@ -266,6 +249,10 @@
             background-color: #DC2626;
         }
         
+        .status-indicator.active {
+            background-color: #10B981;
+        }
+        
         .motor-state {
             display: inline-block;
             padding: 4px 8px;
@@ -290,16 +277,56 @@
             background-color: #374151;
             border-radius: 6px;
         }
+        
+        .tape-control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .tape-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .tape-input-label {
+            font-size: 0.875rem;
+            color: #D1D5DB;
+        }
+        
+        .tape-time-control {
+            display: flex;
+            gap: 8px;
+            align-items: end;
+        }
+        
+        .tape-time-input {
+            flex: 1;
+        }
+        
+        .tape-state-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 12px;
+            background-color: #374151;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1 class="title">
-                <span>🔬</span>
-                Exfoliator Control Interface
-            </h1>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <h1 class="title">
+                    <span>🔬</span>
+                    Exfoliator Control Interface
+                </h1>
+            </div>
             <div id="connectionStatus" class="status disconnected">
                 <div class="status-dot"></div>
                 <span>Disconnected</span>
@@ -308,7 +335,10 @@
 
         <!-- Emergency Stop -->
         <div class="emergency-container">
-            <button class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
+            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">🛑 EMERGENCY STOP</button>
+            <div id="restartMessage" class="restart-message" style="display: none;">
+                ⚠️ RESTART MACHINE ⚠️
+            </div>
         </div>
 
         <div class="grid">
@@ -338,16 +368,15 @@
                     </div>
                 </div>
                 
-                <!-- Home Controls -->
+                <!-- Enable Controls -->
                 <div class="mb-4">
                     <h3 class="section-title">
-                        <span>🏠</span>
-                        Homing
+                        <span>🔌</span>
+                        Motor Enable
                     </h3>
                     <div class="button-grid">
-                        <button class="button btn-primary" onclick="homeAxis('')">Home All</button>
-                        <button class="button btn-secondary" onclick="homeAxis('X')">Home X</button>
-                        <button class="button btn-secondary" onclick="homeAxis('Y')">Home Y</button>
+                        <button class="button btn-success" onclick="enableAxis('X')">Enable X</button>
+                        <button class="button btn-success" onclick="enableAxis('Y')">Enable Y</button>
                         <button class="button btn-danger" onclick="disableMotor('X')">Disable X</button>
                         <button class="button btn-danger" onclick="disableMotor('Y')">Disable Y</button>
                     </div>
@@ -412,25 +441,6 @@
                     </div>
                 </div>
 
-                <!-- Tape Motor -->
-                <div class="mb-4">
-                    <h3 class="section-title">
-                        <span>🎞️</span>
-                        Tape Motor
-                    </h3>
-                    <div class="flex mb-2">
-                        <input type="number" id="tapeSpeed" class="input" placeholder="Speed" value="100">
-                        <label class="text-sm" style="white-space: nowrap; margin-right: 8px;">Speed</label>
-                        <input type="number" id="tapeTorque" class="input" placeholder="Torque" value="50">
-                        <label class="text-sm" style="white-space: nowrap;">Torque</label>
-                    </div>
-                    <div class="flex">
-                        <input type="number" id="tapeTime" class="input" placeholder="Time (ms)" value="1000">
-                        <label class="text-sm" style="white-space: nowrap; margin-right: 8px;">Time (ms)</label>
-                        <button class="button btn-warning" onclick="runTapeMotor()">Run Tape</button>
-                    </div>
-                </div>
-
                 <!-- Vacuum Controls -->
                 <div>
                     <h3 class="section-title">
@@ -464,6 +474,50 @@
                 </div>
             </div>
 
+            <!-- Tape Motor Control -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span>🎞️</span>
+                    Tape Motor Control
+                </h2>
+                
+                <!-- Current Tape State -->
+                <div class="mb-4">
+                    <h3 class="section-title">Current State</h3>
+                    <div class="tape-state-display">
+                        <span>Speed:</span>
+                        <span id="currentTapeSpeed">0</span>
+                    </div>
+                    <div class="tape-state-display">
+                        <span>Torque:</span>
+                        <span id="currentTapeTorque">0</span>
+                    </div>
+                </div>
+
+                <!-- Tape Motor Controls -->
+                <div>
+                    <h3 class="section-title">Set Parameters</h3>
+                    <div class="tape-control-grid">
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Speed</label>
+                            <input type="number" id="tapeSpeed" class="input" value="0">
+                        </div>
+                        <div class="tape-input-group">
+                            <label class="tape-input-label">Torque</label>
+                            <input type="number" id="tapeTorque" class="input" value="0">
+                        </div>
+                    </div>
+                    <div class="tape-time-control">
+                        <div class="tape-input-group tape-time-input">
+                            <label class="tape-input-label">Duration (ms)</label>
+                            <input type="number" id="tapeTime" class="input" value="1000">
+                        </div>
+                        <button class="button btn-primary" onclick="runTapeMotor()">Send Command</button>
+                        <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Temperature Control -->
             <div class="card">
                 <h2 class="card-title">
@@ -482,7 +536,7 @@
                 </div>
                 
                 <div class="flex mb-3">
-                    <input type="number" id="tempInput" class="input" value="25" min="0" max="200">
+                    <input type="number" id="tempInput" class="input" value="0" min="0" max="300">
                     <button class="button btn-danger" onclick="setTemperature()">Set Temp</button>
                 </div>
 
@@ -523,11 +577,15 @@
         let vacuums = { vacnozzle: false, chuck: false };
         let tape = { speed: 0, torque: 0 };
         let tempData = [];
+        let eStopTriggered = false;
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
             initializeSocket();
             initializeChart();
+            // Initialize all status indicators as red (inactive)
+            updatePneumaticsDisplay();
+            updateVacuumsDisplay();
         });
         
         function initializeSocket() {
@@ -577,6 +635,11 @@
             socket.on('tape_update', function(data) {
                 tape = data;
                 updateTapeDisplay();
+            });
+            
+            socket.on('estop_update', function(data) {
+                eStopTriggered = data.triggered;
+                updateEmergencyStopDisplay();
             });
             
             socket.on('command_sent', function(data) {
@@ -651,6 +714,25 @@
             document.getElementById('posY').textContent = `${position.y} mm`;
         }
         
+        function updateMotorStatesDisplay() {
+            const stateClasses = {
+                'MOTOR_DISABLED': 'state-disabled',
+                'MOTOR_ENABLING': 'state-enabling', 
+                'MOTOR_FAULTED': 'state-faulted',
+                'MOTOR_READY': 'state-ready',
+                'MOTOR_MOVING': 'state-moving'
+            };
+            
+            Object.keys(motorStates).forEach(axis => {
+                const stateEl = document.getElementById(`motorState${axis.toUpperCase()}`);
+                if (stateEl) {
+                    const state = motorStates[axis];
+                    stateEl.textContent = state;
+                    stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
+                }
+            });
+        }
+        
         function updatePneumaticsDisplay() {
             Object.keys(pneumatics).forEach(component => {
                 const statusEl = document.getElementById(component + 'Status');
@@ -670,9 +752,29 @@
         }
         
         function updateTapeDisplay() {
-            // Update tape motor input fields with current values
-            document.getElementById('tapeSpeed').value = tape.speed || 0;
-            document.getElementById('tapeTorque').value = tape.torque || 0;
+            document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
+            document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
+            
+            // Don't overwrite user inputs while they're typing
+            if (document.activeElement.id !== 'tapeSpeed') {
+                document.getElementById('tapeSpeed').value = tape.speed || 0;
+            }
+            if (document.activeElement.id !== 'tapeTorque') {
+                document.getElementById('tapeTorque').value = tape.torque || 0;
+            }
+        }
+        
+        function updateEmergencyStopDisplay() {
+            const emergencyButton = document.getElementById('emergencyButton');
+            const restartMessage = document.getElementById('restartMessage');
+            
+            if (eStopTriggered) {
+                emergencyButton.classList.add('estop-active');
+                restartMessage.style.display = 'block';
+            } else {
+                emergencyButton.classList.remove('estop-active');
+                restartMessage.style.display = 'none';
+            }
         }
         
         function updateTempChart() {
@@ -706,8 +808,8 @@
             }
         }
         
-        function homeAxis(axis) {
-            socket.emit('home_axis', { axis: axis });
+        function enableAxis(axis) {
+            socket.emit('enable_axis', { axis: axis });
         }
         
         function disableMotor(axis) {
@@ -743,6 +845,10 @@
             const time = parseInt(document.getElementById('tapeTime').value);
             socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
         }
+
+        function stopTapeMotor() {
+            socket.emit('send_command', { command: 'StopTape' });
+        }
         
         function sendCustomCommand() {
             const command = document.getElementById('customCommand').value;
@@ -757,6 +863,16 @@
             if (e.key === 'Enter') {
                 sendCustomCommand();
             }
+        });
+        [
+            ['xPositionInput', () => moveToPosition('X')],
+            ['yPositionInput', () => moveToPosition('Y')],
+            ['tempInput', setTemperature],
+            ['tapeSpeed', runTapeMotor],
+            ['tapeTorque', runTapeMotor],
+            ['tapeTime', runTapeMotor]
+        ].forEach(([id, fn]) => {
+            document.getElementById(id).addEventListener('keypress', e => e.key === 'Enter' && fn());
         });
     </script>
 </body>
