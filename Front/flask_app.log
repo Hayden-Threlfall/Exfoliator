@@ -2262,3 +2262,2198 @@
 2025-08-28 17:57:00,203 - INFO - TCP Server listening on port 1053
 2025-08-28 17:57:01,311 - INFO - TCP Server listening on port 1053
 2025-08-28 17:57:02,413 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:38,951 - INFO - Starting Flask application...
+2025-09-03 18:05:38,951 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:38,951 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:05:38,951 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:05:38,951 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:05:40,057 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:41,164 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:42,271 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:43,378 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:44,481 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:45,584 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:46,692 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:47,802 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:47,814 - INFO - Client connected to SocketIO
+2025-09-03 18:05:48,906 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:49,292 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-09-03 18:05:49,293 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-09-03 18:05:50,013 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:50,219 - INFO - Button Press: Pneumatic control - nozzle retract
+2025-09-03 18:05:50,220 - WARNING - Button Press: Pneumatic command 'RetractNozzle' received but Arduino not connected
+2025-09-03 18:05:50,837 - INFO - Button Press: Pneumatic control - stage extend
+2025-09-03 18:05:50,837 - WARNING - Button Press: Pneumatic command 'ExtendChipStage' received but Arduino not connected
+2025-09-03 18:05:51,119 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:52,225 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:53,331 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:54,437 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:55,542 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:56,649 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:57,755 - INFO - TCP Server listening on port 1053
+2025-09-03 18:05:58,286 - INFO - Client disconnected from SocketIO
+2025-09-03 18:07:03,383 - INFO - Starting Flask application...
+2025-09-03 18:07:03,383 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:03,384 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:07:03,384 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:07:03,384 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:07:04,459 - INFO - Client connected to SocketIO
+2025-09-03 18:07:04,487 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:05,592 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:06,699 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:07,806 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:08,913 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:10,019 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:11,121 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:11,414 - INFO - Client disconnected from SocketIO
+2025-09-03 18:07:11,430 - INFO - Client connected to SocketIO
+2025-09-03 18:07:12,185 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-09-03 18:07:12,186 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-09-03 18:07:12,228 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:13,091 - INFO - Button Press: Pneumatic control - nozzle retract
+2025-09-03 18:07:13,092 - WARNING - Button Press: Pneumatic command 'RetractNozzle' received but Arduino not connected
+2025-09-03 18:07:13,333 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:13,757 - INFO - Button Press: Pneumatic control - stage retract
+2025-09-03 18:07:13,758 - WARNING - Button Press: Pneumatic command 'RetractChipStage' received but Arduino not connected
+2025-09-03 18:07:14,440 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:14,628 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-09-03 18:07:14,628 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-09-03 18:07:15,541 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:16,647 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:17,753 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:18,859 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:19,966 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:21,072 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:22,176 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:23,282 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:24,386 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:25,489 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:25,893 - INFO - Button Press: Move to chip 'A1' requested
+2025-09-03 18:07:25,894 - WARNING - Button Press: MoveToChip command 'MoveToChip A1' received but Arduino not connected
+2025-09-03 18:07:25,894 - INFO - Button Press: Move to chip 'A2' requested
+2025-09-03 18:07:25,894 - WARNING - Button Press: MoveToChip command 'MoveToChip A2' received but Arduino not connected
+2025-09-03 18:07:25,894 - INFO - Button Press: Move to chip 'A3' requested
+2025-09-03 18:07:25,894 - WARNING - Button Press: MoveToChip command 'MoveToChip A3' received but Arduino not connected
+2025-09-03 18:07:25,895 - INFO - Button Press: Move to chip 'B1' requested
+2025-09-03 18:07:25,895 - WARNING - Button Press: MoveToChip command 'MoveToChip B1' received but Arduino not connected
+2025-09-03 18:07:25,895 - INFO - Button Press: Move to chip 'B2' requested
+2025-09-03 18:07:25,895 - WARNING - Button Press: MoveToChip command 'MoveToChip B2' received but Arduino not connected
+2025-09-03 18:07:25,895 - INFO - Button Press: Move to chip 'B3' requested
+2025-09-03 18:07:25,895 - WARNING - Button Press: MoveToChip command 'MoveToChip B3' received but Arduino not connected
+2025-09-03 18:07:26,594 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:27,700 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:28,803 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:29,906 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:31,009 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:32,115 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:33,222 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:34,328 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:35,435 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:36,541 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:37,646 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:38,752 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:39,856 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:40,962 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:42,066 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:43,172 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:44,276 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:45,383 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:46,494 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:47,599 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:48,705 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:49,810 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:50,916 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:52,022 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:53,127 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:54,232 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:55,339 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:56,445 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:57,548 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:58,655 - INFO - TCP Server listening on port 1053
+2025-09-03 18:07:59,761 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:00,867 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:01,975 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:03,081 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:04,187 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:05,291 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:06,397 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:07,501 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:08,606 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:09,712 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:10,818 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:11,923 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:13,027 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:14,133 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:15,236 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:16,342 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:17,448 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:18,556 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:19,660 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:20,764 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:21,870 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:22,973 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:24,078 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:25,185 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:26,286 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:27,389 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:28,494 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:29,599 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:30,702 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:31,809 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:32,916 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:34,020 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:35,126 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:36,233 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:37,339 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:38,444 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:39,548 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:40,652 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:41,758 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:42,861 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:43,967 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:45,073 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:46,177 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:47,280 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:48,386 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:49,493 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:50,599 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:51,703 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:52,807 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:53,909 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:55,016 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:56,121 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:57,228 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:58,334 - INFO - TCP Server listening on port 1053
+2025-09-03 18:08:59,440 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:00,547 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:01,651 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:02,753 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:03,859 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:04,966 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:06,073 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:06,245 - INFO - Button Press: Move to chip 'A1' requested
+2025-09-03 18:09:06,245 - WARNING - Button Press: MoveToChip command 'MoveToChip A1' received but Arduino not connected
+2025-09-03 18:09:06,246 - INFO - Button Press: Move to chip 'A2' requested
+2025-09-03 18:09:06,246 - WARNING - Button Press: MoveToChip command 'MoveToChip A2' received but Arduino not connected
+2025-09-03 18:09:06,246 - INFO - Button Press: Move to chip 'A3' requested
+2025-09-03 18:09:06,246 - WARNING - Button Press: MoveToChip command 'MoveToChip A3' received but Arduino not connected
+2025-09-03 18:09:06,246 - INFO - Button Press: Move to chip 'B1' requested
+2025-09-03 18:09:06,246 - WARNING - Button Press: MoveToChip command 'MoveToChip B1' received but Arduino not connected
+2025-09-03 18:09:06,246 - INFO - Button Press: Move to chip 'B2' requested
+2025-09-03 18:09:06,246 - WARNING - Button Press: MoveToChip command 'MoveToChip B2' received but Arduino not connected
+2025-09-03 18:09:06,246 - INFO - Button Press: Move to chip 'B3' requested
+2025-09-03 18:09:06,246 - WARNING - Button Press: MoveToChip command 'MoveToChip B3' received but Arduino not connected
+2025-09-03 18:09:07,179 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:08,282 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:09,386 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:10,493 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:11,599 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:12,705 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:13,811 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:14,918 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:16,020 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:17,127 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:18,234 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:19,338 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:20,441 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:21,548 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:22,654 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:23,760 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:24,866 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:25,972 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:27,078 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:28,181 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:29,285 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:30,389 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:31,494 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:32,596 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:33,578 - INFO - Client disconnected from SocketIO
+2025-09-03 18:09:33,599 - INFO - Client connected to SocketIO
+2025-09-03 18:09:33,702 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:34,809 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:35,911 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:37,018 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:38,125 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:39,230 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:40,336 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:41,440 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:42,547 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:43,652 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:44,755 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:45,862 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:46,964 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:48,068 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:49,174 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:50,281 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:51,383 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:52,490 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:53,575 - INFO - Client disconnected from SocketIO
+2025-09-03 18:09:56,387 - INFO - Starting Flask application...
+2025-09-03 18:09:56,387 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:56,387 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:09:56,387 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:09:56,387 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:09:57,318 - INFO - Client connected to SocketIO
+2025-09-03 18:09:57,493 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:58,079 - INFO - Client disconnected from SocketIO
+2025-09-03 18:09:58,098 - INFO - Client connected to SocketIO
+2025-09-03 18:09:58,600 - INFO - TCP Server listening on port 1053
+2025-09-03 18:09:59,703 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:00,809 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:01,196 - INFO - Button Press: Move to chip '['B3', 'B4', 'B5', 'C5']' requested
+2025-09-03 18:10:01,197 - WARNING - Button Press: MoveToChip command 'MoveToChip ['B3', 'B4', 'B5', 'C5']' received but Arduino not connected
+2025-09-03 18:10:01,915 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:03,017 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:04,123 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:05,230 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:06,337 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:07,442 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:08,549 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:09,654 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:10,760 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:11,865 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:12,971 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:14,077 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:15,184 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:16,290 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:17,397 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:18,504 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:19,611 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:20,717 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:21,824 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:22,929 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:24,034 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:25,140 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:26,247 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:27,350 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:28,457 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:29,564 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:30,670 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:31,777 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:32,881 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:33,987 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:35,093 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:36,199 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:37,306 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:38,410 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:39,516 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:40,623 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:41,729 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:42,833 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:43,938 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:45,043 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:46,149 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:47,251 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:48,354 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:49,462 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:50,566 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:51,672 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:52,775 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:53,879 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:54,981 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:56,084 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:57,190 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:58,292 - INFO - TCP Server listening on port 1053
+2025-09-03 18:10:59,399 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:00,504 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:01,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:02,712 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:03,817 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:04,921 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:06,026 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:07,133 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:08,236 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:09,342 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:10,444 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:11,551 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:12,658 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:13,760 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:14,866 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:15,973 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:17,076 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:18,183 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:19,289 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:20,395 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:21,500 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:22,606 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:23,711 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:24,813 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:25,921 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:27,024 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:28,129 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:29,235 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:30,341 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:31,446 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:32,550 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:33,653 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:34,760 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:35,862 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:36,967 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:38,071 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:39,177 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:40,283 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:41,387 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:42,492 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:43,599 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:44,704 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:45,809 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:46,915 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:48,021 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:49,126 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:50,229 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:51,334 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:52,436 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:53,540 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:54,645 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:55,749 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:56,856 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:57,961 - INFO - TCP Server listening on port 1053
+2025-09-03 18:11:59,068 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:00,170 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:01,273 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:02,378 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:03,485 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:04,592 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:05,694 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:06,800 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:07,906 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:09,012 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:10,115 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:11,221 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:12,324 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:13,430 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:14,538 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:15,645 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:16,751 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:17,857 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:18,963 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:20,065 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:21,170 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:22,276 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:23,382 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:24,484 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:25,589 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:26,692 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:27,798 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:28,903 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:30,005 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:31,111 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:32,218 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:33,324 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:34,430 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:35,533 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:36,639 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:37,745 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:38,849 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:39,954 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:41,061 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:42,167 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:43,273 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:44,377 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:45,482 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:46,585 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:47,690 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:48,791 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:49,898 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:51,001 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:52,106 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:53,213 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:54,320 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:55,427 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:56,534 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:57,641 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:58,746 - INFO - TCP Server listening on port 1053
+2025-09-03 18:12:59,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:00,959 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:02,066 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:03,169 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:04,271 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:05,377 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:06,483 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:07,590 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:08,697 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:09,803 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:10,909 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:12,015 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:13,122 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:14,229 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:15,336 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:16,442 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:17,548 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:18,652 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:19,759 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:20,864 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:21,969 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:23,074 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:24,180 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:25,283 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:26,390 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:27,492 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:28,598 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:29,704 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:30,811 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:31,914 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:33,020 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:34,126 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:35,233 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:36,335 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:37,438 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:38,545 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:39,647 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:40,754 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:41,861 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:42,968 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:44,072 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:45,177 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:46,284 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:47,392 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:48,496 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:49,601 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:50,705 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:51,811 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:52,915 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:54,018 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:55,121 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:56,227 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:57,334 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:58,436 - INFO - TCP Server listening on port 1053
+2025-09-03 18:13:59,542 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:00,644 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:01,751 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:02,858 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:03,964 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:05,067 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:06,171 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:07,278 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:08,379 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:09,484 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:10,590 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:11,693 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:12,799 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:13,902 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:15,008 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:16,113 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:17,215 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:18,322 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:19,426 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:20,532 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:21,639 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:22,743 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:23,848 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:24,956 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:26,062 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:27,168 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:28,275 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:29,379 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:30,481 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:31,583 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:32,689 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:33,795 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:34,897 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:36,003 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:37,109 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:38,215 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:39,321 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:40,426 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:41,533 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:42,639 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:43,745 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:44,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:45,958 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:47,063 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:48,169 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:49,275 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:50,379 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:51,481 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:52,588 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:53,694 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:54,800 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:55,906 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:57,008 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:58,112 - INFO - TCP Server listening on port 1053
+2025-09-03 18:14:59,218 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:00,325 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:01,428 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:02,162 - INFO - Client disconnected from SocketIO
+2025-09-03 18:15:07,316 - INFO - Starting Flask application...
+2025-09-03 18:15:07,316 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:07,316 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:15:07,316 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:15:07,316 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:15:08,424 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:09,532 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:10,229 - INFO - Client connected to SocketIO
+2025-09-03 18:15:10,640 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:11,744 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:12,013 - INFO - Client disconnected from SocketIO
+2025-09-03 18:15:12,029 - INFO - Client connected to SocketIO
+2025-09-03 18:15:12,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:13,959 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:15,066 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:16,174 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:17,281 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:18,224 - INFO - Client disconnected from SocketIO
+2025-09-03 18:15:18,239 - INFO - Client connected to SocketIO
+2025-09-03 18:15:18,386 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:19,494 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:20,601 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:21,709 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:22,813 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:23,920 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:25,023 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:26,130 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:27,232 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:28,335 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:29,437 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:30,542 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:31,649 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:32,756 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:33,860 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:34,962 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:36,069 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:37,175 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:38,281 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:39,386 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:40,489 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:41,595 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:42,702 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:43,810 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:44,916 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:46,023 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:47,129 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:48,235 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:49,339 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:50,446 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:51,552 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:52,659 - INFO - TCP Server listening on port 1053
+2025-09-03 18:15:53,706 - INFO - Client disconnected from SocketIO
+2025-09-03 18:17:58,524 - INFO - Starting Flask application...
+2025-09-03 18:17:58,524 - INFO - TCP Server listening on port 1053
+2025-09-03 18:17:58,525 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:17:58,525 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:17:58,525 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:17:59,117 - INFO - Client connected to SocketIO
+2025-09-03 18:17:59,631 - INFO - TCP Server listening on port 1053
+2025-09-03 18:17:59,968 - INFO - Client disconnected from SocketIO
+2025-09-03 18:17:59,991 - INFO - Client connected to SocketIO
+2025-09-03 18:18:00,735 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:01,838 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:02,943 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:03,820 - INFO - Button Press: Move to chip '['F1', 'F2', 'F3', 'F4']' requested
+2025-09-03 18:18:03,821 - WARNING - Button Press: MoveToChip command 'MoveToChip ['F1', 'F2', 'F3', 'F4']' received but Arduino not connected
+2025-09-03 18:18:04,046 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:05,151 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:06,255 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:07,361 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:08,465 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:09,571 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:10,677 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:11,783 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:12,888 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:13,992 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:15,098 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:16,204 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:17,306 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:18,413 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:19,519 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:20,625 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:21,731 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:22,834 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:23,938 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:25,043 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:26,147 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:27,253 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:28,358 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:29,465 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:30,568 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:31,673 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:32,776 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:33,882 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:34,988 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:36,093 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:37,199 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:38,304 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:39,411 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:40,514 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:41,621 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:42,727 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:43,829 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:44,932 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:46,038 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:47,144 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:48,250 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:49,355 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:50,461 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:51,564 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:52,672 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:53,778 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:54,881 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:55,987 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:57,092 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:58,196 - INFO - TCP Server listening on port 1053
+2025-09-03 18:18:59,299 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:00,402 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:01,508 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:02,615 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:03,719 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:04,825 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:05,930 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:07,034 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:08,137 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:09,241 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:10,347 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:11,453 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:12,560 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:13,664 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:14,767 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:15,871 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:16,978 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:18,081 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:19,188 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:20,294 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:21,400 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:22,506 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:23,612 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:24,718 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:25,824 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:26,928 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:28,034 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:29,141 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:30,246 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:31,353 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:32,458 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:33,560 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:34,666 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:35,769 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:36,875 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:37,982 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:39,089 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:40,195 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:41,302 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:42,408 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:43,513 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:44,620 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:45,723 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:46,827 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:47,933 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:49,037 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:50,141 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:51,247 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:52,354 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:53,460 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:54,566 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:55,673 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:56,779 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:57,886 - INFO - TCP Server listening on port 1053
+2025-09-03 18:19:58,988 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:00,095 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:01,202 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:02,304 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:03,406 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:04,508 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:05,614 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:06,721 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:07,825 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:08,932 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:10,035 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:11,142 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:12,247 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:13,353 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:14,458 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:15,563 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:16,668 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:17,773 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:18,879 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:19,983 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:21,088 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:22,195 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:23,299 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:24,406 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:25,509 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:26,614 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:27,721 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:28,824 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:29,931 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:31,036 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:32,139 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:33,241 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:34,348 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:35,455 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:36,561 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:37,666 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:38,771 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:39,874 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:40,978 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:42,082 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:43,189 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:44,291 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:45,397 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:46,504 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:47,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:48,715 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:49,821 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:50,928 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:52,034 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:53,136 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:54,240 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:55,346 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:56,449 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:57,555 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:58,661 - INFO - TCP Server listening on port 1053
+2025-09-03 18:20:59,767 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:00,874 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:01,981 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:03,086 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:04,192 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:05,299 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:06,401 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:07,508 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:08,612 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:09,714 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:10,820 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:11,925 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:13,028 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:14,134 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:15,240 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:16,346 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:17,449 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:18,555 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:19,661 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:20,765 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:21,869 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:22,976 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:24,082 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:25,184 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:26,290 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:27,396 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:28,499 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:29,606 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:30,711 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:31,817 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:32,919 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:34,025 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:35,131 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:36,237 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:37,340 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:38,444 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:39,550 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:40,653 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:41,756 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:42,861 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:43,968 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:45,070 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:46,175 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:47,278 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:48,384 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:49,486 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:50,592 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:51,700 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:52,803 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:53,907 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:55,012 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:56,119 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:57,226 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:58,332 - INFO - TCP Server listening on port 1053
+2025-09-03 18:21:59,436 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:00,541 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:01,646 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:02,752 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:03,854 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:04,957 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:06,058 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:07,162 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:08,269 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:09,375 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:10,481 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:11,586 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:12,692 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:13,798 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:14,904 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:16,008 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:17,113 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:18,218 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:19,320 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:20,425 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:21,528 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:22,631 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:23,737 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:24,843 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:25,946 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:27,053 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:28,157 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:29,262 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:30,365 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:31,470 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:32,574 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:33,681 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:34,785 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:35,889 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:36,997 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:38,099 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:39,205 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:40,311 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:41,416 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:42,523 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:43,629 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:44,735 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:45,840 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:46,944 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:48,048 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:49,152 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:50,259 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:51,364 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:52,469 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:53,575 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:54,681 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:55,786 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:56,893 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:58,000 - INFO - TCP Server listening on port 1053
+2025-09-03 18:22:59,106 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:00,212 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:01,315 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:02,421 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:03,528 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:04,632 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:05,735 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:06,842 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:07,948 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:09,055 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:10,161 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:11,268 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:12,373 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:13,477 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:14,584 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:15,689 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:16,796 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:17,901 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:19,008 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:20,110 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:21,217 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:22,323 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:23,426 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:24,533 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:25,639 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:26,746 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:27,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:28,958 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:30,064 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:31,171 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:32,276 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:33,382 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:34,488 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:35,594 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:36,697 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:37,802 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:38,908 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:40,014 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:41,116 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:42,220 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:43,326 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:44,430 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:45,536 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:46,642 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:47,748 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:48,850 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:49,956 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:51,063 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:52,169 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:53,275 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:54,381 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:55,487 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:56,591 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:57,694 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:58,801 - INFO - TCP Server listening on port 1053
+2025-09-03 18:23:59,907 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:01,010 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:02,115 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:03,219 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:04,326 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:05,432 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:06,539 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:07,645 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:08,750 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:09,856 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:10,961 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:12,063 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:13,168 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:14,274 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:15,380 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:16,486 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:17,593 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:18,700 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:19,805 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:20,909 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:22,011 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:23,117 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:24,221 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:25,327 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:26,434 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:27,538 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:28,645 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:29,751 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:30,858 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:31,959 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:33,066 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:34,172 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:35,278 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:36,384 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:37,490 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:38,596 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:39,702 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:40,807 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:41,913 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:43,015 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:44,122 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:45,228 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:46,332 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:47,434 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:48,539 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:49,645 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:50,747 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:51,853 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:52,959 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:54,064 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:55,169 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:56,272 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:57,379 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:58,484 - INFO - TCP Server listening on port 1053
+2025-09-03 18:24:59,589 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:00,693 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:01,798 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:02,901 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:04,004 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:05,109 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:06,215 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:07,321 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:08,423 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:09,530 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:10,636 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:11,743 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:12,850 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:13,956 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:15,058 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:16,163 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:17,270 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:18,376 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:19,483 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:20,588 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:21,694 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:22,796 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:23,903 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:25,006 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:26,113 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:27,220 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:28,323 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:29,430 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:30,532 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:31,638 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:32,744 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:33,850 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:34,954 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:36,061 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:37,163 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:38,268 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:39,371 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:40,478 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:41,581 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:42,684 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:43,786 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:44,887 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:45,994 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:47,096 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:48,199 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:49,305 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:50,408 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:51,513 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:52,619 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:53,724 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:54,831 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:55,936 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:57,043 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:58,150 - INFO - TCP Server listening on port 1053
+2025-09-03 18:25:59,257 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:00,362 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:01,469 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:02,571 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:03,677 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:04,782 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:05,889 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:06,995 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:08,102 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:09,208 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:10,313 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:11,065 - INFO - Client disconnected from SocketIO
+2025-09-03 18:26:13,425 - INFO - Starting Flask application...
+2025-09-03 18:26:13,425 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:13,425 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:26:13,425 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:26:13,425 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:26:14,532 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:15,638 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:16,324 - INFO - Client connected to SocketIO
+2025-09-03 18:26:16,745 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:17,851 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:18,958 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:20,063 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:21,168 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:22,221 - INFO - Client disconnected from SocketIO
+2025-09-03 18:26:22,236 - INFO - Client connected to SocketIO
+2025-09-03 18:26:22,272 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:23,375 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:24,479 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:25,586 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:26,691 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:27,797 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:28,902 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:30,007 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:31,114 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:32,221 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:33,327 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:34,434 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:35,537 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:36,642 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:37,746 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:38,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:39,958 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:41,065 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:42,171 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:43,278 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:44,385 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:45,492 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:46,598 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:47,704 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:48,809 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:49,911 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:51,016 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:52,121 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:53,228 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:54,335 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:55,436 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:56,540 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:57,647 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:58,753 - INFO - TCP Server listening on port 1053
+2025-09-03 18:26:59,858 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:00,962 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:02,069 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:03,176 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:04,282 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:05,389 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:06,495 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:07,557 - INFO - Client disconnected from SocketIO
+2025-09-03 18:27:09,727 - INFO - Starting Flask application...
+2025-09-03 18:27:09,727 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:09,727 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:27:09,727 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:27:09,728 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:27:10,829 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:11,099 - INFO - Client connected to SocketIO
+2025-09-03 18:27:11,247 - INFO - Client disconnected from SocketIO
+2025-09-03 18:27:11,272 - INFO - Client connected to SocketIO
+2025-09-03 18:27:11,935 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:13,037 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:13,785 - INFO - Button Press: Move to chip '[(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' requested
+2025-09-03 18:27:13,786 - WARNING - Button Press: MoveToChip command 'MoveToChip [(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' received but Arduino not connected
+2025-09-03 18:27:14,141 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:15,248 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:16,354 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:17,458 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:18,564 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:19,670 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:20,777 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:21,883 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:22,990 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:24,097 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:25,204 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:26,310 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:27,416 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:28,520 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:29,626 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:30,732 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:31,836 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:32,942 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:34,048 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:35,153 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:36,258 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:37,365 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:38,469 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:39,576 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:40,682 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:41,784 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:42,890 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:43,995 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:45,100 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:46,205 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:47,311 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:48,417 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:49,524 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:50,631 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:51,736 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:52,841 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:53,947 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:55,055 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:56,157 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:57,264 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:58,371 - INFO - TCP Server listening on port 1053
+2025-09-03 18:27:59,477 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:00,583 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:01,687 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:02,794 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:03,901 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:05,007 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:06,114 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:07,220 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:08,012 - INFO - Client disconnected from SocketIO
+2025-09-03 18:28:10,729 - INFO - Starting Flask application...
+2025-09-03 18:28:10,729 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:10,729 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:28:10,729 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:28:10,729 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:28:11,833 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:12,242 - INFO - Client connected to SocketIO
+2025-09-03 18:28:12,939 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:14,044 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:15,148 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:16,253 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:17,359 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:18,466 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:19,570 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:20,677 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:21,784 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:22,890 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:23,996 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:25,102 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:26,206 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:27,312 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:28,416 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:29,357 - INFO - Client disconnected from SocketIO
+2025-09-03 18:28:50,383 - INFO - Starting Flask application...
+2025-09-03 18:28:50,383 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:50,384 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:28:50,384 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:28:50,384 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:28:51,491 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:52,141 - INFO - Client connected to SocketIO
+2025-09-03 18:28:52,596 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:53,700 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:54,443 - INFO - Button Press: Move to chip '['F1', 'F2', 'F3']' requested
+2025-09-03 18:28:54,443 - INFO - Button Press: Move to chip '[(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' requested
+2025-09-03 18:28:54,443 - WARNING - Button Press: MoveToChip command 'MoveToChip [(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' received but Arduino not connected
+2025-09-03 18:28:54,807 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:55,911 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:57,017 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:58,124 - INFO - TCP Server listening on port 1053
+2025-09-03 18:28:59,228 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:00,335 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:01,441 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:02,544 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:03,648 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:04,755 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:05,861 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:06,968 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:08,075 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:09,182 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:10,285 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:11,391 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:12,498 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:13,603 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:14,710 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:15,815 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:16,920 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:18,024 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:19,131 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:20,238 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:21,342 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:22,449 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:23,555 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:24,656 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:25,759 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:26,865 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:27,971 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:28,330 - INFO - Client disconnected from SocketIO
+2025-09-03 18:29:31,189 - INFO - Starting Flask application...
+2025-09-03 18:29:31,189 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:31,189 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:29:31,189 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:29:31,189 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:29:31,382 - INFO - Client connected to SocketIO
+2025-09-03 18:29:32,295 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:33,216 - INFO - Client disconnected from SocketIO
+2025-09-03 18:29:33,241 - INFO - Client connected to SocketIO
+2025-09-03 18:29:33,399 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:34,504 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:35,610 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:36,093 - INFO - Button Press: Move to chip '[(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' requested
+2025-09-03 18:29:36,094 - WARNING - Button Press: MoveToChip command 'MoveToChip [(11111216.5, 44.5), (22222327.5, 44.5), (33333438.5, 44.5)]' received but Arduino not connected
+2025-09-03 18:29:36,714 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:37,819 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:38,925 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:40,027 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:41,133 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:42,236 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:43,343 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:44,447 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:45,552 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:46,659 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:47,765 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:48,869 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:49,974 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:51,081 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:52,186 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:53,293 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:54,399 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:55,505 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:56,610 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:57,717 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:58,824 - INFO - TCP Server listening on port 1053
+2025-09-03 18:29:59,926 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:01,031 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:02,137 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:03,239 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:04,345 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:05,452 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:06,557 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:07,660 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:08,767 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:09,873 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:10,978 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:12,080 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:13,187 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:14,293 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:15,400 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:16,507 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:17,613 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:18,719 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:19,822 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:20,928 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:22,031 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:23,137 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:24,244 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:25,350 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:26,452 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:27,555 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:28,662 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:29,768 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:30,355 - INFO - Client disconnected from SocketIO
+2025-09-03 18:30:46,359 - INFO - Starting Flask application...
+2025-09-03 18:30:46,359 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:46,359 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:30:46,359 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:30:46,359 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:30:46,891 - INFO - Client connected to SocketIO
+2025-09-03 18:30:47,465 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:47,952 - INFO - Client disconnected from SocketIO
+2025-09-03 18:30:47,977 - INFO - Client connected to SocketIO
+2025-09-03 18:30:48,572 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:49,676 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:50,204 - INFO - Button Press: Move to chip '[(113.5, 52.5), (121.5, 52.5), (129.5, 52.5)]' requested
+2025-09-03 18:30:50,205 - WARNING - Button Press: MoveToChip command 'MoveToChip [(113.5, 52.5), (121.5, 52.5), (129.5, 52.5)]' received but Arduino not connected
+2025-09-03 18:30:50,783 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:51,890 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:52,997 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:54,103 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:55,208 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:56,314 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:57,418 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:58,524 - INFO - TCP Server listening on port 1053
+2025-09-03 18:30:59,626 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:00,733 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:01,840 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:02,945 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:04,048 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:05,154 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:06,260 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:07,365 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:08,472 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:09,575 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:10,681 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:11,783 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:12,638 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-09-03 18:31:12,639 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-09-03 18:31:12,887 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:13,515 - INFO - Button Press: Pneumatic control - nozzle retract
+2025-09-03 18:31:13,515 - WARNING - Button Press: Pneumatic command 'RetractNozzle' received but Arduino not connected
+2025-09-03 18:31:13,933 - INFO - Button Press: Pneumatic control - nozzle extend
+2025-09-03 18:31:13,933 - WARNING - Button Press: Pneumatic command 'ExtendNozzle' received but Arduino not connected
+2025-09-03 18:31:13,993 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:15,096 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:16,198 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:17,305 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:18,410 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:19,517 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:20,620 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:21,726 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:22,828 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:23,933 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:25,039 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:26,143 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:27,250 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:28,353 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:29,460 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:30,566 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:31,672 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:32,775 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:33,882 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:34,984 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:36,089 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:37,196 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:38,302 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:39,406 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:40,513 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:41,620 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:42,726 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:43,831 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:44,936 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:46,042 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:47,144 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:48,250 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:49,352 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:50,459 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:51,566 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:52,673 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:53,776 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:54,882 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:55,988 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:57,095 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:58,202 - INFO - TCP Server listening on port 1053
+2025-09-03 18:31:59,308 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:00,411 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:01,517 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:02,624 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:03,731 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:04,837 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:05,942 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:07,046 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:08,153 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:09,254 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:10,359 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:11,466 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:12,572 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:13,677 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:14,781 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:15,885 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:16,991 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:18,098 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:19,202 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:20,308 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:21,414 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:22,521 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:23,625 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:24,730 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:25,837 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:26,941 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:28,046 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:29,151 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:30,258 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:31,364 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:32,467 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:33,573 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:34,679 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:35,783 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:36,888 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:37,994 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:39,098 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:40,204 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:41,311 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:42,418 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:43,522 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:44,628 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:45,734 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:46,839 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:47,946 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:49,053 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:50,158 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:51,265 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:52,370 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:53,476 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:54,583 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:55,690 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:56,796 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:57,899 - INFO - TCP Server listening on port 1053
+2025-09-03 18:32:59,004 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:00,109 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:01,214 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:02,321 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:03,426 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:04,528 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:05,633 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:06,737 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:07,843 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:08,949 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:10,054 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:11,158 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:12,265 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:13,367 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:14,469 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:15,577 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:16,683 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:17,788 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:18,895 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:19,996 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:21,103 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:22,210 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:23,316 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:24,422 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:25,529 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:26,631 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:27,736 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:28,842 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:29,948 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:31,055 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:32,162 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:33,269 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:34,374 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:35,481 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:36,585 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:37,690 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:38,796 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:39,902 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:41,007 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:42,113 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:43,220 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:44,326 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:45,434 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:46,540 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:47,647 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:48,754 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:49,860 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:50,966 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:52,073 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:53,180 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:54,287 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:55,395 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:56,498 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:57,604 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:58,708 - INFO - TCP Server listening on port 1053
+2025-09-03 18:33:59,812 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:00,919 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:02,025 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:03,130 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:04,237 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:05,342 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:06,449 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:07,553 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:08,659 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:09,765 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:10,871 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:11,978 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:13,079 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:14,183 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:15,289 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:16,391 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:17,498 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:18,601 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:19,708 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:20,814 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:21,920 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:23,027 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:24,133 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:25,237 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:26,341 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:27,447 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:28,549 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:29,656 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:30,763 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:31,870 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:32,975 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:34,076 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:35,183 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:36,288 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:37,395 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:38,501 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:39,608 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:40,713 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:41,818 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:42,921 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:44,026 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:45,130 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:46,234 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:47,338 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:48,444 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:49,550 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:50,656 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:51,762 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:52,867 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:53,974 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:55,081 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:56,188 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:57,294 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:58,401 - INFO - TCP Server listening on port 1053
+2025-09-03 18:34:59,507 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:00,614 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:01,720 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:02,827 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:03,932 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:05,037 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:06,140 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:07,245 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:08,351 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:09,456 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:10,559 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:11,665 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:12,767 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:13,871 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:14,976 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:16,081 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:17,188 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:18,291 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:19,398 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:20,503 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:21,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:22,715 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:23,821 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:24,924 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:26,031 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:27,137 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:28,239 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:29,340 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:30,446 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:31,547 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:32,653 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:33,759 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:34,864 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:35,970 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:37,076 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:38,181 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:39,287 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:40,392 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:41,495 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:42,598 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:43,705 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:44,811 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:45,918 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:47,022 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:48,124 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:49,229 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:50,335 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:51,442 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:52,548 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:53,655 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:54,761 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:55,867 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:56,974 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:58,077 - INFO - TCP Server listening on port 1053
+2025-09-03 18:35:59,183 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:00,290 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:01,396 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:02,503 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:03,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:04,716 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:05,822 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:06,926 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:08,029 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:09,137 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:10,243 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:11,349 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:12,456 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:13,559 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:14,665 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:15,772 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:16,879 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:17,983 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:19,090 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:20,192 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:21,297 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:22,399 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:23,507 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:24,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:25,716 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:26,819 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:27,925 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:29,027 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:30,134 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:31,237 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:32,341 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:33,446 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:34,553 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:35,659 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:36,762 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:37,868 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:38,970 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:40,078 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:41,182 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:42,289 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:43,395 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:44,502 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:45,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:46,714 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:47,821 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:48,926 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:50,032 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:51,138 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:52,242 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:53,347 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:54,452 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:55,559 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:56,665 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:57,773 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:58,878 - INFO - TCP Server listening on port 1053
+2025-09-03 18:36:59,983 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:01,090 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:02,194 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:03,297 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:04,404 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:05,511 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:06,617 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:07,721 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:08,827 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:09,929 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:11,036 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:12,142 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:13,247 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:14,354 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:15,456 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:16,561 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:17,667 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:18,771 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:19,874 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:20,981 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:22,087 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:23,192 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:24,299 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:25,405 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:26,511 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:27,617 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:28,720 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:29,825 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:30,926 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:32,033 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:33,139 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:34,245 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:35,351 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:36,453 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:37,559 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:38,663 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:39,766 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:40,873 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:41,980 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:43,087 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:44,193 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:45,295 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:46,401 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:47,505 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:48,611 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:49,718 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:50,821 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:51,928 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:53,030 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:54,132 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:55,239 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:56,346 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:57,453 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:58,558 - INFO - TCP Server listening on port 1053
+2025-09-03 18:37:59,663 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:00,765 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:01,871 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:02,974 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:04,080 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:05,183 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:06,289 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:07,395 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:08,502 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:09,607 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:10,711 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:11,817 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:12,921 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:14,025 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:15,131 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:16,237 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:17,344 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:18,451 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:19,555 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:20,662 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:21,769 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:22,873 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:23,979 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:25,085 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:26,191 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:27,295 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:28,402 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:29,508 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:30,614 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:31,720 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:32,825 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:33,927 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:35,033 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:36,136 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:37,242 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:38,348 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:39,455 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:40,558 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:41,663 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:42,767 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:43,871 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:44,978 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:46,084 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:47,191 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:48,294 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:49,399 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:50,505 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:51,609 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:52,711 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:53,815 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:54,921 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:56,026 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:57,132 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:58,235 - INFO - TCP Server listening on port 1053
+2025-09-03 18:38:59,340 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:00,447 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:01,553 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:02,660 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:03,766 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:04,870 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:05,974 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:07,077 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:08,184 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:09,290 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:10,396 - INFO - TCP Server listening on port 1053
+2025-09-03 18:39:11,058 - INFO - Client disconnected from SocketIO
+2025-09-03 18:41:03,007 - INFO - Starting Flask application...
+2025-09-03 18:41:03,007 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:03,007 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:41:03,007 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:41:03,007 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:41:04,114 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:05,221 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:05,338 - INFO - Client connected to SocketIO
+2025-09-03 18:41:06,327 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:06,513 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 520, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:41:06,522 - INFO - Client disconnected from SocketIO
+2025-09-03 18:41:07,434 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:07,715 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 520, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:41:07,982 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 520, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:41:08,094 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 520, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:41:08,541 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:09,646 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:10,752 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:11,857 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:12,963 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:14,068 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:14,655 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 520, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:41:15,171 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:16,277 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:17,384 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:18,488 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:19,594 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:20,699 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:21,802 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:22,906 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:24,011 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:25,114 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:26,219 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:27,325 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:28,431 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:29,537 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:30,644 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:31,748 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:32,852 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:33,958 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:35,062 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:36,167 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:37,271 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:38,373 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:39,478 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:40,585 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:41,690 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:42,796 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:43,903 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:45,008 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:46,114 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:47,222 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:48,324 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:49,430 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:50,531 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:51,638 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:52,740 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:53,846 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:54,952 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:56,057 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:57,160 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:58,266 - INFO - TCP Server listening on port 1053
+2025-09-03 18:41:59,373 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:00,479 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:01,582 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:02,686 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:03,792 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:04,893 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:05,999 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:07,103 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:08,209 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:09,312 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:10,416 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:11,520 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:12,626 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:13,730 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:14,837 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:15,944 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:17,050 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:18,154 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:19,260 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:20,367 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:32,149 - INFO - Starting Flask application...
+2025-09-03 18:42:32,149 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:32,149 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:42:32,149 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:42:32,149 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:42:33,261 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:33,748 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:34,196 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:34,364 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:34,378 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:34,500 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:34,686 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:34,806 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:42:35,465 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:36,571 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:37,674 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:38,777 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:39,881 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:40,988 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:42,090 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:43,194 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:44,299 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:45,404 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:46,511 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:47,616 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:48,723 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:49,829 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:50,932 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:52,038 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:53,143 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:54,249 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:55,356 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:56,463 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:57,565 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:58,671 - INFO - TCP Server listening on port 1053
+2025-09-03 18:42:59,776 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:00,879 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:01,985 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:03,091 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:04,198 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:05,302 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:06,409 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:07,515 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:08,622 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:09,729 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:10,835 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:11,942 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:13,044 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:14,148 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:15,254 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:16,360 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:17,463 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:20,363 - INFO - Starting Flask application...
+2025-09-03 18:43:20,363 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:20,363 - INFO - HTTP Server will run on port 5051
+2025-09-03 18:43:20,363 - INFO - TCP Server will listen on port 1053
+2025-09-03 18:43:20,363 - INFO - PING/PONG heartbeat system enabled - sending PING every 2 seconds
+2025-09-03 18:43:21,469 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:21,954 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:22,423 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:22,571 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:22,627 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:22,785 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:23,007 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:23,180 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:23,676 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:24,781 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:25,887 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:26,992 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:28,099 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:29,201 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:30,308 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:31,415 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:32,521 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:33,624 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:34,726 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:35,832 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:36,934 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:38,039 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:39,145 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:40,247 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:41,354 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:42,460 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:43,564 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:44,234 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:43:44,668 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:45,775 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:46,881 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:47,983 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:49,086 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:50,193 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:51,297 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:52,403 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:53,509 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:54,612 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:55,716 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:56,823 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:57,928 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:59,034 - INFO - TCP Server listening on port 1053
+2025-09-03 18:43:59,857 - ERROR - Exception on / [GET]
+Traceback (most recent call last):
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 2190, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1486, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask_cors/extension.py", line 176, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1484, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/acholthitchanta/projects/Exfoliator/.venv/lib/python3.9/site-packages/flask/app.py", line 1469, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/Users/acholthitchanta/projects/Exfoliator/Front/app.py", line 327, in index
+    return render_template('control.html')
+NameError: name 'render_template' is not defined
+2025-09-03 18:44:00,141 - INFO - TCP Server listening on port 1053
+2025-09-03 18:44:01,248 - INFO - TCP Server listening on port 1053

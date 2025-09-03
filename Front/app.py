@@ -7,6 +7,9 @@ import time
 import json
 import queue
 import logging
+import os
+import re
+import asyncio
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'exfoliator-secure-key-2024'
@@ -16,8 +19,9 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # Configuration
 ARDUINO_HOST = '192.168.3.100'  # Arduino IP
 TCP_SERVER_PORT = 1053          # TCP port to listen on
-HTTP_PORT = 5000               # HTTP port for Flask
+HTTP_PORT = 5051               # HTTP port for Flask
 SERVER_HOST = '192.168.3.120'   # Raspberry Pi server IP
+
 
 class ArduinoTCPServer:
     def __init__(self):
@@ -423,17 +427,26 @@ def handle_move_position(data):
 
 @socketio.on('move_to_chip')
 def move_to_chip(data):
+    rows = {"A": 1,"B": 2, "C":3, "D":4, "E":5, "F":6 }
+
     chips = data.get('chips', [])
-    for chip_id in chips:
-        logging.info(f"Button Press: Move to chip '{chip_id}' requested")
-        command = f"MoveToChip {chip_id}"
-        if arduino_server.connected:
-            arduino_server.command_queue.put(command)
-            logging.info(f"Button Press: MoveToChip command '{command}' queued for Arduino")
-            emit('command_sent', {'command': command, 'status': 'queued'})
-        else:
-            logging.warning(f"Button Press: MoveToChip command '{command}' received but Arduino not connected")
-            emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+    for i in range(len(chips)):
+        xcor = 105.5  + int(chips[i][1])*8 #i forgor distance between each chip
+        ycor = 4.5 + rows[chips[i][0]]*8 #init values hardcode for now cuzi. dont have macro variables on this branch
+        chips[i] = (xcor,ycor)
+
+    logging.info(f"Button Press: Move to chip '{chips}' requested")
+    command = f"MoveToChip {chips}"
+    #returns an array of positions?
+
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: MoveToChip command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: MoveToChip command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
 
 @socketio.on('home_axis')
 def handle_home_axis(data):
