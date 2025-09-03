@@ -72,7 +72,7 @@ class ArduinoTCPServer:
             self.connected = True
             self.last_ping_sent = time.time()
             self.last_response_received = time.time()
-            socketio.emit('connection_status', {'connected': True})
+            socketio.emit('arduino_connection_status', {'connected': True})
             logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
@@ -95,7 +95,7 @@ class ArduinoTCPServer:
             except:
                 pass
             self.server_socket = None
-        socketio.emit('connection_status', {'connected': False})
+        socketio.emit('arduino_connection_status', {'connected': False})
         
     def send_command(self, command):
         if not self.connected or not self.client_socket:
@@ -109,7 +109,7 @@ class ArduinoTCPServer:
         except Exception as e:
             logging.error(f"Failed to send command '{command}': {e}")
             self.connected = False
-            socketio.emit('connection_status', {'connected': False})
+            socketio.emit('arduino_connection_status', {'connected': False})
             return False
     
     def read_response(self):
@@ -128,7 +128,7 @@ class ArduinoTCPServer:
             if e.errno != 11:  # Ignore "Resource temporarily unavailable" 
                 logging.error(f"Failed to read response: {e}")
                 self.connected = False
-                socketio.emit('connection_status', {'connected': False})
+                socketio.emit('arduino_connection_status', {'connected': False})
             return None
     
     def should_send_ping(self):
@@ -219,7 +219,7 @@ def arduino_communication_thread():
         except Exception as e:
             logging.error(f"Communication thread error: {e}")
             arduino_server.connected = False
-            socketio.emit('connection_status', {'connected': False})
+            socketio.emit('arduino_connection_status', {'connected': False})
             time.sleep(1)
 
 def parse_json_status(json_string):
@@ -366,6 +366,10 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     logging.info("Client disconnected from SocketIO")
+
+@socketio.on('get_arduino_status')
+def handle_get_arduino_status():
+    emit('arduino_connection_status', {'connected': arduino_server.connected})
 
 @socketio.on('send_command')
 def handle_command(data):
