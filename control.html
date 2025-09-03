@@ -114,6 +114,7 @@
         .btn-secondary { background-color: #4B5563; color: white; }
         .btn-danger { background-color: #DC2626; color: white; }
         .btn-success { background-color: #059669; color: white; }
+        .btn-warning { background-color: #F59E0B; color: white; }
         .btn-emergency {
             background-color: #DC2626;
             color: white;
@@ -314,6 +315,114 @@
             padding: 8px 12px;
             background-color: #374151;
             border-radius: 6px;
+        }
+        
+        /* New macro styles */
+        .macro-variables {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .macro-variable-input {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .macro-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #374151;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .macro-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            background-color: #1F2937;
+            border-radius: 4px;
+        }
+        
+        .macro-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .macro-name {
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        
+        .macro-actions {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .macro-actions button {
+            padding: 4px 8px;
+            font-size: 0.875rem;
+        }
+        
+        .macro-editor {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1F2937;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .macro-editor.active {
+            display: block;
+        }
+        
+        .macro-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .macro-editor textarea {
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            color: #10B981;
+            font-family: monospace;
+            font-size: 0.875rem;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #4B5563;
+            resize: vertical;
+        }
+        
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        
+        .overlay.active {
+            display: block;
         }
     </style>
 </head>
@@ -546,6 +655,50 @@
                 </div>
             </div>
 
+            <!-- Macro Control -->
+            <div class="card">
+                <h2 class="card-title">
+                    <span>🎬</span>
+                    Macro Control
+                </h2>
+                
+                <!-- Variables Section -->
+                <div class="mb-4">
+                    <h3 class="section-title">Position Variables</h3>
+                    <div class="macro-variables">
+                        <div class="macro-variable-input">
+                            <label class="tape-input-label">CHIP_X</label>
+                            <input type="number" id="CHIP_X" class="input" value="105.5" step="0.1">
+                        </div>
+                        <div class="macro-variable-input">
+                            <label class="tape-input-label">CHIP_Y</label>
+                            <input type="number" id="CHIP_Y" class="input" value="4.5" step="0.1">
+                        </div>
+                        <div class="macro-variable-input">
+                            <label class="tape-input-label">STAGE_X</label>
+                            <input type="number" id="STAGE_X" class="input" value="8" step="0.1">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Macro List -->
+                <div class="mb-4">
+                    <h3 class="section-title">Saved Macros</h3>
+                    <div id="macroList" class="macro-list">
+                        <!-- Macros will be populated here -->
+                        <div style="color: #6B7280; text-align: center; padding: 20px;">No macros saved yet</div>
+                    </div>
+                </div>
+                
+                <!-- New Macro -->
+                <div>
+                    <div class="flex mb-2">
+                        <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
+                        <button class="button btn-success" onclick="createNewMacro()">Create New</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Console -->
             <div class="card">
                 <h2 class="card-title">
@@ -564,6 +717,19 @@
         </div>
     </div>
 
+    <!-- Macro Editor Modal -->
+    <div class="overlay" id="overlay" onclick="closeMacroEditor()"></div>
+    <div class="macro-editor" id="macroEditor">
+        <div class="macro-editor-header">
+            <h2>Edit Macro: <span id="editingMacroName"></span></h2>
+            <button class="button btn-danger" onclick="closeMacroEditor()">Close</button>
+        </div>
+        <textarea id="macroContent" placeholder="Enter macro commands..."></textarea>
+        <div class="flex" style="margin-top: 16px; justify-content: flex-end;">
+            <button class="button btn-primary" onclick="saveMacro()">Save Macro</button>
+        </div>
+    </div>
+
     <script>
         // Global variables
         let socket;
@@ -578,6 +744,8 @@
         let tape = { speed: 0, torque: 0 };
         let tempData = [];
         let eStopTriggered = false;
+        let currentEditingMacro = null;
+        let macrosList = [];
         
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -586,6 +754,7 @@
             // Initialize all status indicators as red (inactive)
             updatePneumaticsDisplay();
             updateVacuumsDisplay();
+            loadMacroList();
         });
         
         function initializeSocket() {
@@ -648,6 +817,29 @@
             
             socket.on('machine_response', function(data) {
                 addLog(`Response: ${data.response}`);
+            });
+            
+            socket.on('macro_list', function(data) {
+                macrosList = data.macros || [];
+                updateMacroList();
+            });
+            
+            socket.on('macro_created', function(data) {
+                addLog(`Macro created: ${data.name}`);
+                loadMacroList();
+            });
+            
+            socket.on('macro_deleted', function(data) {
+                addLog(`Macro deleted: ${data.name}`);
+                loadMacroList();
+            });
+            
+            socket.on('macro_executed', function(data) {
+                addLog(`Executing macro: ${data.name}`);
+            });
+            
+            socket.on('macro_error', function(data) {
+                addLog(`Macro error: ${data.error}`);
             });
         }
         
@@ -755,7 +947,6 @@
             document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
             document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
             
-            // Don't overwrite user inputs while they're typing
             if (document.activeElement.id !== 'tapeSpeed') {
                 document.getElementById('tapeSpeed').value = tape.speed || 0;
             }
@@ -802,12 +993,155 @@
             console.appendChild(logLine);
             console.scrollTop = console.scrollHeight;
             
-            // Keep only last 10 lines
             while (console.children.length > 10) {
                 console.removeChild(console.firstChild);
             }
         }
         
+        // Macro functions
+        function loadMacroList() {
+            socket.emit('get_macros');
+        }
+        
+        function updateMacroList() {
+            const listContainer = document.getElementById('macroList');
+            
+            if (macrosList.length === 0) {
+                listContainer.innerHTML = '<div style="color: #6B7280; text-align: center; padding: 20px;">No macros saved yet</div>';
+                return;
+            }
+            
+            listContainer.innerHTML = '';
+            macrosList.forEach(macro => {
+                const macroItem = document.createElement('div');
+                macroItem.className = 'macro-item';
+                macroItem.innerHTML = `
+                    <span class="macro-name">${macro}</span>
+                    <div class="macro-actions">
+                        <button class="button btn-success" onclick="runMacro('${macro}')">Run</button>
+                        <button class="button btn-warning" onclick="editMacro('${macro}')">Edit</button>
+                        <button class="button btn-danger" onclick="deleteMacro('${macro}')">Delete</button>
+                    </div>
+                `;
+                listContainer.appendChild(macroItem);
+            });
+        }
+        
+        function createNewMacro() {
+            const name = document.getElementById('newMacroName').value.trim();
+            if (!name) {
+                addLog('Please enter a macro name');
+                return;
+            }
+            
+            currentEditingMacro = name;
+            document.getElementById('editingMacroName').textContent = name;
+            document.getElementById('macroContent').value = getMacroTemplate();
+            openMacroEditor();
+        }
+        
+        function getMacroTemplate() {
+            return `# Macro: ${currentEditingMacro}
+# Created: ${new Date().toLocaleString()}
+# 
+# Available Commands:
+# - MoveX <position> or MoveX CHIP_X
+# - MoveY <position> or MoveY CHIP_Y
+# - EnableX / EnableY
+# - DisableX / DisableY
+# - ExtendNozzle / RetractNozzle
+# - ExtendChipStage / RetractChipStage
+# - ExtendStamp / RetractStamp
+# - VacNozzleOn / VacNozzleOff
+# - ChuckOn / ChuckOff
+# - SetTemperature <temp>
+# - Tape <speed> <torque> <time_ms>
+# - StopTape
+# - delay <milliseconds>
+# - STOP (emergency stop)
+#
+# Variables:
+# - CHIP_X, CHIP_Y, STAGE_X can be used in place of numeric values
+#
+# Example sequence:
+# EnableX
+# EnableY
+# delay 500
+# MoveX CHIP_X
+# MoveY CHIP_Y
+# delay 1000
+# ExtendNozzle
+# delay 500
+# VacNozzleOn
+# delay 1000
+# RetractNozzle
+
+# Your macro commands below:
+`;
+        }
+        
+        function openMacroEditor() {
+            document.getElementById('overlay').classList.add('active');
+            document.getElementById('macroEditor').classList.add('active');
+        }
+        
+        function closeMacroEditor() {
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('macroEditor').classList.remove('active');
+            currentEditingMacro = null;
+        }
+        
+        function saveMacro() {
+            if (!currentEditingMacro) return;
+            
+            const content = document.getElementById('macroContent').value;
+            const variables = {
+                CHIP_X: parseFloat(document.getElementById('CHIP_X').value),
+                CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
+                STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
+            };
+            
+            socket.emit('save_macro', {
+                name: currentEditingMacro,
+                content: content,
+                variables: variables
+            });
+            
+            closeMacroEditor();
+            document.getElementById('newMacroName').value = '';
+        }
+        
+        function editMacro(name) {
+            currentEditingMacro = name;
+            document.getElementById('editingMacroName').textContent = name;
+            
+            socket.emit('load_macro', { name: name });
+            socket.once('macro_content', function(data) {
+                document.getElementById('macroContent').value = data.content || getMacroTemplate();
+                openMacroEditor();
+            });
+        }
+        
+        function runMacro(name) {
+            const variables = {
+                CHIP_X: parseFloat(document.getElementById('CHIP_X').value),
+                CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
+                STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
+            };
+            
+            socket.emit('run_macro', {
+                name: name,
+                variables: variables
+            });
+        }
+        
+        function deleteMacro(name) {
+            if (confirm(`Are you sure you want to delete macro "${name}"?`)) {
+                socket.emit('delete_macro', { name: name });
+            }
+        }
+        
+        // Control functions
         function enableAxis(axis) {
             socket.emit('enable_axis', { axis: axis });
         }
@@ -845,7 +1179,7 @@
             const time = parseInt(document.getElementById('tapeTime').value);
             socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
         }
-
+        
         function stopTapeMotor() {
             socket.emit('send_command', { command: 'StopTape' });
         }
@@ -858,19 +1192,19 @@
             }
         }
         
-        // Allow Enter key to send custom commands
+        // Event listeners for Enter key
         document.getElementById('customCommand').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendCustomCommand();
-            }
+            if (e.key === 'Enter') sendCustomCommand();
         });
+        
         [
             ['xPositionInput', () => moveToPosition('X')],
             ['yPositionInput', () => moveToPosition('Y')],
             ['tempInput', setTemperature],
             ['tapeSpeed', runTapeMotor],
             ['tapeTorque', runTapeMotor],
-            ['tapeTime', runTapeMotor]
+            ['tapeTime', runTapeMotor],
+            ['newMacroName', createNewMacro]
         ].forEach(([id, fn]) => {
             document.getElementById(id).addEventListener('keypress', e => e.key === 'Enter' && fn());
         });

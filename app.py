@@ -7,6 +7,9 @@ import time
 import json
 import queue
 import logging
+import os
+import re
+import asyncio
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'exfoliator-secure-key-2024'
@@ -18,6 +21,199 @@ ARDUINO_HOST = '192.168.3.100'  # Arduino IP
 TCP_SERVER_PORT = 1053          # TCP port to listen on (matches your requirement)
 HTTP_PORT = 5000               # HTTP port for Flask (matches your requirement)
 SERVER_HOST = '192.168.3.120'   # Raspberry Pi server IP
+MACROS_DIR = 'macros'          # Directory to store macro files
+
+# Create macros directory if it doesn't exist
+if not os.path.exists(MACROS_DIR):
+    os.makedirs(MACROS_DIR)
+
+class MacroVariables:
+    """Class to hold and manage macro position variables"""
+    def __init__(self):
+        # Default values
+        self.X_AXIS_INITIAL_CHIPWELL = 105.5 
+        self.Y_AXIS_INITIAL_CHIPWELL = 4.5
+        self.X_AXIS_VACUUM_CHUCK_POSITION = 8
+        
+        # User-definable values
+        self.CHIP_X = self.X_AXIS_INITIAL_CHIPWELL
+        self.CHIP_Y = self.Y_AXIS_INITIAL_CHIPWELL
+        self.STAGE_X = self.X_AXIS_VACUUM_CHUCK_POSITION
+    
+    def update(self, chip_x=None, chip_y=None, stage_x=None):
+        """Update variables with provided values"""
+        if chip_x is not None:
+            self.CHIP_X = float(chip_x)
+        if chip_y is not None:
+            self.CHIP_Y = float(chip_y)
+        if stage_x is not None:
+            self.STAGE_X = float(stage_x)
+    
+    def get_variables(self):
+        """Get current variable values as dictionary"""
+        return {
+            'CHIP_X': self.CHIP_X,
+            'CHIP_Y': self.CHIP_Y,
+            'STAGE_X': self.STAGE_X
+        }
+    
+    def substitute_variables(self, command):
+        """Replace variables in command with their values"""
+        command = command.replace('CHIP_X', str(self.CHIP_X))
+        command = command.replace('CHIP_Y', str(self.CHIP_Y))
+        command = command.replace('STAGE_X', str(self.STAGE_X))
+        return command
+
+class MacroExecutor:
+    """Class to handle macro execution"""
+    def __init__(self, arduino_server, socketio):
+        self.arduino_server = arduino_server
+        self.socketio = socketio
+        self.variables = MacroVariables()
+        self.is_running = False
+        self.current_macro = None
+        self.stop_requested = False
+    
+    def save_macro(self, name, content):
+        """Save macro to file"""
+        try:
+            filename = os.path.join(MACROS_DIR, f"{name}.macro")
+            with open(filename, 'w') as f:
+                f.write(content)
+            logging.info(f"Macro saved: {name}")
+            return True
+        except Exception as e:
+            logging.error(f"Failed to save macro {name}: {e}")
+            return False
+    
+    def load_macro(self, name):
+        """Load macro from file"""
+        try:
+            filename = os.path.join(MACROS_DIR, f"{name}.macro")
+            with open(filename, 'r') as f:
+                content = f.read()
+            return content
+        except Exception as e:
+            logging.error(f"Failed to load macro {name}: {e}")
+            return None
+    
+    def delete_macro(self, name):
+        """Delete macro file"""
+        try:
+            filename = os.path.join(MACROS_DIR, f"{name}.macro")
+            if os.path.exists(filename):
+                os.remove(filename)
+                logging.info(f"Macro deleted: {name}")
+                return True
+            return False
+        except Exception as e:
+            logging.error(f"Failed to delete macro {name}: {e}")
+            return False
+    
+    def list_macros(self):
+        """List all saved macros"""
+        try:
+            macros = []
+            for filename in os.listdir(MACROS_DIR):
+                if filename.endswith('.macro'):
+                    macros.append(filename[:-6])  # Remove .macro extension
+            return sorted(macros)
+        except Exception as e:
+            logging.error(f"Failed to list macros: {e}")
+            return []
+    
+    def parse_command(self, line):
+        """Parse a single macro command line"""
+        line = line.strip()
+        
+        # Skip comments and empty lines
+        if not line or line.startswith('#'):
+            return None, None
+        
+        # Check for delay command
+        if line.lower().startswith('delay'):
+            match = re.match(r'delay\s+(\d+)', line, re.IGNORECASE)
+            if match:
+                return 'delay', int(match.group(1))
+            return None, None
+        
+        # Substitute variables in the command
+        command = self.variables.substitute_variables(line)
+        return 'command', command
+    
+    async def execute_macro_async(self, name, variables=None):
+        """Execute macro asynchronously to avoid blocking"""
+        if self.is_running:
+            self.socketio.emit('macro_error', {'error': 'Another macro is already running'})
+            return
+        
+        self.is_running = True
+        self.current_macro = name
+        self.stop_requested = False
+        
+        try:
+            # Update variables if provided
+            if variables:
+                self.variables.update(
+                    variables.get('CHIP_X'),
+                    variables.get('CHIP_Y'),
+                    variables.get('STAGE_X')
+                )
+            
+            # Load macro content
+            content = self.load_macro(name)
+            if not content:
+                self.socketio.emit('macro_error', {'error': f'Macro {name} not found'})
+                return
+            
+            # Parse and execute commands
+            lines = content.split('\n')
+            for i, line in enumerate(lines):
+                if self.stop_requested:
+                    logging.info(f"Macro {name} stopped by user")
+                    self.socketio.emit('macro_error', {'error': f'Macro {name} stopped'})
+                    break
+                
+                cmd_type, cmd_data = self.parse_command(line)
+                
+                if cmd_type == 'delay':
+                    logging.info(f"Macro {name}: Delaying {cmd_data}ms")
+                    await asyncio.sleep(cmd_data / 1000.0)
+                    
+                elif cmd_type == 'command':
+                    logging.info(f"Macro {name}: Executing {cmd_data}")
+                    self.arduino_server.command_queue.put(cmd_data)
+                    # Small delay between commands to avoid overwhelming Arduino
+                    await asyncio.sleep(0.1)
+            
+            if not self.stop_requested:
+                logging.info(f"Macro {name} completed successfully")
+                self.socketio.emit('macro_completed', {'name': name})
+                
+        except Exception as e:
+            logging.error(f"Error executing macro {name}: {e}")
+            self.socketio.emit('macro_error', {'error': str(e)})
+        finally:
+            self.is_running = False
+            self.current_macro = None
+    
+    def execute_macro(self, name, variables=None):
+        """Execute macro in a separate thread"""
+        def run_async():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.execute_macro_async(name, variables))
+            loop.close()
+        
+        thread = threading.Thread(target=run_async, daemon=True)
+        thread.start()
+    
+    def stop_macro(self):
+        """Stop currently running macro"""
+        if self.is_running:
+            self.stop_requested = True
+            return True
+        return False
 
 class ArduinoTCPServer:
     def __init__(self):
@@ -156,6 +352,7 @@ class ArduinoTCPServer:
         return True
 
 arduino_server = ArduinoTCPServer()
+macro_executor = MacroExecutor(arduino_server, socketio)
 
 def arduino_communication_thread():
     """Background thread for Arduino communication"""
@@ -348,7 +545,7 @@ def get_status():
     logging.debug(f"Status request: {status}")
     return jsonify(status)
 
-# SocketIO Event Handlers with Button Press Logging
+# SocketIO Event Handlers
 @socketio.on('connect')
 def handle_connect():
     logging.info("Client connected to SocketIO")
@@ -386,6 +583,10 @@ def handle_command(data):
 @socketio.on('stop_command')
 def handle_stop_command():
     logging.warning("Button Press: STOP command activated!")
+    
+    # Also stop any running macro
+    if macro_executor.is_running:
+        macro_executor.stop_macro()
     
     if arduino_server.connected:
         arduino_server.command_queue.put("STOP")
@@ -543,6 +744,10 @@ def handle_disable_motor(data):
 def handle_emergency_stop():
     logging.warning("Button Press: EMERGENCY STOP activated!")
     
+    # Also stop any running macro
+    if macro_executor.is_running:
+        macro_executor.stop_macro()
+    
     if arduino_server.connected:
         arduino_server.command_queue.put("STOP")
         logging.warning("Button Press: EMERGENCY STOP command queued for Arduino")
@@ -569,10 +774,6 @@ def handle_tape_motor(data):
         logging.warning(f"Button Press: Tape motor command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
-# Start the communication thread
-communication_thread = threading.Thread(target=arduino_communication_thread, daemon=True)
-communication_thread.start()
-
 @socketio.on('stop_tape')
 def handle_stop_tape():
     logging.info("Button Press: Stop tape motor")
@@ -586,6 +787,100 @@ def handle_stop_tape():
     else:
         logging.warning(f"Button Press: Stop tape command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+# Macro-related handlers
+@socketio.on('get_macros')
+def handle_get_macros():
+    """Get list of all saved macros"""
+    logging.info("Getting list of macros")
+    macros = macro_executor.list_macros()
+    emit('macro_list', {'macros': macros})
+
+@socketio.on('save_macro')
+def handle_save_macro(data):
+    """Save a macro"""
+    name = data.get('name', '').strip()
+    content = data.get('content', '')
+    variables = data.get('variables', {})
+    
+    if not name:
+        emit('macro_error', {'error': 'Macro name is required'})
+        return
+    
+    # Update variables if provided
+    if variables:
+        macro_executor.variables.update(
+            variables.get('CHIP_X'),
+            variables.get('CHIP_Y'),
+            variables.get('STAGE_X')
+        )
+    
+    if macro_executor.save_macro(name, content):
+        logging.info(f"Macro saved: {name}")
+        emit('macro_created', {'name': name})
+    else:
+        emit('macro_error', {'error': f'Failed to save macro {name}'})
+
+@socketio.on('load_macro')
+def handle_load_macro(data):
+    """Load macro content for editing"""
+    name = data.get('name', '').strip()
+    
+    if not name:
+        emit('macro_error', {'error': 'Macro name is required'})
+        return
+    
+    content = macro_executor.load_macro(name)
+    if content:
+        emit('macro_content', {'name': name, 'content': content})
+    else:
+        emit('macro_error', {'error': f'Failed to load macro {name}'})
+
+@socketio.on('delete_macro')
+def handle_delete_macro(data):
+    """Delete a macro"""
+    name = data.get('name', '').strip()
+    
+    if not name:
+        emit('macro_error', {'error': 'Macro name is required'})
+        return
+    
+    if macro_executor.delete_macro(name):
+        logging.info(f"Macro deleted: {name}")
+        emit('macro_deleted', {'name': name})
+    else:
+        emit('macro_error', {'error': f'Failed to delete macro {name}'})
+
+@socketio.on('run_macro')
+def handle_run_macro(data):
+    """Run a macro"""
+    name = data.get('name', '').strip()
+    variables = data.get('variables', {})
+    
+    if not name:
+        emit('macro_error', {'error': 'Macro name is required'})
+        return
+    
+    if not arduino_server.connected:
+        emit('macro_error', {'error': 'Arduino not connected'})
+        return
+    
+    logging.info(f"Running macro: {name}")
+    emit('macro_executed', {'name': name})
+    macro_executor.execute_macro(name, variables)
+
+@socketio.on('stop_macro')
+def handle_stop_macro():
+    """Stop currently running macro"""
+    if macro_executor.stop_macro():
+        logging.info("Macro execution stopped")
+        emit('macro_stopped', {'success': True})
+    else:
+        emit('macro_error', {'error': 'No macro is currently running'})
+
+# Start the communication thread
+communication_thread = threading.Thread(target=arduino_communication_thread, daemon=True)
+communication_thread.start()
 
 if __name__ == '__main__':
     # Setup logging with different levels for testing
@@ -602,6 +897,7 @@ if __name__ == '__main__':
     logging.info(f"HTTP Server will run on port {HTTP_PORT}")
     logging.info(f"TCP Server will listen on port {TCP_SERVER_PORT}")
     logging.info("PING/PONG heartbeat system enabled - sending PING every 2 seconds")
+    logging.info("Macro system enabled - macros will be saved to 'macros' directory")
     
     # Run the Flask app with SocketIO
     socketio.run(app, host='0.0.0.0', port=HTTP_PORT, debug=False)
