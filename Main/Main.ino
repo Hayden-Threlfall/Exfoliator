@@ -78,8 +78,10 @@ void loop() {
             delay(1000); // Wait indefinitely
         }
     }
+    
     // Try to reconnect if not connected
-    if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000)) || checkTimer(lastHeartbeat, HEARTBEAT_INTERVAL)) {
+    if ((!client.connected() || millis() - lastHeartbeat > HEARTBEAT_INTERVAL) && checkTimer(lastConnectionAttempt, 2000)) {
+        client.print("PING not recieved");
         connectToServer();
     }
 
@@ -331,7 +333,7 @@ bool checkTimer(unsigned long &lastTime, unsigned long duration) {
 }
 
 bool connectToServer() {
-    if (client.connected()) {
+    if (client.connected() && millis() - lastHeartbeat < HEARTBEAT_INTERVAL) {
         return true;
     }
     
@@ -340,6 +342,7 @@ bool connectToServer() {
     
     if (client.connect(serverIp, SERVER_PORT)) {
         Serial.println("Connected to server!");
+        lastHeartbeat = millis();
         return true;
     } else {
         Serial.println("Connection failed. Will retry...");
