@@ -334,5 +334,6 @@
 
     function submitChips() {
         selectedChips.sort();
+        console.log(selectedChips)
         socket.emit('move_to_chip', { chips: selectedChips });
     }

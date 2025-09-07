@@ -437,16 +437,39 @@ def move_to_chip(data):
         chips[i] = (xcor,ycor)
 
     logging.info(f"Button Press: Move to chip '{chips}' requested")
-    command = f"MoveToChip {chips}"
-    #returns an array of positions?
 
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: MoveToChip command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: MoveToChip command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
+    for chip in chips:
+        command = f"MoveX {chip[0]}"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: MoveX command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: MoveX command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+        
+        command = f"MoveY {chip[1]}"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: MoveY command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: MoveY command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+        command = f"Exfoliate"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Exfoliate command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: Exfoliate command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+        
 
 @socketio.on('home_axis')
 def handle_home_axis(data):
