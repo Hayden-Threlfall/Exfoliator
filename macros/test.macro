@@ -1,0 +1,117 @@
+# Available Commands:
+# - MoveX <position> or MoveX CHIP_X
+# - MoveY <position> or MoveY CHIP_Y
+# - EnableX / EnableY
+# - DisableX / DisableY
+# - ExtendNozzle / RetractNozzle
+# - ExtendChipStage / RetractChipStage
+# - ExtendStamp / RetractStamp
+# - VacNozzleOn / VacNozzleOff
+# - ChuckOn / ChuckOff
+# - SetTemperature <temp>
+# - Tape <speed> <torque> <time_ms>
+# - StopTape
+# - delay <milliseconds>
+# - STOP (emergency stop)
+#
+# Variables:
+# - CHIP_X, CHIP_Y, STAGE_X can be used in place of numeric values
+#
+# Example sequence:
+# EnableX
+# EnableY
+# delay 500
+# MoveX CHIP_X
+# MoveY CHIP_Y
+# delay 1000
+# ExtendNozzle
+# delay 500
+# VacNozzleOn
+# delay 1000
+# RetractNozzle
+[4:33 PM] # Initialize system
+EnableX
+EnableY
+SetTemperature 40
+Tape 0 4 0
+delay 500
+# Move above chip in tray
+VacNozzleOff
+MoveX CHIP_X
+MoveY CHIP_Y
+delay 1000
+# Pick up chip from tray
+ExtendNozzle
+delay 1000
+VacNozzleOn
+delay 1000
+RetractNozzle
+delay 250
+# Move above vacuum chuck
+MoveX 8
+MoveY CHIP_Y
+delay 1000
+# Place chip on chuck
+ExtendNozzle
+delay 1500
+ChuckOn
+VacNozzleOff
+delay 500
+RetractNozzle
+delay 500
+# Stamp procedure start
+ExtendStamp
+Tape 0 1 0
+delay 1000
+RetractStamp
+Tape 0 4 0
+delay 1000
+ExtendStamp
+Tape 0 1 0
+delay 1000
+RetractStamp
+Tape 0 4 0
+delay 1000
+ExtendStamp
+Tape 0 2 0
+delay 1000
+Tape 0 0 0
+RetractChipStage
+delay 1000
+RetractStamp
+Tape 0 1 0
+delay 1000
+ExtendStamp
+delay 1000
+ExtendChipStage
+Tape 0 5 0
+delay 1000
+Tape 0 4 0
+delay 1000
+Tape 0 2 0
+delay 1000
+Tape 4 15 0
+delay 1000
+Tape 0 2 0
+delay 1000
+Tape 0 0 0
+# Pick up chip from chuck
+ExtendNozzle
+delay 500
+VacNozzleOn
+ChuckOff
+delay 500
+RetractNozzle
+delay 250
+# Move back to tray
+MoveX CHIP_X
+MoveY CHIP_Y
+delay 1000
+# Place chip back on tray
+ExtendNozzle
+delay 1000
+VacNozzleOff
+delay 1000
+RetractNozzle
+# Cleanup
+SetTemperature 0 
