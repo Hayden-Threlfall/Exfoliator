@@ -332,8 +332,12 @@
         });
     }
 
-    function submitChips() {
+
+    function submitChips(action) {
+        const actionSelect = document.getElementById('action').value;
+
         selectedChips.sort();
         console.log(selectedChips)
-        socket.emit('move_to_chip', { chips: selectedChips });
+        console.log(action)
+        socket.emit('move_to_chip', { chips: selectedChips, action: actionSelect });
     }

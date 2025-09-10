@@ -412,4 +412,9 @@ body {
     transform: translateY(-1px);
 }
 
+#submitChipQuery{
+     background-color: #10B981;
+     color: white;
+}
+
 

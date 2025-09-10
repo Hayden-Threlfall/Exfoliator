@@ -23,3 +23,7 @@ Requirments:
 
 Extra:
 * If you want to get fancy, full select rows, columns, and all
+
+things to do
+
+make it so python only sends the array LOL

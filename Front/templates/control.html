@@ -369,8 +369,14 @@
 
 
                     <div class="options">
-                        <button id="submitChipQuery" class="button" onclick="submitChips()">Select chips</button>
+
+                        <select class="button" id="action" name="action">
+                            <option value="exfoliate">Exfoliate</option>
+                            <option value="placeholder">Placeholder</option>
+                        </select>
                         <button id="clearChipSelection" class="button" onclick="clearChips()">Clear selection</button>
+                        <button id="submitChipQuery" class="button" onclick="submitChips()">Exfoliate</button>
+
                     </div>
                 </div>
             </div>
