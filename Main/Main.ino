@@ -9,8 +9,8 @@ volatile bool eStopTriggered = false;
 
 #define SERVER_PORT 1053
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
-IPAddress ip(192, 168, 3, 100);           // Arduino IP
-IPAddress serverIp(192, 168, 3, 120);     // Python server IP
+IPAddress ip(192, 168, 4, 100);           // Arduino IP
+IPAddress serverIp(192, 168, 4, 120);     // Python server IP
 
 EthernetClient client;
 char incomingData[300]; // Buffer for receiving commands
