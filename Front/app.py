@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import socket
@@ -515,7 +515,7 @@ def parse_json_status(json_string):
 # Web Routes
 @app.route('/')
 def index():
-    return send_file('control.html')
+    return render_template('control.html')
 
 @app.route('/connect', methods=['POST'])
 def connect_machine():
