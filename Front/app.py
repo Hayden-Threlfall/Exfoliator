@@ -17,10 +17,11 @@ CORS(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Configuration
-ARDUINO_HOST = '192.168.3.100'  # Arduino IP
-TCP_SERVER_PORT = 1053          # TCP port to listen on (matches your requirement)
-HTTP_PORT = 5000               # HTTP port for Flask (matches your requirement)
-SERVER_HOST = '192.168.3.120'   # Raspberry Pi server IP
+ARDUINO_HOST = '192.168.4.100'  # Arduino IP
+TCP_SERVER_PORT = 1053          # TCP port to listen for Arduino
+HTTP_PORT = 80               # HTTP port for Flask
+HTTP_HOST = '192.168.3.80'     # Flask server IP
+SERVER_HOST = '192.168.4.120'   # Raspberry Pi server IP for TCP
 MACROS_DIR = 'macros'          # Directory to store macro files
 
 # Create macros directory if it doesn't exist
@@ -249,7 +250,7 @@ class ArduinoTCPServer:
             
             self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            self.server_socket.bind(('0.0.0.0', TCP_SERVER_PORT))
+            self.server_socket.bind((SERVER_HOST, TCP_SERVER_PORT))
             self.server_socket.listen(1)
             self.server_socket.settimeout(1.0)  # Non-blocking accept
             logging.info(f"TCP Server listening on port {TCP_SERVER_PORT}")
@@ -268,7 +269,7 @@ class ArduinoTCPServer:
             self.connected = True
             self.last_ping_sent = time.time()
             self.last_response_received = time.time()
-            socketio.emit('connection_status', {'connected': True})
+            socketio.emit('arduino_connection_status', {'connected': True})
             logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
@@ -291,7 +292,7 @@ class ArduinoTCPServer:
             except:
                 pass
             self.server_socket = None
-        socketio.emit('connection_status', {'connected': False})
+        socketio.emit('arduino_connection_status', {'connected': False})
         
     def send_command(self, command):
         if not self.connected or not self.client_socket:
@@ -305,7 +306,7 @@ class ArduinoTCPServer:
         except Exception as e:
             logging.error(f"Failed to send command '{command}': {e}")
             self.connected = False
-            socketio.emit('connection_status', {'connected': False})
+            socketio.emit('arduino_connection_status', {'connected': False})
             return False
     
     def read_response(self):
@@ -324,7 +325,7 @@ class ArduinoTCPServer:
             if e.errno != 11:  # Ignore "Resource temporarily unavailable" 
                 logging.error(f"Failed to read response: {e}")
                 self.connected = False
-                socketio.emit('connection_status', {'connected': False})
+                socketio.emit('arduino_connection_status', {'connected': False})
             return None
     
     def should_send_ping(self):
@@ -416,7 +417,7 @@ def arduino_communication_thread():
         except Exception as e:
             logging.error(f"Communication thread error: {e}")
             arduino_server.connected = False
-            socketio.emit('connection_status', {'connected': False})
+            socketio.emit('arduino_connection_status', {'connected': False})
             time.sleep(1)
 
 def parse_json_status(json_string):
@@ -563,6 +564,10 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     logging.info("Client disconnected from SocketIO")
+
+@socketio.on('get_arduino_status')
+def handle_get_arduino_status():
+    emit('arduino_connection_status', {'connected': arduino_server.connected})
 
 @socketio.on('send_command')
 def handle_command(data):
@@ -900,4 +905,4 @@ if __name__ == '__main__':
     logging.info("Macro system enabled - macros will be saved to 'macros' directory")
     
     # Run the Flask app with SocketIO
-    socketio.run(app, host='0.0.0.0', port=HTTP_PORT, debug=False)
+    socketio.run(app, host="0.0.0.0", port=HTTP_PORT, debug=False, allow_unsafe_werkzeug=True)

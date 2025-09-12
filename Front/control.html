@@ -761,8 +761,15 @@
             socket = io();
             
             socket.on('connect', function() {
-                updateConnectionStatus(true);
-                addLog('Connected to server');
+                updateConnectionStatus(false);  // Start as disconnected until Arduino connects
+                addLog('Connected to web server');
+                // Request actual Arduino connection status
+                socket.emit('get_arduino_status');
+            });
+
+            socket.on('arduino_connection_status', function(data) {
+                updateConnectionStatus(data.connected);
+                addLog(data.connected ? 'Arduino connected' : 'Arduino disconnected');
             });
             
             socket.on('disconnect', function() {
