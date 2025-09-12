@@ -117,29 +117,46 @@ void processCommand(String cmd) {
     // Movement commands
     if (cmd.startsWith("MoveX ")) {
         float position = cmd.substring(6).toFloat();
-        Serial.print("Moving X to position: ");
-        Serial.println(position);
-        moveXandYAxes(position, getYPosition());
-        client.println("OK");
+        if (!getNozzleExtended) {
+            Serial.print("Moving X to position: ");
+            Serial.println(position);
+            moveXandYAxes(position, getYPosition());
+            client.println("OK");
+        }
+        else 
+            client.print("!!!WARNING!!! Nozzle Extended Will Not Move");
+        
     }
     else if (cmd.startsWith("MoveY ")) {
         float position = cmd.substring(6).toFloat();
-        Serial.print("Moving Y to position: ");
-        Serial.println(position);
-        moveXandYAxes(getXPosition(), position);
-        client.println("OK");
+        if (!getNozzleExtended) {
+            Serial.print("Moving Y to position: ");
+            Serial.println(position);
+            moveXandYAxes(getXPosition(), position);
+            client.println("OK");
+        }
+        else 
+            client.print("!!!WARNING!!! Nozzle Extended Will Not Move");
     }
     
     // Homing commands
     else if (cmd == "EnableX") {
-        Serial.println("Homing X axis");
-        enableXMotor();
-        client.println("Homing X axis");
+        if (!getNozzleExtended) {
+            Serial.println("Homing X axis");
+            enableXMotor();
+            client.println("Homing X axis");
+        }
+        else 
+            client.print("!!!WARNING!!! Nozzle Extended Will Not Move");
     }
     else if (cmd == "EnableY") {
-        Serial.println("Homing Y axis");
-        enableYMotor();
-        client.println("Homing Y axis");
+        if (!getNozzleExtended) {
+            Serial.println("Homing Y axis");
+            enableYMotor();
+            client.println("Homing Y axis");
+        }
+        else 
+            client.print("!!!WARNING!!! Nozzle Extended Will Not Move");
     }
     
     // Motor disable commands

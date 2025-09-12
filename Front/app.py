@@ -17,7 +17,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 ARDUINO_HOST = '192.168.4.100'  # Arduino IP
 TCP_SERVER_PORT = 1053          # TCP port to listen for Arduino
 HTTP_PORT = 80               # HTTP port for Flask
-HTTP_HOST = '192.168.3.119'     # Flask server IP
+HTTP_HOST = '192.168.3.80'     # Flask server IP
 SERVER_HOST = '192.168.4.120'   # Raspberry Pi server IP for TCP
 
 class ArduinoTCPServer:
@@ -609,4 +609,4 @@ if __name__ == '__main__':
     logging.info("PING/PONG heartbeat system enabled - sending PING every 2 seconds")
     
     # Run the Flask app with SocketIO
-    socketio.run(app, host=HTTP_HOST, port=HTTP_PORT, debug=False, allow_unsafe_werkzeug=True)
+    socketio.run(app, host="0.0.0.0", port=HTTP_PORT, debug=False, allow_unsafe_werkzeug=True)
