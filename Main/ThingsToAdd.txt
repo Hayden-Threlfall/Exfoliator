@@ -1,0 +1,21 @@
+:: Raspi ::
+set static ip for raspi
+sudo nmtui
+
+:: Back / Mid ::
+Client, does not reconnect and keeps sending json when ethernet cable is quick unplugged and replugged from raspi or server side... (fixed?)
+setup Tape Motor and spool motor connected ughhhhhhh
+unkown Command On server side ("pong")
+
+Heater heats to high (try new pid library or slowly heat up)
+
+
+:: UI::
+Can you clean up Tape Motor Inputs and make sure logic is good when i try to enter a text it get overwritten
+
+Nozzle and chip stage LED flip
+
+
+:: BUG ::
+WTF connected first time run of differnt machine???
+

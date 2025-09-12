@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, send_file, render_template
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import socket
@@ -215,6 +215,7 @@ class MacroExecutor:
             self.stop_requested = True
             return True
         return False
+
 
 class ArduinoTCPServer:
     def __init__(self):
@@ -624,10 +625,79 @@ def handle_move_position(data):
         logging.warning(f"Button Press: Move command '{command}' received but Arduino not connected")
         emit('command_sent', {'command': command, 'status': 'not_connected'})
 
+@socketio.on('move_to_chip')
+def move_to_chip(data):
+    rows = {"A": 1,"B": 2, "C":3, "D":4, "E":5, "F":6 }
+
+    chips = data.get('chips', [])
+    action = data.get('action', "")
+
+    for i in range(len(chips)):
+        xcor = 105.5  + int(chips[i][1])*12.5 #i forgor distance between each chip
+        ycor = 4.5 + rows[chips[i][0]]*12.5 #init values hardcode for now cuzi. dont have macro variables on this branch
+        chips[i] = (xcor,ycor)
+
+    logging.info(f"Button Press: Move to chip '{chips}' requested")
+
+    for chip in chips:
+        command = f"MoveX {chip[0]}"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: MoveX command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: MoveX command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+        
+        command = f"MoveY {chip[1]}"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: MoveY command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: MoveY command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+        command = f"{action}"
+        #returns an array of positions?
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Exfoliate command '{command}' queued for Arduino")
+            emit('command_sent', {'command': command, 'status': 'queued'})
+        else:
+            logging.warning(f"Button Press: Exfoliate command '{command}' received but Arduino not connected")
+            emit('command_sent', {'command': command, 'status': 'not_connected'})
+
+        
+
+@socketio.on('home_axis')
+def handle_home_axis(data):
+    axis = data.get('axis', '')
+    logging.info(f"Button Press: Home axis '{axis}'")
+    
+    if axis == '':
+        command = "HomeAll"
+    elif axis == 'X':
+        command = "HomeX"
+    elif axis == 'Y':
+        command = "HomeY"
+    else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for home command")
+        return
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Home command '{command}' queued for Arduino")
+        emit('command_sent', {'command': command, 'status': 'queued'})
+    else:
+        logging.warning(f"Button Press: Home command '{command}' received but Arduino not connected")
+        emit('command_sent', {'command': command, 'status': 'not_connected'})
+
 @socketio.on('enable_axis')
 def handle_enable_axis(data):
     axis = data.get('axis')  # 'X' or 'Y'
-    
     logging.info(f"Button Press: Enable {axis} axis")
     
     if axis == 'X':
@@ -649,7 +719,6 @@ def handle_enable_axis(data):
 @socketio.on('set_temperature')
 def handle_temperature(data):
     temperature = data.get('temperature', 0)
-    
     logging.info(f"Button Press: Set temperature to {temperature}°C")
     
     command = f"SetTemperature {temperature}"
