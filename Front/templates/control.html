@@ -278,12 +278,18 @@
                     <div class="flex mb-2">
                         <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
                         <button class="button btn-success" onclick="createNewMacro()">Create New</button>
+                    </div>
+                </div>
+            </div>
+
+
             <!-- Selector -->
             <div class="card selector">
                 <h2 class="card-title">
                     <span>⚙️</span>
                     Selector
                 </h2>
+
                 <div class="chips">
                     <!-- Row 1 (from Col 1) -->
 
@@ -410,8 +416,7 @@
                     <div class="options">
 
                         <select class="button" id="action" name="action">
-                            <option value="exfoliate">Exfoliate</option>
-                            <option value="placeholder">Placeholder</option>
+                            <!--macro options go here-->
                         </select>
                         <button id="clearChipSelection" class="button" onclick="clearChips()">Clear selection</button>
                         <button id="submitChipQuery" class="button" onclick="submitChips()">Exfoliate</button>
@@ -435,6 +440,7 @@
                     <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
                 </div>
             </div>
+
         </div>
     </div>
 

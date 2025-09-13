@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePneumaticsDisplay();
     updateVacuumsDisplay();
     loadMacroList();
+
 });
 
 function initializeSocket() {
@@ -96,6 +97,22 @@ function initializeSocket() {
 
     socket.on('macro_list', function(data) {
         macrosList = data.macros || [];
+        //adding macro list to chip selector options
+        if (macrosList.length === 0) {
+        const option = document.createElement("option");
+        option.textContent = "No Saved Macros";
+        option.value = ""; // empty value
+        document.querySelector("#action").appendChild(option);
+        } else {
+            const select = document.querySelector("#action");
+
+            macrosList.forEach(macro => {
+                const option = document.createElement("option");
+                option.textContent = macro;  // text shown in dropdown
+                option.value = macro;        // value submitted
+                select.appendChild(option);
+            });
+        }
         updateMacroList();
     });
     
@@ -395,6 +412,19 @@ function runMacro(name) {
     });
 }
 
+
+function runChipMacro(name,x,y) {
+    const variables = {
+        CHIP_X: x,
+        CHIP_Y: y,
+        STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
+    };
+    socket.emit('run_macro', {
+        name: name,
+        variables: variables
+    });
+}
+
 function deleteMacro(name) {
     if (confirm(`Are you sure you want to delete macro "${name}"?`)) {
         socket.emit('delete_macro', { name: name });
@@ -495,8 +525,19 @@ function clearChips() {
     });
 }
 
-function submitChips(action) {
-    const actionSelect = document.getElementById('action').value;
+function submitChips() {
     selectedChips.sort();
-    socket.emit('move_to_chip', { chips: selectedChips, action: actionSelect });
+
+    const rows = {"A": 1,"B": 2, "C":3, "D":4, "E":5, "F":6 }
+
+    const actionSelect = document.querySelector('#action').value;
+
+    for (chip of selectedChips){
+        let xcor = 105.5  + (chip[1])*12.5 //i forgor distance between each chip
+        let ycor = 4.5 + rows[chip[0]]*12.5 //init values hardcode for now cuzi. dont have macro variables on this branch
+        runChipMacro(actionSelect,xcor,ycor);
+
+
+    }   
 }
+
