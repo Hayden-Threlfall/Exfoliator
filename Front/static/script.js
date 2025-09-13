@@ -98,6 +98,7 @@ function initializeSocket() {
     socket.on('macro_list', function(data) {
         macrosList = data.macros || [];
         //adding macro list to chip selector options
+
         if (macrosList.length === 0) {
         const option = document.createElement("option");
         option.textContent = "No Saved Macros";
@@ -105,6 +106,7 @@ function initializeSocket() {
         document.querySelector("#action").appendChild(option);
         } else {
             const select = document.querySelector("#action");
+            select.innerHTML = ''; // clear existing options
 
             macrosList.forEach(macro => {
                 const option = document.createElement("option");
