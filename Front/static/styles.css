@@ -448,6 +448,33 @@ body {
     justify-content: space-between;
 }
 
+.box{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+
+
+.rowcol-select{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem
+}
+
+.submit{
+    width: 100px;
+}
+
+.selecting-rowcol{
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    gap: 3rem;
+}
+
+
 .chips > * {
     margin: auto;
 }
@@ -478,7 +505,14 @@ body {
     transform: translateY(-1px);
 }
 
-#submitChipQuery {
-     background-color: #10B981;
-     color: white;
+.submit{
+    background-color: white;
+    border: none;
+    height: 30px;
+    border-radius: 5px;
 }
+
+.submit:hover{
+    background-color: rgb(154, 154, 154)
+}
+

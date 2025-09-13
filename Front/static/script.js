@@ -414,7 +414,6 @@ function runMacro(name) {
     });
 }
 
-
 function runChipMacro(name,x,y) {
     const variables = {
         CHIP_X: x,
@@ -542,4 +541,37 @@ function submitChips() {
 
     }   
 }
+
+
+function selectRow() {
+    const actionSelect = document.querySelector('#row-select').value;
+    selectedRow = document.querySelectorAll(`.row:nth-child(${actionSelect}) button`)
+    for (chip of selectedRow){
+        chip.classList.add('selected');
+        selectedChips.push(chip.id);
+    }
+}
+
+function selectAllChips() {
+    chips = document.querySelectorAll('.chips button')
+    for (chip of chips){
+        chip.classList.add('selected');
+        selectedChips.push(chip.id)
+    }
+
+}
+
+function selectColumn() {
+    const actionSelect = document.querySelector('#column-select').value;
+
+    selectedColumn = document.querySelectorAll(`.${actionSelect}`)
+
+    for (chip of selectedColumn){
+        chip.classList.add('selected');
+        selectedChips.push(chip.id);
+    }
+}
+
+
+
 
