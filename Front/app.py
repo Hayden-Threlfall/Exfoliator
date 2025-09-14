@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file, render_template
-from flask_socketio import SocketIO, emit
+from flask_sock import Sock
 from flask_cors import CORS
 import socket
 import threading
@@ -14,7 +14,7 @@ import asyncio
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'exfoliator-secure-key-2024'
 CORS(app)
-socketio = SocketIO(app, cors_allowed_origins="*")
+sock = Sock(app)
 
 # Configuration
 ARDUINO_HOST = '192.168.4.100'  # Arduino IP
@@ -27,6 +27,9 @@ MACROS_DIR = 'macros'          # Directory to store macro files
 # Create macros directory if it doesn't exist
 if not os.path.exists(MACROS_DIR):
     os.makedirs(MACROS_DIR)
+
+# Global variable to store WebSocket connections
+websocket_clients = set()
 
 class MacroVariables:
     """Class to hold and manage macro position variables"""
@@ -65,11 +68,25 @@ class MacroVariables:
         command = command.replace('STAGE_X', str(self.STAGE_X))
         return command
 
+def broadcast_message(event, data):
+    """Broadcast message to all connected WebSocket clients"""
+    message = json.dumps({'event': event, 'data': data})
+    dead_clients = set()
+    
+    for ws in websocket_clients.copy():
+        try:
+            ws.send(message)
+        except Exception as e:
+            logging.error(f"Error sending message to client: {e}")
+            dead_clients.add(ws)
+    
+    # Remove dead connections
+    websocket_clients -= dead_clients
+
 class MacroExecutor:
     """Class to handle macro execution"""
-    def __init__(self, arduino_server, socketio):
+    def __init__(self, arduino_server):
         self.arduino_server = arduino_server
-        self.socketio = socketio
         self.variables = MacroVariables()
         self.is_running = False
         self.current_macro = None
@@ -145,7 +162,7 @@ class MacroExecutor:
     async def execute_macro_async(self, name, variables=None):
         """Execute macro asynchronously to avoid blocking"""
         if self.is_running:
-            self.socketio.emit('macro_error', {'error': 'Another macro is already running'})
+            broadcast_message('macro_error', {'error': 'Another macro is already running'})
             return
         
         self.is_running = True
@@ -164,7 +181,7 @@ class MacroExecutor:
             # Load macro content
             content = self.load_macro(name)
             if not content:
-                self.socketio.emit('macro_error', {'error': f'Macro {name} not found'})
+                broadcast_message('macro_error', {'error': f'Macro {name} not found'})
                 return
             
             # Parse and execute commands
@@ -172,7 +189,7 @@ class MacroExecutor:
             for i, line in enumerate(lines):
                 if self.stop_requested:
                     logging.info(f"Macro {name} stopped by user")
-                    self.socketio.emit('macro_error', {'error': f'Macro {name} stopped'})
+                    broadcast_message('macro_error', {'error': f'Macro {name} stopped'})
                     break
                 
                 cmd_type, cmd_data = self.parse_command(line)
@@ -189,11 +206,11 @@ class MacroExecutor:
             
             if not self.stop_requested:
                 logging.info(f"Macro {name} completed successfully")
-                self.socketio.emit('macro_completed', {'name': name})
+                broadcast_message('macro_completed', {'name': name})
                 
         except Exception as e:
             logging.error(f"Error executing macro {name}: {e}")
-            self.socketio.emit('macro_error', {'error': str(e)})
+            broadcast_message('macro_error', {'error': str(e)})
         finally:
             self.is_running = False
             self.current_macro = None
@@ -270,7 +287,7 @@ class ArduinoTCPServer:
             self.connected = True
             self.last_ping_sent = time.time()
             self.last_response_received = time.time()
-            socketio.emit('arduino_connection_status', {'connected': True})
+            broadcast_message('arduino_connection_status', {'connected': True})
             logging.info(f"Device connected from {addr}")
             return True
         except socket.timeout:
@@ -293,7 +310,7 @@ class ArduinoTCPServer:
             except:
                 pass
             self.server_socket = None
-        socketio.emit('arduino_connection_status', {'connected': False})
+        broadcast_message('arduino_connection_status', {'connected': False})
         
     def send_command(self, command):
         if not self.connected or not self.client_socket:
@@ -307,7 +324,7 @@ class ArduinoTCPServer:
         except Exception as e:
             logging.error(f"Failed to send command '{command}': {e}")
             self.connected = False
-            socketio.emit('arduino_connection_status', {'connected': False})
+            broadcast_message('arduino_connection_status', {'connected': False})
             return False
     
     def read_response(self):
@@ -326,7 +343,7 @@ class ArduinoTCPServer:
             if e.errno != 11:  # Ignore "Resource temporarily unavailable" 
                 logging.error(f"Failed to read response: {e}")
                 self.connected = False
-                socketio.emit('arduino_connection_status', {'connected': False})
+                broadcast_message('arduino_connection_status', {'connected': False})
             return None
     
     def should_send_ping(self):
@@ -354,7 +371,7 @@ class ArduinoTCPServer:
         return True
 
 arduino_server = ArduinoTCPServer()
-macro_executor = MacroExecutor(arduino_server, socketio)
+macro_executor = MacroExecutor(arduino_server)
 
 def arduino_communication_thread():
     """Background thread for Arduino communication"""
@@ -392,7 +409,7 @@ def arduino_communication_thread():
                             logging.debug("PONG received")
                             # PONG response already updated last_response_received in read_response()
                         else:
-                            socketio.emit('machine_response', {'response': response})
+                            broadcast_message('machine_response', {'response': response})
                             logging.info(f"Arduino response: {response}")
                 
             # Check connection health
@@ -410,7 +427,7 @@ def arduino_communication_thread():
                         logging.debug("PONG received")
                         # Response timestamp already updated in read_response()
                     else:
-                        socketio.emit('machine_response', {'response': response})
+                        broadcast_message('machine_response', {'response': response})
                         logging.info(f"Arduino response: {response}")
             
             time.sleep(0.1)  # Check frequently for responses
@@ -418,7 +435,7 @@ def arduino_communication_thread():
         except Exception as e:
             logging.error(f"Communication thread error: {e}")
             arduino_server.connected = False
-            socketio.emit('arduino_connection_status', {'connected': False})
+            broadcast_message('arduino_connection_status', {'connected': False})
             time.sleep(1)
 
 def parse_json_status(json_string):
@@ -431,7 +448,7 @@ def parse_json_status(json_string):
         if 'x' in data and 'y' in data:
             arduino_server.position['x'] = float(data['x'])
             arduino_server.position['y'] = float(data['y'])
-            socketio.emit('position_update', arduino_server.position)
+            broadcast_message('position_update', arduino_server.position)
             logging.debug(f"Position update: {arduino_server.position}")
         
         # Update motor states
@@ -444,7 +461,7 @@ def parse_json_status(json_string):
             motor_states_updated = True
         
         if motor_states_updated:
-            socketio.emit('motor_states_update', arduino_server.motor_states)
+            broadcast_message('motor_states_update', arduino_server.motor_states)
             logging.debug(f"Motor states update: {arduino_server.motor_states}")
         
         # Update tape motor status
@@ -453,7 +470,7 @@ def parse_json_status(json_string):
             if isinstance(tape_data, list) and len(tape_data) >= 2:
                 arduino_server.tape['speed'] = int(tape_data[0])
                 arduino_server.tape['torque'] = int(tape_data[1])
-                socketio.emit('tape_update', arduino_server.tape)
+                broadcast_message('tape_update', arduino_server.tape)
                 logging.debug(f"Tape update: {arduino_server.tape}")
         
         # Update pneumatics
@@ -469,7 +486,7 @@ def parse_json_status(json_string):
             pneumatics_updated = True
         
         if pneumatics_updated:
-            socketio.emit('pneumatics_update', arduino_server.pneumatics)
+            broadcast_message('pneumatics_update', arduino_server.pneumatics)
             logging.debug(f"Pneumatics update: {arduino_server.pneumatics}")
         
         # Update vacuums
@@ -482,7 +499,7 @@ def parse_json_status(json_string):
             vacuums_updated = True
         
         if vacuums_updated:
-            socketio.emit('vacuums_update', arduino_server.vacuums)
+            broadcast_message('vacuums_update', arduino_server.vacuums)
             logging.debug(f"Vacuums update: {arduino_server.vacuums}")
         
         # Update temperatures
@@ -495,7 +512,7 @@ def parse_json_status(json_string):
             temp_updated = True
         
         if temp_updated:
-            socketio.emit('temperature_update', {
+            broadcast_message('temperature_update', {
                 'temperature': arduino_server.temperature,
                 'set_temperature': arduino_server.set_temperature
             })
@@ -504,7 +521,7 @@ def parse_json_status(json_string):
         # Update emergency stop status
         if 'eStopTriggered' in data:
             arduino_server.estop_triggered = bool(data['eStopTriggered'])
-            socketio.emit('estop_update', {'triggered': arduino_server.estop_triggered})
+            broadcast_message('estop_update', {'triggered': arduino_server.estop_triggered})
             if arduino_server.estop_triggered:
                 logging.warning("Emergency stop triggered!")
             
@@ -512,6 +529,472 @@ def parse_json_status(json_string):
         logging.error(f"Failed to parse JSON status: {json_string} - Error: {e}")
     except Exception as e:
         logging.error(f"Error processing JSON status: {e}")
+
+# WebSocket route
+@sock.route('/ws')
+def websocket_handler(ws):
+    """Handle WebSocket connections"""
+    websocket_clients.add(ws)
+    logging.info("Client connected to WebSocket")
+    
+    # Send initial status
+    try:
+        ws.send(json.dumps({
+            'event': 'connection_status', 
+            'data': {'connected': arduino_server.connected}
+        }))
+        ws.send(json.dumps({
+            'event': 'temperature_update',
+            'data': {
+                'temperature': arduino_server.temperature,
+                'set_temperature': arduino_server.set_temperature
+            }
+        }))
+        ws.send(json.dumps({
+            'event': 'position_update',
+            'data': arduino_server.position
+        }))
+        ws.send(json.dumps({
+            'event': 'motor_states_update',
+            'data': arduino_server.motor_states
+        }))
+        ws.send(json.dumps({
+            'event': 'pneumatics_update',
+            'data': arduino_server.pneumatics
+        }))
+        ws.send(json.dumps({
+            'event': 'vacuums_update',
+            'data': arduino_server.vacuums
+        }))
+        ws.send(json.dumps({
+            'event': 'tape_update',
+            'data': arduino_server.tape
+        }))
+    except Exception as e:
+        logging.error(f"Error sending initial status: {e}")
+    
+    try:
+        while True:
+            message = ws.receive()
+            if message is None:
+                break
+            
+            try:
+                data = json.loads(message)
+                event = data.get('event')
+                event_data = data.get('data', {})
+                
+                # Handle different events
+                if event == 'get_arduino_status':
+                    ws.send(json.dumps({
+                        'event': 'arduino_connection_status',
+                        'data': {'connected': arduino_server.connected}
+                    }))
+                
+                elif event == 'send_command':
+                    handle_command_ws(event_data, ws)
+                
+                elif event == 'move_position':
+                    handle_move_position_ws(event_data, ws)
+                
+                elif event == 'enable_axis':
+                    handle_enable_axis_ws(event_data, ws)
+                
+                elif event == 'set_temperature':
+                    handle_temperature_ws(event_data, ws)
+                
+                elif event == 'pneumatic_control':
+                    handle_pneumatic_ws(event_data, ws)
+                
+                elif event == 'vacuum_control':
+                    handle_vacuum_ws(event_data, ws)
+                
+                elif event == 'disable_motor':
+                    handle_disable_motor_ws(event_data, ws)
+                
+                elif event == 'emergency_stop':
+                    handle_emergency_stop_ws()
+                
+                elif event == 'tape_motor':
+                    handle_tape_motor_ws(event_data, ws)
+                
+                elif event == 'get_macros':
+                    handle_get_macros_ws(ws)
+                
+                elif event == 'save_macro':
+                    handle_save_macro_ws(event_data, ws)
+                
+                elif event == 'load_macro':
+                    handle_load_macro_ws(event_data, ws)
+                
+                elif event == 'delete_macro':
+                    handle_delete_macro_ws(event_data, ws)
+                
+                elif event == 'run_macro':
+                    handle_run_macro_ws(event_data, ws)
+                
+                elif event == 'stop_macro':
+                    handle_stop_macro_ws(ws)
+                
+            except json.JSONDecodeError as e:
+                logging.error(f"Invalid JSON received: {message}")
+            except Exception as e:
+                logging.error(f"Error handling WebSocket message: {e}")
+    
+    except Exception as e:
+        logging.error(f"WebSocket error: {e}")
+    finally:
+        websocket_clients.discard(ws)
+        logging.info("Client disconnected from WebSocket")
+
+# WebSocket event handlers (similar to SocketIO handlers but adapted)
+def handle_command_ws(data, ws):
+    command = data.get('command', '')
+    logging.info(f"Button Press: Raw command '{command}' received from web interface")
+    
+    if command:
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Command '{command}' queued for Arduino")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'queued'}
+            }))
+        else:
+            logging.warning(f"Button Press: Command '{command}' received but Arduino not connected")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'not_connected'}
+            }))
+    else:
+        logging.warning("Button Press: Empty command received")
+
+def handle_move_position_ws(data, ws):
+    axis = data.get('axis')
+    position = data.get('position', 0)
+    
+    logging.info(f"Button Press: Move {axis} axis to position {position}")
+    
+    if axis == 'X':
+        command = f"MoveX {position}"
+    elif axis == 'Y':
+        command = f"MoveY {position}"
+    else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for move command")
+        return
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Move command '{command}' queued for Arduino")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'queued'}
+        }))
+    else:
+        logging.warning(f"Button Press: Move command '{command}' received but Arduino not connected")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'not_connected'}
+        }))
+
+def handle_enable_axis_ws(data, ws):
+    axis = data.get('axis')  # 'X' or 'Y'
+    logging.info(f"Button Press: Enable {axis} axis")
+    
+    if axis == 'X':
+        command = "EnableX"
+    elif axis == 'Y':
+        command = "EnableY"
+    else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for enable axis")
+        return
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Enable axis command '{command}' queued for Arduino")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'queued'}
+        }))
+    else:
+        logging.warning(f"Button Press: Enable axis command '{command}' received but Arduino not connected")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'not_connected'}
+        }))
+
+def handle_temperature_ws(data, ws):
+    temperature = data.get('temperature', 0)
+    logging.info(f"Button Press: Set temperature to {temperature}°C")
+    
+    command = f"SetTemperature {temperature}"
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Temperature command '{command}' queued for Arduino")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'queued'}
+        }))
+    else:
+        logging.warning(f"Button Press: Temperature command '{command}' received but Arduino not connected")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'not_connected'}
+        }))
+
+def handle_pneumatic_ws(data, ws):
+    component = data.get('component')  # 'nozzle', 'stage', 'stamp'
+    action = data.get('action')        # 'extend', 'retract'
+    
+    logging.info(f"Button Press: Pneumatic control - {component} {action}")
+    
+    command_map = {
+        'nozzle': {'extend': 'ExtendNozzle', 'retract': 'RetractNozzle'},
+        'stage': {'extend': 'ExtendChipStage', 'retract': 'RetractChipStage'},
+        'stamp': {'extend': 'ExtendStamp', 'retract': 'RetractStamp'}
+    }
+    
+    if component in command_map and action in command_map[component]:
+        command = command_map[component][action]
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Pneumatic command '{command}' queued for Arduino")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'queued'}
+            }))
+        else:
+            logging.warning(f"Button Press: Pneumatic command '{command}' received but Arduino not connected")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'not_connected'}
+            }))
+    else:
+        logging.warning(f"Button Press: Invalid pneumatic command - component: {component}, action: {action}")
+
+def handle_vacuum_ws(data, ws):
+    component = data.get('component')  # 'vacnozzle', 'chuck'
+    action = data.get('action')        # 'on', 'off'
+    
+    logging.info(f"Button Press: Vacuum control - {component} {action}")
+    
+    command_map = {
+        'vacnozzle': {'on': 'VacNozzleOn', 'off': 'VacNozzleOff'},
+        'chuck': {'on': 'ChuckOn', 'off': 'ChuckOff'}
+    }
+    
+    if component in command_map and action in command_map[component]:
+        command = command_map[component][action]
+        if arduino_server.connected:
+            arduino_server.command_queue.put(command)
+            logging.info(f"Button Press: Vacuum command '{command}' queued for Arduino")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'queued'}
+            }))
+        else:
+            logging.warning(f"Button Press: Vacuum command '{command}' received but Arduino not connected")
+            ws.send(json.dumps({
+                'event': 'command_sent',
+                'data': {'command': command, 'status': 'not_connected'}
+            }))
+    else:
+        logging.warning(f"Button Press: Invalid vacuum command - component: {component}, action: {action}")
+
+def handle_disable_motor_ws(data, ws):
+    axis = data.get('axis')  # 'X' or 'Y'
+    
+    logging.info(f"Button Press: Disable {axis} motor")
+    
+    if axis == 'X':
+        command = "DisableX"
+    elif axis == 'Y':
+        command = "DisableY"
+    else:
+        logging.warning(f"Button Press: Invalid axis '{axis}' for disable motor")
+        return
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Disable motor command '{command}' queued for Arduino")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'queued'}
+        }))
+    else:
+        logging.warning(f"Button Press: Disable motor command '{command}' received but Arduino not connected")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'not_connected'}
+        }))
+
+def handle_emergency_stop_ws():
+    logging.warning("Button Press: EMERGENCY STOP activated!")
+    
+    # Also stop any running macro
+    if macro_executor.is_running:
+        macro_executor.stop_macro()
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put("STOP")
+        logging.warning("Button Press: EMERGENCY STOP command queued for Arduino")
+        broadcast_message('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'queued'})
+    else:
+        logging.warning("Button Press: EMERGENCY STOP requested but Arduino not connected")
+        broadcast_message('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'not_connected'})
+
+def handle_tape_motor_ws(data, ws):
+    speed = data.get('speed', 0)
+    torque = data.get('torque', 0)
+    time_ms = data.get('time', 0)
+    
+    logging.info(f"Button Press: Tape motor - Speed: {speed}, Torque: {torque}, Time: {time_ms}ms")
+    
+    command = f"Tape {speed} {torque} {time_ms}"
+    
+    if arduino_server.connected:
+        arduino_server.command_queue.put(command)
+        logging.info(f"Button Press: Tape motor command '{command}' queued for Arduino")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'queued'}
+        }))
+    else:
+        logging.warning(f"Button Press: Tape motor command '{command}' received but Arduino not connected")
+        ws.send(json.dumps({
+            'event': 'command_sent',
+            'data': {'command': command, 'status': 'not_connected'}
+        }))
+
+# Macro-related WebSocket handlers
+def handle_get_macros_ws(ws):
+    """Get list of all saved macros"""
+    logging.info("Getting list of macros")
+    macros = macro_executor.list_macros()
+    ws.send(json.dumps({
+        'event': 'macro_list',
+        'data': {'macros': macros}
+    }))
+
+def handle_save_macro_ws(data, ws):
+    """Save a macro"""
+    name = data.get('name', '').strip()
+    content = data.get('content', '')
+    variables = data.get('variables', {})
+    
+    if not name:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Macro name is required'}
+        }))
+        return
+    
+    # Update variables if provided
+    if variables:
+        macro_executor.variables.update(
+            variables.get('CHIP_X'),
+            variables.get('CHIP_Y'),
+            variables.get('STAGE_X')
+        )
+    
+    if macro_executor.save_macro(name, content):
+        logging.info(f"Macro saved: {name}")
+        ws.send(json.dumps({
+            'event': 'macro_created',
+            'data': {'name': name}
+        }))
+    else:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': f'Failed to save macro {name}'}
+        }))
+
+def handle_load_macro_ws(data, ws):
+    """Load macro content for editing"""
+    name = data.get('name', '').strip()
+    
+    if not name:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Macro name is required'}
+        }))
+        return
+    
+    content = macro_executor.load_macro(name)
+    if content:
+        ws.send(json.dumps({
+            'event': 'macro_content',
+            'data': {'name': name, 'content': content}
+        }))
+    else:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': f'Failed to load macro {name}'}
+        }))
+
+def handle_delete_macro_ws(data, ws):
+    """Delete a macro"""
+    name = data.get('name', '').strip()
+    
+    if not name:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Macro name is required'}
+        }))
+        return
+    
+    if macro_executor.delete_macro(name):
+        logging.info(f"Macro deleted: {name}")
+        ws.send(json.dumps({
+            'event': 'macro_deleted',
+            'data': {'name': name}
+        }))
+    else:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': f'Failed to delete macro {name}'}
+        }))
+
+def handle_run_macro_ws(data, ws):
+    """Run a macro"""
+    name = data.get('name', '').strip()
+    variables = data.get('variables', {})
+    
+    if not name:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Macro name is required'}
+        }))
+        return
+    
+    if not arduino_server.connected:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Arduino not connected'}
+        }))
+        return
+    
+    logging.info(f"Running macro: {name}")
+    ws.send(json.dumps({
+        'event': 'macro_executed',
+        'data': {'name': name}
+    }))
+    macro_executor.execute_macro(name, variables)
+
+def handle_stop_macro_ws(ws):
+    """Stop currently running macro"""
+    if macro_executor.stop_macro():
+        logging.info("Macro execution stopped")
+        ws.send(json.dumps({
+            'event': 'macro_stopped',
+            'data': {'success': True}
+        }))
+    else:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'No macro is currently running'}
+        }))
 
 # Web Routes
 @app.route('/')
@@ -547,365 +1030,6 @@ def get_status():
     logging.debug(f"Status request: {status}")
     return jsonify(status)
 
-# SocketIO Event Handlers
-@socketio.on('connect')
-def handle_connect():
-    logging.info("Client connected to SocketIO")
-    emit('connection_status', {'connected': arduino_server.connected})
-    emit('temperature_update', {
-        'temperature': arduino_server.temperature,
-        'set_temperature': arduino_server.set_temperature
-    })
-    emit('position_update', arduino_server.position)
-    emit('motor_states_update', arduino_server.motor_states)
-    emit('pneumatics_update', arduino_server.pneumatics)
-    emit('vacuums_update', arduino_server.vacuums)
-    emit('tape_update', arduino_server.tape)
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    logging.info("Client disconnected from SocketIO")
-
-@socketio.on('get_arduino_status')
-def handle_get_arduino_status():
-    emit('arduino_connection_status', {'connected': arduino_server.connected})
-
-@socketio.on('send_command')
-def handle_command(data):
-    command = data.get('command', '')
-    logging.info(f"Button Press: Raw command '{command}' received from web interface")
-    
-    if command:
-        if arduino_server.connected:
-            arduino_server.command_queue.put(command)
-            logging.info(f"Button Press: Command '{command}' queued for Arduino")
-            emit('command_sent', {'command': command, 'status': 'queued'})
-        else:
-            logging.warning(f"Button Press: Command '{command}' received but Arduino not connected")
-            emit('command_sent', {'command': command, 'status': 'not_connected'})
-    else:
-        logging.warning("Button Press: Empty command received")
-
-@socketio.on('stop_command')
-def handle_stop_command():
-    logging.warning("Button Press: STOP command activated!")
-    
-    # Also stop any running macro
-    if macro_executor.is_running:
-        macro_executor.stop_macro()
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put("STOP")
-        logging.warning("Button Press: STOP command queued for Arduino")
-        emit('command_sent', {'command': 'STOP', 'status': 'queued'})
-    else:
-        logging.warning("Button Press: STOP command requested but Arduino not connected")
-        emit('command_sent', {'command': 'STOP', 'status': 'not_connected'})
-
-@socketio.on('move_position')
-def handle_move_position(data):
-    axis = data.get('axis')
-    position = data.get('position', 0)
-    
-    logging.info(f"Button Press: Move {axis} axis to position {position}")
-    
-    if axis == 'X':
-        command = f"MoveX {position}"
-    elif axis == 'Y':
-        command = f"MoveY {position}"
-    else:
-        logging.warning(f"Button Press: Invalid axis '{axis}' for move command")
-        return
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Move command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Move command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-        
-
-@socketio.on('home_axis')
-def handle_home_axis(data):
-    axis = data.get('axis', '')
-    logging.info(f"Button Press: Home axis '{axis}'")
-    
-    if axis == '':
-        command = "HomeAll"
-    elif axis == 'X':
-        command = "HomeX"
-    elif axis == 'Y':
-        command = "HomeY"
-    else:
-        logging.warning(f"Button Press: Invalid axis '{axis}' for home command")
-        return
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Home command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Home command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-@socketio.on('enable_axis')
-def handle_enable_axis(data):
-    axis = data.get('axis')  # 'X' or 'Y'
-    logging.info(f"Button Press: Enable {axis} axis")
-    
-    if axis == 'X':
-        command = "EnableX"
-    elif axis == 'Y':
-        command = "EnableY"
-    else:
-        logging.warning(f"Button Press: Invalid axis '{axis}' for enable axis")
-        return
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Enable axis command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Enable axis command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-@socketio.on('set_temperature')
-def handle_temperature(data):
-    temperature = data.get('temperature', 0)
-    logging.info(f"Button Press: Set temperature to {temperature}°C")
-    
-    command = f"SetTemperature {temperature}"
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Temperature command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Temperature command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-@socketio.on('get_temperature')
-def handle_get_temperature():
-    logging.info("Button Press: Get temperature requested")
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put("GetTemperature")
-        logging.info("Button Press: GetTemperature command queued for Arduino")
-        emit('command_sent', {'command': 'GetTemperature', 'status': 'queued'})
-    else:
-        logging.warning("Button Press: GetTemperature requested but Arduino not connected")
-        emit('command_sent', {'command': 'GetTemperature', 'status': 'not_connected'})
-
-@socketio.on('pneumatic_control')
-def handle_pneumatic(data):
-    component = data.get('component')  # 'nozzle', 'stage', 'stamp'
-    action = data.get('action')        # 'extend', 'retract'
-    
-    logging.info(f"Button Press: Pneumatic control - {component} {action}")
-    
-    command_map = {
-        'nozzle': {'extend': 'ExtendNozzle', 'retract': 'RetractNozzle'},
-        'stage': {'extend': 'ExtendChipStage', 'retract': 'RetractChipStage'},
-        'stamp': {'extend': 'ExtendStamp', 'retract': 'RetractStamp'}
-    }
-    
-    if component in command_map and action in command_map[component]:
-        command = command_map[component][action]
-        if arduino_server.connected:
-            arduino_server.command_queue.put(command)
-            logging.info(f"Button Press: Pneumatic command '{command}' queued for Arduino")
-            emit('command_sent', {'command': command, 'status': 'queued'})
-        else:
-            logging.warning(f"Button Press: Pneumatic command '{command}' received but Arduino not connected")
-            emit('command_sent', {'command': command, 'status': 'not_connected'})
-    else:
-        logging.warning(f"Button Press: Invalid pneumatic command - component: {component}, action: {action}")
-
-@socketio.on('vacuum_control')
-def handle_vacuum(data):
-    component = data.get('component')  # 'vacnozzle', 'chuck'
-    action = data.get('action')        # 'on', 'off'
-    
-    logging.info(f"Button Press: Vacuum control - {component} {action}")
-    
-    command_map = {
-        'vacnozzle': {'on': 'VacNozzleOn', 'off': 'VacNozzleOff'},
-        'chuck': {'on': 'ChuckOn', 'off': 'ChuckOff'}
-    }
-    
-    if component in command_map and action in command_map[component]:
-        command = command_map[component][action]
-        if arduino_server.connected:
-            arduino_server.command_queue.put(command)
-            logging.info(f"Button Press: Vacuum command '{command}' queued for Arduino")
-            emit('command_sent', {'command': command, 'status': 'queued'})
-        else:
-            logging.warning(f"Button Press: Vacuum command '{command}' received but Arduino not connected")
-            emit('command_sent', {'command': command, 'status': 'not_connected'})
-    else:
-        logging.warning(f"Button Press: Invalid vacuum command - component: {component}, action: {action}")
-
-@socketio.on('disable_motor')
-def handle_disable_motor(data):
-    axis = data.get('axis')  # 'X' or 'Y'
-    
-    logging.info(f"Button Press: Disable {axis} motor")
-    
-    if axis == 'X':
-        command = "DisableX"
-    elif axis == 'Y':
-        command = "DisableY"
-    else:
-        logging.warning(f"Button Press: Invalid axis '{axis}' for disable motor")
-        return
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Disable motor command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Disable motor command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-@socketio.on('emergency_stop')
-def handle_emergency_stop():
-    logging.warning("Button Press: EMERGENCY STOP activated!")
-    
-    # Also stop any running macro
-    if macro_executor.is_running:
-        macro_executor.stop_macro()
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put("STOP")
-        logging.warning("Button Press: EMERGENCY STOP command queued for Arduino")
-        emit('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'queued'})
-    else:
-        logging.warning("Button Press: EMERGENCY STOP requested but Arduino not connected")
-        emit('command_sent', {'command': 'STOP - EMERGENCY STOP', 'status': 'not_connected'})
-
-@socketio.on('tape_motor')
-def handle_tape_motor(data):
-    speed = data.get('speed', 0)
-    torque = data.get('torque', 0)
-    time_ms = data.get('time', 0)
-    
-    logging.info(f"Button Press: Tape motor - Speed: {speed}, Torque: {torque}, Time: {time_ms}ms")
-    
-    command = f"Tape {speed} {torque} {time_ms}"
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Tape motor command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Tape motor command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-@socketio.on('stop_tape')
-def handle_stop_tape():
-    logging.info("Button Press: Stop tape motor")
-    
-    command = "StopTape"
-    
-    if arduino_server.connected:
-        arduino_server.command_queue.put(command)
-        logging.info(f"Button Press: Stop tape command '{command}' queued for Arduino")
-        emit('command_sent', {'command': command, 'status': 'queued'})
-    else:
-        logging.warning(f"Button Press: Stop tape command '{command}' received but Arduino not connected")
-        emit('command_sent', {'command': command, 'status': 'not_connected'})
-
-# Macro-related handlers
-@socketio.on('get_macros')
-def handle_get_macros():
-    """Get list of all saved macros"""
-    logging.info("Getting list of macros")
-    macros = macro_executor.list_macros()
-    emit('macro_list', {'macros': macros})
-
-@socketio.on('save_macro')
-def handle_save_macro(data):
-    """Save a macro"""
-    name = data.get('name', '').strip()
-    content = data.get('content', '')
-    variables = data.get('variables', {})
-    
-    if not name:
-        emit('macro_error', {'error': 'Macro name is required'})
-        return
-    
-    # Update variables if provided
-    if variables:
-        macro_executor.variables.update(
-            variables.get('CHIP_X'),
-            variables.get('CHIP_Y'),
-            variables.get('STAGE_X')
-        )
-    
-    if macro_executor.save_macro(name, content):
-        logging.info(f"Macro saved: {name}")
-        emit('macro_created', {'name': name})
-    else:
-        emit('macro_error', {'error': f'Failed to save macro {name}'})
-
-@socketio.on('load_macro')
-def handle_load_macro(data):
-    """Load macro content for editing"""
-    name = data.get('name', '').strip()
-    
-    if not name:
-        emit('macro_error', {'error': 'Macro name is required'})
-        return
-    
-    content = macro_executor.load_macro(name)
-    if content:
-        emit('macro_content', {'name': name, 'content': content})
-    else:
-        emit('macro_error', {'error': f'Failed to load macro {name}'})
-
-@socketio.on('delete_macro')
-def handle_delete_macro(data):
-    """Delete a macro"""
-    name = data.get('name', '').strip()
-    
-    if not name:
-        emit('macro_error', {'error': 'Macro name is required'})
-        return
-    
-    if macro_executor.delete_macro(name):
-        logging.info(f"Macro deleted: {name}")
-        emit('macro_deleted', {'name': name})
-    else:
-        emit('macro_error', {'error': f'Failed to delete macro {name}'})
-
-@socketio.on('run_macro')
-def handle_run_macro(data):
-    """Run a macro"""
-    name = data.get('name', '').strip()
-    variables = data.get('variables', {})
-    
-    if not name:
-        emit('macro_error', {'error': 'Macro name is required'})
-        return
-    
-    if not arduino_server.connected:
-        emit('macro_error', {'error': 'Arduino not connected'})
-        return
-    
-    logging.info(f"Running macro: {name}")
-    emit('macro_executed', {'name': name})
-    macro_executor.execute_macro(name, variables)
-
-@socketio.on('stop_macro')
-def handle_stop_macro():
-    """Stop currently running macro"""
-    if macro_executor.stop_macro():
-        logging.info("Macro execution stopped")
-        emit('macro_stopped', {'success': True})
-    else:
-        emit('macro_error', {'error': 'No macro is currently running'})
-
 # Start the communication thread
 communication_thread = threading.Thread(target=arduino_communication_thread, daemon=True)
 communication_thread.start()
@@ -927,5 +1051,5 @@ if __name__ == '__main__':
     logging.info("PING/PONG heartbeat system enabled - sending PING every 2 seconds")
     logging.info("Macro system enabled - macros will be saved to 'macros' directory")
     
-    # Run the Flask app with SocketIO
-    socketio.run(app, host="0.0.0.0", port=HTTP_PORT, debug=False, allow_unsafe_werkzeug=True)
+    # Run the Flask app with Flask-Sock
+    app.run(host="0.0.0.0", port=HTTP_PORT, debug=False)

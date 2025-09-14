@@ -1,4 +1,4 @@
-let socket;
+let ws;
 let tempChart;
 let isConnected = false;
 let currentTemp = 0;
@@ -15,7 +15,7 @@ let currentEditingMacro = null;
 let macrosList = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeSocket();
+    initializeWebSocket();
     initializeChart();
     const chipsContainer = document.querySelector('.chips');
     if (chipsContainer) {
@@ -24,117 +24,160 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePneumaticsDisplay();
     updateVacuumsDisplay();
     loadMacroList();
-
 });
 
-function initializeSocket() {
-    socket = io();
+function initializeWebSocket() {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
     
-    socket.on('connect', function() {
+    ws = new WebSocket(wsUrl);
+    
+    ws.onopen = function() {
         updateConnectionStatus(false);
         addLog('Connected to web server');
-        socket.emit('get_arduino_status');
-    });
+        sendWebSocketMessage('get_arduino_status', {});
+    };
 
-    socket.on('arduino_connection_status', function(data) {
-        updateConnectionStatus(data.connected);
-        addLog(data.connected ? 'Arduino connected' : 'Arduino disconnected');
-    });
-    
-    socket.on('disconnect', function() {
+    ws.onclose = function() {
         updateConnectionStatus(false);
         addLog('Disconnected from server');
-    });
-    
-    socket.on('connection_status', function(data) {
-        updateConnectionStatus(data.connected);
-    });
-    
-    socket.on('temperature_update', function(data) {
-        currentTemp = data.temperature || 0;
-        targetTemp = data.set_temperature || 0;
-        updateTemperatureDisplay();
-        updateTempChart();
-    });
-    
-    socket.on('position_update', function(data) {
-        position = data;
-        updatePositionDisplay();
-    });
-    
-    socket.on('motor_states_update', function(data) {
-        motorStates = data;
-        updateMotorStatesDisplay();
-    });
-    
-    socket.on('pneumatics_update', function(data) {
-        pneumatics = data;
-        updatePneumaticsDisplay();
-    });
-    
-    socket.on('vacuums_update', function(data) {
-        vacuums = data;
-        updateVacuumsDisplay();
-    });
-    
-    socket.on('tape_update', function(data) {
-        tape = data;
-        updateTapeDisplay();
-    });
-    
-    socket.on('estop_update', function(data) {
-        eStopTriggered = data.triggered;
-        updateEmergencyStopDisplay();
-    });
-    
-    socket.on('command_sent', function(data) {
-        addLog(`Sent: ${data.command}`);
-    });
-    
-    socket.on('machine_response', function(data) {
-        addLog(`Response: ${data.response}`);
-    });
+        // Attempt to reconnect after 3 seconds
+        setTimeout(initializeWebSocket, 3000);
+    };
 
-    socket.on('macro_list', function(data) {
-        macrosList = data.macros || [];
-        //adding macro list to chip selector options
+    ws.onerror = function(error) {
+        addLog('WebSocket error: ' + error);
+    };
+    
+    ws.onmessage = function(event) {
+        try {
+            const message = JSON.parse(event.data);
+            const eventType = message.event;
+            const data = message.data;
+            
+            switch(eventType) {
+                case 'arduino_connection_status':
+                    updateConnectionStatus(data.connected);
+                    addLog(data.connected ? 'Arduino connected' : 'Arduino disconnected');
+                    break;
+                    
+                case 'connection_status':
+                    updateConnectionStatus(data.connected);
+                    break;
+                    
+                case 'temperature_update':
+                    currentTemp = data.temperature || 0;
+                    targetTemp = data.set_temperature || 0;
+                    updateTemperatureDisplay();
+                    updateTempChart();
+                    break;
+                    
+                case 'position_update':
+                    position = data;
+                    updatePositionDisplay();
+                    break;
+                    
+                case 'motor_states_update':
+                    motorStates = data;
+                    updateMotorStatesDisplay();
+                    break;
+                    
+                case 'pneumatics_update':
+                    pneumatics = data;
+                    updatePneumaticsDisplay();
+                    break;
+                    
+                case 'vacuums_update':
+                    vacuums = data;
+                    updateVacuumsDisplay();
+                    break;
+                    
+                case 'tape_update':
+                    tape = data;
+                    updateTapeDisplay();
+                    break;
+                    
+                case 'estop_update':
+                    eStopTriggered = data.triggered;
+                    updateEmergencyStopDisplay();
+                    break;
+                    
+                case 'command_sent':
+                    addLog(`Sent: ${data.command}`);
+                    break;
+                    
+                case 'machine_response':
+                    addLog(`Response: ${data.response}`);
+                    break;
 
-        if (macrosList.length === 0) {
-        const option = document.createElement("option");
-        option.textContent = "No Saved Macros";
-        option.value = ""; // empty value
-        document.querySelector("#action").appendChild(option);
-        } else {
-            const select = document.querySelector("#action");
-            select.innerHTML = ''; // clear existing options
+                case 'macro_list':
+                    macrosList = data.macros || [];
+                    //adding macro list to chip selector options
+                    if (macrosList.length === 0) {
+                        const option = document.createElement("option");
+                        option.textContent = "No Saved Macros";
+                        option.value = ""; // empty value
+                        document.querySelector("#action").appendChild(option);
+                    } else {
+                        const select = document.querySelector("#action");
+                        select.innerHTML = ''; // clear existing options
 
-            macrosList.forEach(macro => {
-                const option = document.createElement("option");
-                option.textContent = macro;  // text shown in dropdown
-                option.value = macro;        // value submitted
-                select.appendChild(option);
-            });
+                        macrosList.forEach(macro => {
+                            const option = document.createElement("option");
+                            option.textContent = macro;  // text shown in dropdown
+                            option.value = macro;        // value submitted
+                            select.appendChild(option);
+                        });
+                    }
+                    updateMacroList();
+                    break;
+                    
+                case 'macro_created':
+                    addLog(`Macro created: ${data.name}`);
+                    loadMacroList();
+                    break;
+                    
+                case 'macro_deleted':
+                    addLog(`Macro deleted: ${data.name}`);
+                    loadMacroList();
+                    break;
+                    
+                case 'macro_executed':
+                    addLog(`Executing macro: ${data.name}`);
+                    break;
+                    
+                case 'macro_error':
+                    addLog(`Macro error: ${data.error}`);
+                    break;
+
+                case 'macro_content':
+                    document.getElementById('macroContent').value = data.content || getMacroTemplate();
+                    openMacroEditor();
+                    break;
+
+                case 'macro_completed':
+                    addLog(`Macro completed: ${data.name}`);
+                    break;
+
+                case 'macro_stopped':
+                    addLog('Macro execution stopped');
+                    break;
+                    
+                default:
+                    console.log('Unknown event type:', eventType, data);
+            }
+        } catch (error) {
+            console.error('Error parsing WebSocket message:', error);
         }
-        updateMacroList();
-    });
-    
-    socket.on('macro_created', function(data) {
-        addLog(`Macro created: ${data.name}`);
-        loadMacroList();
-    });
-    
-    socket.on('macro_deleted', function(data) {
-        addLog(`Macro deleted: ${data.name}`);
-        loadMacroList();
-    });
-    
-    socket.on('macro_executed', function(data) {
-        addLog(`Executing macro: ${data.name}`);
-    });
-    
-    socket.on('macro_error', function(data) {
-        addLog(`Macro error: ${data.error}`);
-    });
+    };
+}
+
+function sendWebSocketMessage(event, data) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ event: event, data: data }));
+    } else {
+        console.warn('WebSocket not connected, cannot send message:', event);
+    }
 }
 
 function initializeChart() {
@@ -287,7 +330,7 @@ function addLog(message) {
 }
 
 function loadMacroList() {
-    socket.emit('get_macros');
+    sendWebSocketMessage('get_macros', {});
 }
 
 function updateMacroList() {
@@ -383,7 +426,7 @@ function saveMacro() {
         CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
         STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
     };
-    socket.emit('save_macro', {
+    sendWebSocketMessage('save_macro', {
         name: currentEditingMacro,
         content: content,
         variables: variables
@@ -395,11 +438,7 @@ function saveMacro() {
 function editMacro(name) {
     currentEditingMacro = name;
     document.getElementById('editingMacroName').textContent = name;
-    socket.emit('load_macro', { name: name });
-    socket.once('macro_content', function(data) {
-        document.getElementById('macroContent').value = data.content || getMacroTemplate();
-        openMacroEditor();
-    });
+    sendWebSocketMessage('load_macro', { name: name });
 }
 
 function runMacro(name) {
@@ -408,7 +447,7 @@ function runMacro(name) {
         CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
         STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
     };
-    socket.emit('run_macro', {
+    sendWebSocketMessage('run_macro', {
         name: name,
         variables: variables
     });
@@ -420,7 +459,7 @@ function runChipMacro(name,x,y) {
         CHIP_Y: y,
         STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
     };
-    socket.emit('run_macro', {
+    sendWebSocketMessage('run_macro', {
         name: name,
         variables: variables
     });
@@ -428,60 +467,60 @@ function runChipMacro(name,x,y) {
 
 function deleteMacro(name) {
     if (confirm(`Are you sure you want to delete macro "${name}"?`)) {
-        socket.emit('delete_macro', { name: name });
+        sendWebSocketMessage('delete_macro', { name: name });
     }
 }
 
 function homeAxis(axis) {
-    socket.emit('home_axis', { axis: axis });
+    sendWebSocketMessage('home_axis', { axis: axis });
 }
 
 function enableAxis(axis) {
-    socket.emit('enable_axis', { axis: axis });
+    sendWebSocketMessage('enable_axis', { axis: axis });
 }
 
 function disableMotor(axis) {
-    socket.emit('disable_motor', { axis: axis });
+    sendWebSocketMessage('disable_motor', { axis: axis });
 }
 
 function moveToPosition(axis) {
     const inputId = axis.toLowerCase() + 'PositionInput';
     const position = parseFloat(document.getElementById(inputId).value);
-    socket.emit('move_position', { axis: axis, position: position });
+    sendWebSocketMessage('move_position', { axis: axis, position: position });
 }
 
 function controlPneumatic(component, action) {
-    socket.emit('pneumatic_control', { component: component, action: action });
+    sendWebSocketMessage('pneumatic_control', { component: component, action: action });
 }
 
 function controlVacuum(component, action) {
-    socket.emit('vacuum_control', { component: component, action: action });
+    sendWebSocketMessage('vacuum_control', { component: component, action: action });
 }
 
 function setTemperature() {
     const temp = parseInt(document.getElementById('tempInput').value);
-    socket.emit('set_temperature', { temperature: temp });
+    sendWebSocketMessage('set_temperature', { temperature: temp });
 }
 
 function emergencyStop() {
-    socket.emit('emergency_stop');
+    sendWebSocketMessage('emergency_stop', {});
 }
 
 function runTapeMotor() {
     const speed = parseInt(document.getElementById('tapeSpeed').value);
     const torque = parseInt(document.getElementById('tapeTorque').value);
     const time = parseInt(document.getElementById('tapeTime').value);
-    socket.emit('tape_motor', { speed: speed, torque: torque, time: time });
+    sendWebSocketMessage('tape_motor', { speed: speed, torque: torque, time: time });
 }
 
 function stopTapeMotor() {
-    socket.emit('send_command', { command: 'StopTape' });
+    sendWebSocketMessage('send_command', { command: 'StopTape' });
 }
 
 function sendCustomCommand() {
     const command = document.getElementById('customCommand').value;
     if (command.trim()) {
-        socket.emit('send_command', { command: command });
+        sendWebSocketMessage('send_command', { command: command });
         document.getElementById('customCommand').value = '';
     }
 }
@@ -537,11 +576,8 @@ function submitChips() {
         let xcor = 105.5  + (chip[1])*12.5 //i forgor distance between each chip
         let ycor = 4.5 + rows[chip[0]]*12.5 //init values hardcode for now cuzi. dont have macro variables on this branch
         runChipMacro(actionSelect,xcor,ycor);
-
-
     }   
 }
-
 
 function selectRow() {
     const actionSelect = document.querySelector('#row-select').value;
@@ -558,7 +594,6 @@ function selectAllChips() {
         chip.classList.add('selected');
         selectedChips.push(chip.id)
     }
-
 }
 
 function selectColumn() {
@@ -571,7 +606,3 @@ function selectColumn() {
         selectedChips.push(chip.id);
     }
 }
-
-
-
-
