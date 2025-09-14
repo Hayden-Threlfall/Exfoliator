@@ -36,6 +36,7 @@ function initializeWebSocket() {
         updateConnectionStatus(false);
         addLog('Connected to web server');
         sendWebSocketMessage('get_arduino_status', {});
+        loadMacroList();
     };
 
     ws.onclose = function() {

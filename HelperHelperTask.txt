@@ -1,0 +1,18 @@
+::Selector:: 
+Style
+Add text like "Macro Used" "Macro Selector" above or bellow filter (or some other creative location)
+if you selct row once it selects all even if pre selected, second time deselect all
+
+Optional, build select rown into invisible button behind 1,2,3,4,F,E,D,ect that select row for numbers and column for leters
+
+::Drop Down Or Tabs::
+Lookup MainsailOS interface for inspiration
+Build 1 or both to compare
+
+A carrot ^ v depending on state in the top right to show or hide section, keep header text
+
+OR 
+
+Same thing but on the left side as a selector 
+
+We will start with this then can build it out maybe reorgonizing what goes where
