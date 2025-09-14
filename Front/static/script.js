@@ -13,6 +13,8 @@ let selectedChips = [];
 let eStopTriggered = false;
 let currentEditingMacro = null;
 let macrosList = [];
+let commandHistory = [];
+let historyIndex = -1;
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeWebSocket();
@@ -24,6 +26,41 @@ document.addEventListener('DOMContentLoaded', function() {
     updatePneumaticsDisplay();
     updateVacuumsDisplay();
     loadMacroList();
+
+    [
+        ['xPositionInput', () => moveToPosition('X')],
+        ['yPositionInput', () => moveToPosition('Y')],
+        ['tempInput', setTemperature],
+        ['tapeSpeed', runTapeMotor],
+        ['tapeTorque', runTapeMotor],
+        ['tapeTime', runTapeMotor],
+        ['newMacroName', createNewMacro]
+    ].forEach(([id, fn]) => {
+        document.getElementById(id).addEventListener('keypress', e => e.key === 'Enter' && fn());
+    });
+
+    // Special handling for custom command with history
+    document.getElementById('customCommand').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            sendCustomCommand();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault(); // Prevent cursor movement
+            if (commandHistory.length > 0 && historyIndex < commandHistory.length - 1) {
+                historyIndex++;
+                this.value = commandHistory[commandHistory.length - 1 - historyIndex];
+            }
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault(); // Prevent cursor movement
+            if (historyIndex > 0) {
+                historyIndex--;
+                this.value = commandHistory[commandHistory.length - 1 - historyIndex];
+            } else if (historyIndex === 0) {
+                historyIndex = -1;
+                this.value = '';
+            }
+        }
+    });
+
 });
 
 function initializeWebSocket() {
@@ -519,28 +556,22 @@ function stopTapeMotor() {
 }
 
 function sendCustomCommand() {
-    const command = document.getElementById('customCommand').value;
-    if (command.trim()) {
+    const command = document.getElementById('customCommand').value.trim();
+    if (command) {
+        // Add to history (avoid duplicates)
+        if (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== command) {
+            commandHistory.push(command);
+            // Keep only last 50 commands
+            if (commandHistory.length > 50) {
+                commandHistory.shift();
+            }
+        }
+        
         sendWebSocketMessage('send_command', { command: command });
         document.getElementById('customCommand').value = '';
+        historyIndex = -1; // Reset history navigation
     }
 }
-
-document.getElementById('customCommand').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') sendCustomCommand();
-});
-
-[
-    ['xPositionInput', () => moveToPosition('X')],
-    ['yPositionInput', () => moveToPosition('Y')],
-    ['tempInput', setTemperature],
-    ['tapeSpeed', runTapeMotor],
-    ['tapeTorque', runTapeMotor],
-    ['tapeTime', runTapeMotor],
-    ['newMacroName', createNewMacro]
-].forEach(([id, fn]) => {
-    document.getElementById(id).addEventListener('keypress', e => e.key === 'Enter' && fn());
-});
 
 function handleChipSelection(event) {
     const button = event.target;
