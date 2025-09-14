@@ -63,6 +63,7 @@ void setup() {
 
 void loop() {
     static unsigned long lastConnectionAttempt = 0;
+    
     if (eStopTriggered || !EStopButton.State()) {
         emergencyStop();
         // Send emergency stop status in JSON
@@ -71,43 +72,45 @@ void loop() {
         
         while (true) {
             Serial.println("EMERGENCY STOPPED. Restart required.");
-            if ((!client.connected() && checkTimer(lastConnectionAttempt, 5000))) {
+            if (millis() - lastHeartbeat > HEARTBEAT_INTERVAL && checkTimer(lastConnectionAttempt, 5000)) {
                 connectToServer();
             }
             sendStatusJson();
-            delay(1000); // Wait indefinitely
+            delay(1000);
         }
     }
     
-    // Try to reconnect if not connected
-    if ((!client.connected() || millis() - lastHeartbeat > HEARTBEAT_INTERVAL) && checkTimer(lastConnectionAttempt, 2000)) {
-        client.print("PING not recieved");
+    // Check if heartbeat has expired (indicates disconnect)
+    if (millis() - lastHeartbeat > HEARTBEAT_INTERVAL && checkTimer(lastConnectionAttempt, 5000)) {
+        Serial.println("Heartbeat expired, attempting reconnection...");
         connectToServer();
     }
 
-    // Read incoming commands
-    if (client.connected() && client.available()) {
-        size_t len = client.readBytesUntil('\n', incomingData, sizeof(incomingData) - 1);
-        incomingData[len] = '\0'; // Null-terminate the string
-        String cmd = String(incomingData);
-        cmd.trim(); // Remove leading/trailing whitespace
+    // Only process data and send commands if heartbeat is recent (connected)
+    if (millis() - lastHeartbeat <= HEARTBEAT_INTERVAL) {
+        // Read incoming commands
+        if (client.available()) {
+            size_t len = client.readBytesUntil('\n', incomingData, sizeof(incomingData) - 1);
+            incomingData[len] = '\0';
+            String cmd = String(incomingData);
+            cmd.trim();
 
-        Serial.print("Received command: ");
-        Serial.println(cmd);
+            Serial.print("Received command: ");
+            Serial.println(cmd);
 
-        // Process the command
-        processCommand(cmd);
-    }
+            processCommand(cmd);
+        }
 
-    // Send JSON status periodically
-    if (checkTimer(lastJsonSend, JSON_SEND_INTERVAL)) {
-        sendStatusJson();
+        // Send JSON status periodically
+        if (checkTimer(lastJsonSend, JSON_SEND_INTERVAL)) {
+            sendStatusJson();
+        }
     }
 
     // Run heater control
     heaterStep();
     
-    // Run tape motor control (NEW - handles timing for tape operations)
+    // Run tape motor control
     tapeMotorStep();
 
     delay(25);
@@ -350,16 +353,12 @@ bool checkTimer(unsigned long &lastTime, unsigned long duration) {
 }
 
 bool connectToServer() {
-    if (client.connected() && millis() - lastHeartbeat < HEARTBEAT_INTERVAL) {
-        return true;
-    }
-    
     client.stop();
     Serial.println("Connecting to server...");
     
     if (client.connect(serverIp, SERVER_PORT)) {
         Serial.println("Connected to server!");
-        lastHeartbeat = millis();
+        lastHeartbeat = millis(); // Reset heartbeat on successful connection
         return true;
     } else {
         Serial.println("Connection failed. Will retry...");
