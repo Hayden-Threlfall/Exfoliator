@@ -120,7 +120,7 @@ void processCommand(String cmd) {
     // Movement commands
     if (cmd.startsWith("MoveX ")) {
         float position = cmd.substring(6).toFloat();
-        if (!getNozzleExtended) {
+        if (!getNozzleExtended()) {
             Serial.print("Moving X to position: ");
             Serial.println(position);
             moveXandYAxes(position, getYPosition());
@@ -132,7 +132,7 @@ void processCommand(String cmd) {
     }
     else if (cmd.startsWith("MoveY ")) {
         float position = cmd.substring(6).toFloat();
-        if (!getNozzleExtended) {
+        if (!getNozzleExtended()) {
             Serial.print("Moving Y to position: ");
             Serial.println(position);
             moveXandYAxes(getXPosition(), position);
@@ -144,7 +144,7 @@ void processCommand(String cmd) {
     
     // Homing commands
     else if (cmd == "EnableX") {
-        if (!getNozzleExtended) {
+        if (!getNozzleExtended()) {
             Serial.println("Homing X axis");
             enableXMotor();
             client.println("Homing X axis");
@@ -153,7 +153,7 @@ void processCommand(String cmd) {
             client.print("!!!WARNING!!! Nozzle Extended Will Not Move");
     }
     else if (cmd == "EnableY") {
-        if (!getNozzleExtended) {
+        if (!getNozzleExtended()) {
             Serial.println("Homing Y axis");
             enableYMotor();
             client.println("Homing Y axis");
