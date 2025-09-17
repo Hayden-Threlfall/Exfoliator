@@ -34,8 +34,8 @@ void heaterSetup() {
 }
 
 void setTargetTemperature(double temperature) {
-    if (temperature > 300) // This may be max temp allowed in code, but due to material limitations ~240c is real max
-        temperature = 300;
+    if (temperature > 230) // Due to Material limits we cap at 230 
+        temperature = 230;
     if (temperature == 0) {
         heaterOff();
         return;
