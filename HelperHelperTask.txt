@@ -9,8 +9,6 @@ Optional, build select rown into invisible button behind 1,2,3,4,F,E,D,ect that 
 Lookup MainsailOS interface for inspiration
 Build 1 or both to compare
 
-A carrot ^ v depending on state in the top right to show or hide section, keep header text
-
 OR 
 
 Same thing but on the left side as a selector 
