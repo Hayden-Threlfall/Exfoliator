@@ -1,0 +1,34 @@
+# Setup tape
+Tape 5 12 1000
+delay 1200
+
+# Transfer Tape 
+# Hold Torque
+Tape 0 6 8000
+delay 2000
+RetractStamp
+delay 1000
+ExtendStamp
+delay 1000
+RetractStamp
+delay 1000
+ExtendStamp
+delay 1000
+Tape 0 10 1000
+delay 1000
+
+# Transfer to chip
+RetractChipStage
+delay 1000
+tape -1 0 1000
+delay 1500
+RetractStamp
+delay 1000
+ExtendStamp
+delay 1000
+Tape 5 12 1000
+delay 1000
+Tape 0 6 8000
+
+ExtendChipStage
+delay 1000

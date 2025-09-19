@@ -29,12 +29,10 @@
 # VacNozzleOn
 # delay 1000
 # RetractNozzle
-[4:33 PM] # Initialize system
+
 EnableX
 EnableY
 SetTemperature 40
-Tape 0 4 0
-delay 500
 # Move above chip in tray
 VacNozzleOff
 MoveX CHIP_X
@@ -48,7 +46,7 @@ delay 1000
 RetractNozzle
 delay 250
 # Move above vacuum chuck
-MoveX 8
+MoveX STAGE_X
 MoveY CHIP_Y
 delay 1000
 # Place chip on chuck

@@ -4,6 +4,7 @@
     box-sizing: border-box;
 }
 
+
 body {
     background-color: #111827;
     color: white;
@@ -17,8 +18,18 @@ body {
     max-width: 1400px;
     margin: 0 auto;
 }
-
+.place{
+    width: 30px;
+    height: 30px;
+}
 .header {
+    position: sticky;
+    top: 0;
+    z-index: 1000; 
+    width: 100%;
+    padding: 30px;
+    margin-top: 0;
+    background-color:  #111827;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -53,8 +64,10 @@ body {
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    margin: auto;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
     gap: 24px;
     flex-wrap: wrap;
 }
@@ -63,6 +76,7 @@ body {
     background-color: #1F2937;
     border-radius: 12px;
     padding: 24px;
+    width: 415px;
 }
 
 .card-title {
@@ -112,17 +126,23 @@ body {
 .btn-emergency {
     background-color: #DC2626;
     color: white;
-    font-size: 1.2rem;
-    font-weight: bold;
-    padding: 12px 24px;
-    border: 3px solid #B91C1C;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
 
-.btn-emergency:hover {
-    background-color: #B91C1C;
-    transform: none;
+#clearChipSelection{
+    margin-bottom: 8px;
+}
+#submitChipQuery{
+    margin-bottom: 8px;
+}
+
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 0 30px;
 }
 
 .btn-emergency.estop-active {
@@ -431,6 +451,17 @@ body {
     width: 30px;
     height: 30px;
     text-align: center;
+    margin: auto;
+    cursor: pointer;
+    user-select: none;
+}
+
+legend{
+    font-size: 0.8rem;
+}
+fieldset{
+    border: none;
+    margin: 0;
 }
 
 .chip:hover {
@@ -446,6 +477,7 @@ body {
     flex-direction: column;
     gap: 10px;
     justify-content: space-between;
+
 }
 
 .box{
@@ -454,24 +486,19 @@ body {
     width: 100%;
     justify-content: space-between;
 }
-
-
-
-.rowcol-select{
+.selector{
     display: flex;
     flex-direction: column;
-    gap: 0.5rem
+    gap: 20px;
 }
 
+
+.label:hover{
+    background-color: rgb(65, 90, 190);
+    border-radius: 50px;
+}
 .submit{
     width: 100px;
-}
-
-.selecting-rowcol{
-    display: flex;
-    flex-direction: column;
-    width: 100px;
-    gap: 3rem;
 }
 
 
@@ -488,7 +515,7 @@ body {
     display: flex;
     gap: 20px;
     width: 100%;
-    justify-content: center;
+
 }
 
 .options > * {
@@ -516,3 +543,16 @@ body {
     background-color: rgb(154, 154, 154)
 }
 
+#console-container{
+    width: 95%;
+}
+
+
+#dropdown{
+    filter: brightness(0) saturate(100%) invert(71%) sepia(99%) saturate(1%) hue-rotate(314deg) brightness(80%) contrast(90%);
+    width: 30px;
+}
+
+.card-title{
+    justify-content: space-between;
+}

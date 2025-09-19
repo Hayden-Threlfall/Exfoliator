@@ -1,0 +1,40 @@
+# Macro: w
+# Created: 9/15/2025, 1:03:04 PM
+# 
+# Available Commands:
+# - MoveX <position> or MoveX CHIP_X
+# - MoveY <position> or MoveY CHIP_Y
+# - EnableX / EnableY
+# - DisableX / DisableY
+# - ExtendNozzle / RetractNozzle
+# - ExtendChipStage / RetractChipStage
+# - ExtendStamp / RetractStamp
+# - VacNozzleOn / VacNozzleOff
+# - ChuckOn / ChuckOff
+# - SetTemperature <temp>
+# - Tape <speed> <torque> <time_ms>
+# - StopTape
+# - delay <milliseconds>
+# - STOP (emergency stop)
+#
+# Variables:
+# - CHIP_X, CHIP_Y, STAGE_X can be used in place of numeric values
+#
+# Example sequence:
+# EnableX
+# EnableY
+# delay 500
+# MoveX CHIP_X
+# MoveY CHIP_Y
+# delay 1000
+# ExtendNozzle
+# delay 500
+# VacNozzleOn
+# delay 1000
+# RetractNozzle
+
+# Your macro commands below:
+MoveX CHIP_X
+delay 250
+MoveY CHIP_Y
+delay 250

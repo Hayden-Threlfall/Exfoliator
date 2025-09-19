@@ -23,6 +23,24 @@ document.addEventListener('DOMContentLoaded', function() {
     if (chipsContainer) {
         chipsContainer.addEventListener('click', handleChipSelection);
     }
+
+    const rows = document.querySelectorAll('.row-label');
+
+    if (chipsContainer) {
+        rows.forEach(row => {
+            row.addEventListener('click', selectRow);
+        });
+    }
+
+    const columns = document.querySelectorAll('.column-label');
+
+    if (chipsContainer) {
+    columns.forEach(column => {
+        column.addEventListener('click', selectColumn);
+    });
+    }
+
+
     updatePneumaticsDisplay();
     updateVacuumsDisplay();
     loadMacroList();
@@ -321,12 +339,6 @@ function updateVacuumsDisplay() {
 function updateTapeDisplay() {
     document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
     document.getElementById('currentTapeTorque').textContent = tape.torque || 0;
-    if (document.activeElement.id !== 'tapeSpeed') {
-        document.getElementById('tapeSpeed').value = tape.speed || 0;
-    }
-    if (document.activeElement.id !== 'tapeTorque') {
-        document.getElementById('tapeTorque').value = tape.torque || 0;
-    }
 }
 
 function updateEmergencyStopDisplay() {
@@ -596,45 +608,152 @@ function clearChips() {
         button.classList.remove('selected');
     });
 }
-
-function submitChips() {
-    selectedChips.sort();
-
-    const rows = {"A": 1,"B": 2, "C":3, "D":4, "E":5, "F":6 }
-
-    const actionSelect = document.querySelector('#action').value;
-
-    for (chip of selectedChips){
-        let xcor = 105.5  + (chip[1])*12.5 //i forgor distance between each chip
-        let ycor = 4.5 + rows[chip[0]]*12.5 //init values hardcode for now cuzi. dont have macro variables on this branch
-        runChipMacro(actionSelect,xcor,ycor);
-    }   
-}
-
-function selectRow() {
-    const actionSelect = document.querySelector('#row-select').value;
-    selectedRow = document.querySelectorAll(`.row:nth-child(${actionSelect}) button`)
-    for (chip of selectedRow){
-        chip.classList.add('selected');
-        selectedChips.push(chip.id);
-    }
-}
-
-function selectAllChips() {
-    chips = document.querySelectorAll('.chips button')
+function checkChips(chips){
+    let white = false
     for (chip of chips){
-        chip.classList.add('selected');
-        selectedChips.push(chip.id)
+        if (!chip.classList.contains('selected')) white = true
+    }
+    return white;
+}
+
+function selectRow(event) {
+    var row = event.target;
+
+    var actionSelect = row.textContent;
+
+    selectedRow = document.querySelectorAll(`.row:nth-child(${11-actionSelect}) button`)
+    select = checkChips(selectedRow)
+
+    if (select){
+        for (chip of selectedRow){
+            if (!chip.classList.contains('selected') && chip.classList.add('selected'));
+                chip.classList.add('selected')
+                selectedChips.push(chip.id);
+
+        }
+    }
+    else{
+        for (chip of selectedRow){
+
+            chip.classList.remove('selected');
+            var index = selectedChips.indexOf(chip.id);
+            if (index !== -1) {
+                selectedChips.splice(index, 1);
+            }
+            
+        }
+    }
+    
+
+}
+
+function selectColumn(event) {
+    var row = event.target;
+    var actionSelect = row.textContent;
+    selectedRow = document.querySelectorAll(`.col-${actionSelect}`)
+    select = checkChips(selectedRow)
+    if (select){
+        for (chip of selectedRow){
+            if (!chip.classList.contains('selected') && chip.classList.add('selected'));
+                chip.classList.add('selected')
+                selectedChips.push(chip.id);
+
+        }
+    }
+    else{
+        for (chip of selectedRow){
+
+            chip.classList.remove('selected');
+            var index = selectedChips.indexOf(chip.id);
+            if (index !== -1) {
+                selectedChips.splice(index, 1);
+            }
+            
+        }
     }
 }
 
-function selectColumn() {
-    const actionSelect = document.querySelector('#column-select').value;
 
-    selectedColumn = document.querySelectorAll(`.${actionSelect}`)
+// Add these global variables at the top of script.js
+let macroQueue = [];
+let isMacroQueueRunning = false;
 
-    for (chip of selectedColumn){
-        chip.classList.add('selected');
-        selectedChips.push(chip.id);
+// Replace the existing submitChips() function
+function submitChips() {
+    if (selectedChips.length === 0) {
+        addLog('No chips selected');
+        return;
     }
+
+    selectedChips.sort();
+    const columns = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5};
+    const actionSelect = document.querySelector('#action').value;
+    
+    if (!actionSelect) {
+        addLog('No macro selected');
+        return;
+    }
+
+    // Build the macro queue
+    macroQueue = [];
+    for (let chip of selectedChips) {
+        const column = chip[0];
+        const row = parseInt(chip.slice(1));
+        
+        let xcor = 105.5 + (row - 1) * 12.5;
+        let ycor = 67 - (columns[column] * 12.5);
+        
+        macroQueue.push({
+            chip: chip,
+            macro: actionSelect,
+            x: xcor,
+            y: ycor
+        });
+    }
+
+    addLog(`Queued ${macroQueue.length} chips for sequential processing`);
+    
+    if (!isMacroQueueRunning) {
+        processNextMacro();
+    }
+}
+
+// Add this new function
+function processNextMacro() {
+    if (macroQueue.length === 0) {
+        isMacroQueueRunning = false;
+        addLog('All chip macros completed');
+        return;
+    }
+
+    isMacroQueueRunning = true;
+    const nextMacro = macroQueue.shift();
+    
+    addLog(`Processing chip ${nextMacro.chip}: X=${nextMacro.x.toFixed(1)}, Y=${nextMacro.y.toFixed(1)}`);
+    
+    // Set up listener for macro completion
+    const originalOnMessage = ws.onmessage;
+    ws.onmessage = function(event) {
+        originalOnMessage.call(this, event);
+        
+        try {
+            const message = JSON.parse(event.data);
+            if (message.event === 'macro_completed' || message.event === 'macro_error') {
+                ws.onmessage = originalOnMessage;
+                setTimeout(() => processNextMacro(), 500);
+            }
+        } catch (error) {
+            // Ignore parsing errors
+        }
+    };
+    
+    runChipMacro(nextMacro.macro, nextMacro.x, nextMacro.y);
+}
+
+// Add this new function
+function stopMacroQueue() {
+    macroQueue = [];
+    isMacroQueueRunning = false;
+    addLog('Macro queue stopped');
+    sendWebSocketMessage('stop_macro', {});
 }
