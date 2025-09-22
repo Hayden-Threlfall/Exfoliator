@@ -32,6 +32,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    
+    const grid = document.querySelector('.grid');
+
+
+    if (grid){
+        const dropdowns = document.querySelectorAll('.dropdown');
+
+        dropdowns.forEach(dropdown =>{
+        dropdown.addEventListener('click', dropdownClick)
+    })
+
+    }
+
     const columns = document.querySelectorAll('.column-label');
 
     if (chipsContainer) {
@@ -756,4 +769,33 @@ function stopMacroQueue() {
     isMacroQueueRunning = false;
     addLog('Macro queue stopped');
     sendWebSocketMessage('stop_macro', {});
+}
+
+function dropdownClick(event){
+    let dropdown = event.target;
+
+    if (dropdown.classList.contains('hide')){
+        dropdown.classList.remove('hide')
+    }
+    else{
+        dropdown.classList.add('hide')
+    }
+
+    let container = dropdown.closest('.card');
+
+    let next = container.querySelector('h2').nextElementSibling;
+
+    while (next){
+        if (next.style.display == 'none'){
+            next.style.display = '';
+        
+        }
+        else{
+            next.style.display = 'none';
+
+        }
+        next =  next.nextElementSibling;
+    }
+
+
 }

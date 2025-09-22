@@ -9,34 +9,33 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <h1 class="title">
+                <span>🔬</span>
+                Exfoliator Control Interface
+            </h1>
+        </div>
+
+        <div class="buttons">
+
+            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">EMERGENCY STOP</button>
+            <div id="restartMessage" class="restart-message" style="display: none;">
+                ⚠️ RESTART MACHINE ⚠️
+            </div>
+
+            <div id="connectionStatus" class="status disconnected">
+                <div class="status-dot"></div>
+                <span>Disconnected</span>
+            </div>
+
+        </div>
+
+
+    </div>
 
     <div class="container">
         <!-- Header -->
-
-        <div class="header">
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <h1 class="title">
-                    <span>🔬</span>
-                    Exfoliator Control Interface
-                </h1>
-            </div>
-
-            <div class="buttons">
-
-                <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">EMERGENCY STOP</button>
-                <div id="restartMessage" class="restart-message" style="display: none;">
-                    ⚠️ RESTART MACHINE ⚠️
-                </div>
-
-                <div id="connectionStatus" class="status disconnected">
-                    <div class="status-dot"></div>
-                    <span>Disconnected</span>
-                </div>
-
-            </div>
-
-
-        </div>
 
 
         <div class="gap">
@@ -44,425 +43,447 @@
 
         <div class="grid">
             <!-- Position Controls -->
-            <div class="card">
-                <h2 class="card-title">
-                    📐Position Control
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
-                </h2>
-                
-                <!-- Current Position -->
-                <div class="mb-4">
-                    <h3 class="section-title">Current Position</h3>
-                    <div class="position-display">
-                        <span>X Position:</span>
-                        <div style="display: flex; align-items: center;">
-                            <span id="posX">0.0 mm</span>
-                            <span id="motorStateX" class="motor-state state-disabled">MOTOR_DISABLED</span>
+            <div class="column">
+                <div class="card">
+                    <h2 class="card-title">
+                        📐Position Control
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Current Position -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Current Position</h3>
+                        <div class="position-display">
+                            <span>X Position:</span>
+                            <div style="display: flex; align-items: center;">
+                                <span id="posX">0.0 mm</span>
+                                <span id="motorStateX" class="motor-state state-disabled">MOTOR_DISABLED</span>
+                            </div>
+                        </div>
+                        <div class="position-display">
+                            <span>Y Position:</span>
+                            <div style="display: flex; align-items: center;">
+                                <span id="posY">0.0 mm</span>
+                                <span id="motorStateY" class="motor-state state-disabled">MOTOR_DISABLED</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="position-display">
-                        <span>Y Position:</span>
-                        <div style="display: flex; align-items: center;">
-                            <span id="posY">0.0 mm</span>
-                            <span id="motorStateY" class="motor-state state-disabled">MOTOR_DISABLED</span>
+                    
+                    <!-- Enable Controls -->
+                    <div class="mb-4">
+                        <h3 class="section-title">
+                            <span>🔌</span>
+                            Motor Enable
+                        </h3>
+                        <div class="button-grid">
+                            <button class="button btn-success" onclick="enableAxis('X')">Enable X</button>
+                            <button class="button btn-success" onclick="enableAxis('Y')">Enable Y</button>
+                            <button class="button btn-danger" onclick="disableMotor('X')">Disable X</button>
+                            <button class="button btn-danger" onclick="disableMotor('Y')">Disable Y</button>
                         </div>
                     </div>
-                </div>
+
+                    <!-- Move to Position -->
+                    <div>
+                        <h3 class="section-title">Move to Position</h3>
+                        <div class="mb-3">
+                            <label class="text-sm">X Position (mm)</label>
+                            <input type="number" id="xPositionInput" class="input" value="0" step="0.1">
+                            <button class="button btn-success mb-2" onclick="moveToPosition('X')">Move X</button>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-sm">Y Position (mm)</label>
+                            <input type="number" id="yPositionInput" class="input" value="0" step="0.1">
+                            <button class="button btn-success" onclick="moveToPosition('Y')">Move Y</button>
+                        </div>
+                    </div>
                 
-                <!-- Enable Controls -->
-                <div class="mb-4">
-                    <h3 class="section-title">
-                        <span>🔌</span>
-                        Motor Enable
-                    </h3>
-                    <div class="button-grid">
-                        <button class="button btn-success" onclick="enableAxis('X')">Enable X</button>
-                        <button class="button btn-success" onclick="enableAxis('Y')">Enable Y</button>
-                        <button class="button btn-danger" onclick="disableMotor('X')">Disable X</button>
-                        <button class="button btn-danger" onclick="disableMotor('Y')">Disable Y</button>
+                
+                </div> 
+
+                <!-- Temperature Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        🌡️Chip Temperature Control
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <div class="temp-display mb-3">
+                        <span>Current Temperature:</span>
+                        <span id="currentTemp" class="temp-current">0°C</span>
+                    </div>
+                    
+                    <div class="temp-display mb-3">
+                        <span>Target Temperature:</span>
+                        <span id="targetTemp" class="temp-current" style="color: #F59E0B;">0°C</span>
+                    </div>
+                    
+                    <div class="flex mb-3">
+                        <input type="number" id="tempInput" class="input" value="0" min="0" max="200">
+                        <button class="button btn-danger" onclick="setTemperature()">Set Temp</button>
+                    </div>
+
+                    <!-- Temperature Chart -->
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
                     </div>
                 </div>
 
-                <!-- Move to Position -->
-                <div>
-                    <h3 class="section-title">Move to Position</h3>
-                    <div class="mb-3">
-                        <label class="text-sm">X Position (mm)</label>
-                        <input type="number" id="xPositionInput" class="input" value="0" step="0.1">
-                        <button class="button btn-success mb-2" onclick="moveToPosition('X')">Move X</button>
-                    </div>
-                    <div class="mb-3">
-                        <label class="text-sm">Y Position (mm)</label>
-                        <input type="number" id="yPositionInput" class="input" value="0" step="0.1">
-                        <button class="button btn-success" onclick="moveToPosition('Y')">Move Y</button>
-                    </div>
-                </div>
+
             </div>
 
-            <!-- Pneumatics Control -->
-            <div class="card">
-                <h2 class="card-title">
-                    💨Pneumatic Controls
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+            <div class="column">
+                <!-- Pneumatics Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        💨Pneumatic Controls
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
-                </h2>
-                
-                <!-- Nozzle -->
-                <div class="pneumatic-control">
-                    <div class="pneumatic-status">
-                        <div id="nozzleStatus" class="status-indicator"></div>
-                        <span>Nozzle</span>
-                    </div>
-                    <div class="flex">
-                        <button class="button btn-success" onclick="controlPneumatic('nozzle', 'extend')">Extend</button>
-                        <button class="button btn-danger" onclick="controlPneumatic('nozzle', 'retract')">Retract</button>
-                    </div>
-                </div>
-
-                <!-- Chip Stage -->
-                <div class="pneumatic-control">
-                    <div class="pneumatic-status">
-                        <div id="stageStatus" class="status-indicator"></div>
-                        <span>Chip Stage</span>
-                    </div>
-                    <div class="flex">
-                        <button class="button btn-success" onclick="controlPneumatic('stage', 'extend')">Extend</button>
-                        <button class="button btn-danger" onclick="controlPneumatic('stage', 'retract')">Retract</button>
-                    </div>
-                </div>
-
-                <!-- Stamp -->
-                <div class="pneumatic-control">
-                    <div class="pneumatic-status">
-                        <div id="stampStatus" class="status-indicator"></div>
-                        <span>Stamp</span>
-                    </div>
-                    <div class="flex">
-                        <button class="button btn-success" onclick="controlPneumatic('stamp', 'extend')">Extend</button>
-                        <button class="button btn-danger" onclick="controlPneumatic('stamp', 'retract')">Retract</button>
-                    </div>
-                </div>
-
-                <!-- Vacuum Controls -->
-                <div>
-                    <h3 class="section-title">
-                        🌪️Vacuum Controls
-                    </h3>
+                    </h2>
                     
-                    <!-- Vacuum Nozzle -->
+                    <!-- Nozzle -->
                     <div class="pneumatic-control">
                         <div class="pneumatic-status">
-                            <div id="vacnozzleStatus" class="status-indicator"></div>
+                            <div id="nozzleStatus" class="status-indicator"></div>
                             <span>Nozzle</span>
                         </div>
                         <div class="flex">
-                            <button class="button btn-success" onclick="controlVacuum('vacnozzle', 'on')">On</button>
-                            <button class="button btn-danger" onclick="controlVacuum('vacnozzle', 'off')">Off</button>
+                            <button class="button btn-success" onclick="controlPneumatic('nozzle', 'extend')">Extend</button>
+                            <button class="button btn-danger" onclick="controlPneumatic('nozzle', 'retract')">Retract</button>
                         </div>
                     </div>
 
-                    <!-- Chuck Vacuum -->
+                    <!-- Chip Stage -->
                     <div class="pneumatic-control">
                         <div class="pneumatic-status">
-                            <div id="chuckStatus" class="status-indicator"></div>
-                            <span>Chuck</span>
+                            <div id="stageStatus" class="status-indicator"></div>
+                            <span>Chip Stage</span>
                         </div>
                         <div class="flex">
-                            <button class="button btn-success" onclick="controlVacuum('chuck', 'on')">On</button>
-                            <button class="button btn-danger" onclick="controlVacuum('chuck', 'off')">Off</button>
+                            <button class="button btn-success" onclick="controlPneumatic('stage', 'extend')">Extend</button>
+                            <button class="button btn-danger" onclick="controlPneumatic('stage', 'retract')">Retract</button>
+                        </div>
+                    </div>
+
+                    <!-- Stamp -->
+                    <div class="pneumatic-control">
+                        <div class="pneumatic-status">
+                            <div id="stampStatus" class="status-indicator"></div>
+                            <span>Stamp</span>
+                        </div>
+                        <div class="flex">
+                            <button class="button btn-success" onclick="controlPneumatic('stamp', 'extend')">Extend</button>
+                            <button class="button btn-danger" onclick="controlPneumatic('stamp', 'retract')">Retract</button>
+                        </div>
+                    </div>
+
+                    <!-- Vacuum Controls -->
+                    <div>
+                        <h3 class="section-title">
+                            🌪️Vacuum Controls
+                        </h3>
+                        
+                        <!-- Vacuum Nozzle -->
+                        <div class="pneumatic-control">
+                            <div class="pneumatic-status">
+                                <div id="vacnozzleStatus" class="status-indicator"></div>
+                                <span>Nozzle</span>
+                            </div>
+                            <div class="flex">
+                                <button class="button btn-success" onclick="controlVacuum('vacnozzle', 'on')">On</button>
+                                <button class="button btn-danger" onclick="controlVacuum('vacnozzle', 'off')">Off</button>
+                            </div>
+                        </div>
+
+                        <!-- Chuck Vacuum -->
+                        <div class="pneumatic-control">
+                            <div class="pneumatic-status">
+                                <div id="chuckStatus" class="status-indicator"></div>
+                                <span>Chuck</span>
+                            </div>
+                            <div class="flex">
+                                <button class="button btn-success" onclick="controlVacuum('chuck', 'on')">On</button>
+                                <button class="button btn-danger" onclick="controlVacuum('chuck', 'off')">Off</button>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Macro Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        🎬 Macro Control
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Variables Section -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Position Variables</h3>
+                        <div class="macro-variables">
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">CHIP_X</label>
+                                <input type="number" id="CHIP_X" class="input" value="105.5" step="0.1">
+                            </div>
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">CHIP_Y</label>
+                                <input type="number" id="CHIP_Y" class="input" value="4.5" step="0.1">
+                            </div>
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">STAGE_X</label>
+                                <input type="number" id="STAGE_X" class="input" value="8" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Macro List -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Saved Macros</h3>
+                        <div id="macroList" class="macro-list">
+                            <!-- Macros will be populated here -->
+                            <div style="color: #6B7280; text-align: center; padding: 20px;">No macros saved yet</div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Macro -->
+                    <div>
+                        <div class="flex mb-2">
+                            <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
+                            <button class="button btn-success" onclick="createNewMacro()">Create New</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Tape Motor Control -->
-            <div class="card">
-                <h2 class="card-title">
-                    🎞️Tape Motor Control
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
-                </h2>
+            <div class="column">
                 
-                <!-- Current Tape State -->
-                <div class="mb-4">
-                    <h3 class="section-title">Current State</h3>
-                    <div class="tape-state-display">
-                        <span>Speed:</span>
-                        <span id="currentTapeSpeed">0</span>
+                <!-- Tape Motor Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        🎞️Tape Motor Control
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Current Tape State -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Current State</h3>
+                        <div class="tape-state-display">
+                            <span>Speed:</span>
+                            <span id="currentTapeSpeed">0</span>
+                        </div>
+                        <div class="tape-state-display">
+                            <span>Torque:</span>
+                            <span id="currentTapeTorque">0</span>
+                        </div>
                     </div>
-                    <div class="tape-state-display">
-                        <span>Torque:</span>
-                        <span id="currentTapeTorque">0</span>
+
+                    <!-- Tape Motor Controls -->
+                    <div>
+                        <h3 class="section-title">Set Parameters</h3>
+                        <div class="tape-control-grid">
+                            <div class="tape-input-group">
+                                <label class="tape-input-label">Speed</label>
+                                <input type="number" id="tapeSpeed" class="input" value="0">
+                            </div>
+                            <div class="tape-input-group">
+                                <label class="tape-input-label">Torque</label>
+                                <input type="number" id="tapeTorque" class="input" value="0">
+                            </div>
+                        </div>
+                        <div class="tape-time-control">
+                            <div class="tape-input-group tape-time-input">
+                                <label class="tape-input-label">Duration (ms)</label>
+                                <input type="number" id="tapeTime" class="input" value="1000">
+                            </div>
+                            <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
+                            <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tape Motor Controls -->
-                <div>
-                    <h3 class="section-title">Set Parameters</h3>
-                    <div class="tape-control-grid">
-                        <div class="tape-input-group">
-                            <label class="tape-input-label">Speed</label>
-                            <input type="number" id="tapeSpeed" class="input" value="0">
+                <!-- Selector -->
+                <div class="card selector">
+                    <h2 class="card-title">
+                        ⚙️ Selector
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+
+
+                    <div class="chips">
+
+                        <div class="row row-10">
+                            <div class="label row-label">10</div>
+                            <button id="A10" class="chip col-A"></button>
+                            <button id="B10" class="chip col-B"></button>
+                            <button id="C10" class="chip col-C"></button>
+                            <button id="D10" class="chip col-D"></button>
+                            <button id="E10" class="chip col-E"></button>
+                            <button id="F10" class="chip col-F"></button>
                         </div>
-                        <div class="tape-input-group">
-                            <label class="tape-input-label">Torque</label>
-                            <input type="number" id="tapeTorque" class="input" value="0">
+
+                        <!-- Row 9 -->
+                        <div class="row row-9">
+                            <div class="label row-label">9</div>
+                            <button id="A9" class="chip col-A"></button>
+                            <button id="B9" class="chip col-B"></button>
+                            <button id="C9" class="chip col-C"></button>
+                            <button id="D9" class="chip col-D"></button>
+                            <button id="E9" class="chip col-E"></button>
+                            <button id="F9" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 8 -->
+                        <div class="row row-8">
+                            <div class="label row-label">8</div>
+                            <button id="A8" class="chip col-A"></button>
+                            <button id="B8" class="chip col-B"></button>
+                            <button id="C8" class="chip col-C"></button>
+                            <button id="D8" class="chip col-D"></button>
+                            <button id="E8" class="chip col-E"></button>
+                            <button id="F8" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 7 -->
+                        <div class="row row-7">
+                            <div class="label row-label">7</div>
+                            <button id="A7" class="chip col-A"></button>
+                            <button id="B7" class="chip col-B"></button>
+                            <button id="C7" class="chip col-C"></button>
+                            <button id="D7" class="chip col-D"></button>
+                            <button id="E7" class="chip col-E"></button>
+                            <button id="F7" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 6 -->
+                        <div class="row row-6">
+                            <div class="label row-label">6</div>
+                            <button id="A6" class="chip col-A"></button>
+                            <button id="B6" class="chip col-B"></button>
+                            <button id="C6" class="chip col-C"></button>
+                            <button id="D6" class="chip col-D"></button>
+                            <button id="E6" class="chip col-E"></button>
+                            <button id="F6" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 5 -->
+                        <div class="row row-5">
+                            <div class="label row-label">5</div>
+                            <button id="A5" class="chip col-A"></button>
+                            <button id="B5" class="chip col-B"></button>
+                            <button id="C5" class="chip col-C"></button>
+                            <button id="D5" class="chip col-D"></button>
+                            <button id="E5" class="chip col-E"></button>
+                            <button id="F5" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 4 -->
+                        <div class="row row-4">
+                            <div class="label row-label">4</div>
+                            <button id="A4" class="chip col-A"></button>
+                            <button id="B4" class="chip col-B"></button>
+                            <button id="C4" class="chip col-C"></button>
+                            <button id="D4" class="chip col-D"></button>
+                            <button id="E4" class="chip col-E"></button>
+                            <button id="F4" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="row row-3">
+                            <div class="label row-label">3</div>
+                            <button id="A3" class="chip col-A"></button>
+                            <button id="B3" class="chip col-B"></button>
+                            <button id="C3" class="chip col-C"></button>
+                            <button id="D3" class="chip col-D"></button>
+                            <button id="E3" class="chip col-E"></button>
+                            <button id="F3" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="row row-2">
+                            <div class="label row-label">2</div>
+                            <button id="A2" class="chip col-A"></button>
+                            <button id="B2" class="chip col-B"></button>
+                            <button id="C2" class="chip col-C"></button>
+                            <button id="D2" class="chip col-D"></button>
+                            <button id="E2" class="chip col-E"></button>
+                            <button id="F2" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Row 1 (bottom) -->
+                        <div class="row row-1">
+                            <div class="label row-label">1</div>
+                            <button id="A1" class="chip col-A"></button>
+                            <button id="B1" class="chip col-B"></button>
+                            <button id="C1" class="chip col-C"></button>
+                            <button id="D1" class="chip col-D"></button>
+                            <button id="E1" class="chip col-E"></button>
+                            <button id="F1" class="chip col-F"></button>
+                        </div>
+
+                        <!-- Column labels (bottom) -->
+                        <div class="row">
+                            <div class="place"></div> <!-- blank corner -->
+                            <div class="label column-label">A</div>
+                            <div class="label column-label">B</div>
+                            <div class="label column-label">C</div>
+                            <div class="label column-label">D</div>
+                            <div class="label column-label">E</div>
+                            <div class="label column-label">F</div>
                         </div>
                     </div>
-                    <div class="tape-time-control">
-                        <div class="tape-input-group tape-time-input">
-                            <label class="tape-input-label">Duration (ms)</label>
-                            <input type="number" id="tapeTime" class="input" value="1000">
-                        </div>
-                        <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
-                        <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
+
+
+                    <div class="options">
+
+                        <fieldset>     
+                            <legend for="action">select macro</legend>
+                            <select class="button" id="action" name="action">
+                                <!--macro options go here-->
+                            </select>
+                        </fieldset>
+
+                        <button id="clearChipSelection" class="button btn-danger" onclick="clearChips()">Clear selection</button>
+                        <button id="submitChipQuery" class="button btn-success" onclick="submitChips()">Exfoliate</button>
+
                     </div>
                 </div>
+
+
             </div>
 
-            <!-- Temperature Control -->
-            <div class="card">
-                <h2 class="card-title">
-                    🌡️Chip Temperature Control
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
-                </h2>
-                
-                <div class="temp-display mb-3">
-                    <span>Current Temperature:</span>
-                    <span id="currentTemp" class="temp-current">0°C</span>
-                </div>
-                
-                <div class="temp-display mb-3">
-                    <span>Target Temperature:</span>
-                    <span id="targetTemp" class="temp-current" style="color: #F59E0B;">0°C</span>
-                </div>
-                
-                <div class="flex mb-3">
-                    <input type="number" id="tempInput" class="input" value="0" min="0" max="200">
-                    <button class="button btn-danger" onclick="setTemperature()">Set Temp</button>
-                </div>
-
-                <!-- Temperature Chart -->
-                <div class="chart-container">
-                    <canvas id="tempChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Macro Control -->
-            <div class="card">
-                <h2 class="card-title">
-                    🎬 Macro Control
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
-                </h2>
-                
-                <!-- Variables Section -->
-                <div class="mb-4">
-                    <h3 class="section-title">Position Variables</h3>
-                    <div class="macro-variables">
-                        <div class="macro-variable-input">
-                            <label class="tape-input-label">CHIP_X</label>
-                            <input type="number" id="CHIP_X" class="input" value="105.5" step="0.1">
-                        </div>
-                        <div class="macro-variable-input">
-                            <label class="tape-input-label">CHIP_Y</label>
-                            <input type="number" id="CHIP_Y" class="input" value="4.5" step="0.1">
-                        </div>
-                        <div class="macro-variable-input">
-                            <label class="tape-input-label">STAGE_X</label>
-                            <input type="number" id="STAGE_X" class="input" value="8" step="0.1">
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Macro List -->
-                <div class="mb-4">
-                    <h3 class="section-title">Saved Macros</h3>
-                    <div id="macroList" class="macro-list">
-                        <!-- Macros will be populated here -->
-                        <div style="color: #6B7280; text-align: center; padding: 20px;">No macros saved yet</div>
-                    </div>
-                </div>
-                
-                <!-- New Macro -->
-                <div>
-                    <div class="flex mb-2">
-                        <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
-                        <button class="button btn-success" onclick="createNewMacro()">Create New</button>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- Selector -->
-            <div class="card selector">
-                <h2 class="card-title">
-                    ⚙️ Selector
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
-                </h2>
-
-
-                <div class="chips">
-
-                    <div class="row row-10">
-                        <div class="label row-label">10</div>
-                        <button id="A10" class="chip col-A"></button>
-                        <button id="B10" class="chip col-B"></button>
-                        <button id="C10" class="chip col-C"></button>
-                        <button id="D10" class="chip col-D"></button>
-                        <button id="E10" class="chip col-E"></button>
-                        <button id="F10" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 9 -->
-                    <div class="row row-9">
-                        <div class="label row-label">9</div>
-                        <button id="A9" class="chip col-A"></button>
-                        <button id="B9" class="chip col-B"></button>
-                        <button id="C9" class="chip col-C"></button>
-                        <button id="D9" class="chip col-D"></button>
-                        <button id="E9" class="chip col-E"></button>
-                        <button id="F9" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 8 -->
-                    <div class="row row-8">
-                        <div class="label row-label">8</div>
-                        <button id="A8" class="chip col-A"></button>
-                        <button id="B8" class="chip col-B"></button>
-                        <button id="C8" class="chip col-C"></button>
-                        <button id="D8" class="chip col-D"></button>
-                        <button id="E8" class="chip col-E"></button>
-                        <button id="F8" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 7 -->
-                    <div class="row row-7">
-                        <div class="label row-label">7</div>
-                        <button id="A7" class="chip col-A"></button>
-                        <button id="B7" class="chip col-B"></button>
-                        <button id="C7" class="chip col-C"></button>
-                        <button id="D7" class="chip col-D"></button>
-                        <button id="E7" class="chip col-E"></button>
-                        <button id="F7" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 6 -->
-                    <div class="row row-6">
-                        <div class="label row-label">6</div>
-                        <button id="A6" class="chip col-A"></button>
-                        <button id="B6" class="chip col-B"></button>
-                        <button id="C6" class="chip col-C"></button>
-                        <button id="D6" class="chip col-D"></button>
-                        <button id="E6" class="chip col-E"></button>
-                        <button id="F6" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 5 -->
-                    <div class="row row-5">
-                        <div class="label row-label">5</div>
-                        <button id="A5" class="chip col-A"></button>
-                        <button id="B5" class="chip col-B"></button>
-                        <button id="C5" class="chip col-C"></button>
-                        <button id="D5" class="chip col-D"></button>
-                        <button id="E5" class="chip col-E"></button>
-                        <button id="F5" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 4 -->
-                    <div class="row row-4">
-                        <div class="label row-label">4</div>
-                        <button id="A4" class="chip col-A"></button>
-                        <button id="B4" class="chip col-B"></button>
-                        <button id="C4" class="chip col-C"></button>
-                        <button id="D4" class="chip col-D"></button>
-                        <button id="E4" class="chip col-E"></button>
-                        <button id="F4" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 3 -->
-                    <div class="row row-3">
-                        <div class="label row-label">3</div>
-                        <button id="A3" class="chip col-A"></button>
-                        <button id="B3" class="chip col-B"></button>
-                        <button id="C3" class="chip col-C"></button>
-                        <button id="D3" class="chip col-D"></button>
-                        <button id="E3" class="chip col-E"></button>
-                        <button id="F3" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 2 -->
-                    <div class="row row-2">
-                        <div class="label row-label">2</div>
-                        <button id="A2" class="chip col-A"></button>
-                        <button id="B2" class="chip col-B"></button>
-                        <button id="C2" class="chip col-C"></button>
-                        <button id="D2" class="chip col-D"></button>
-                        <button id="E2" class="chip col-E"></button>
-                        <button id="F2" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Row 1 (bottom) -->
-                    <div class="row row-1">
-                        <div class="label row-label">1</div>
-                        <button id="A1" class="chip col-A"></button>
-                        <button id="B1" class="chip col-B"></button>
-                        <button id="C1" class="chip col-C"></button>
-                        <button id="D1" class="chip col-D"></button>
-                        <button id="E1" class="chip col-E"></button>
-                        <button id="F1" class="chip col-F"></button>
-                    </div>
-
-                    <!-- Column labels (bottom) -->
-                    <div class="row">
-                        <div class="place"></div> <!-- blank corner -->
-                        <div class="label column-label">A</div>
-                        <div class="label column-label">B</div>
-                        <div class="label column-label">C</div>
-                        <div class="label column-label">D</div>
-                        <div class="label column-label">E</div>
-                        <div class="label column-label">F</div>
-                    </div>
-                </div>
-
-
-                <div class="options">
-
-                    <fieldset>     
-                        <legend for="action">select macro</legend>
-                        <select class="button" id="action" name="action">
-                            <!--macro options go here-->
-                        </select>
-                    </fieldset>
-
-                    <button id="clearChipSelection" class="button btn-danger" onclick="clearChips()">Clear selection</button>
-                    <button id="submitChipQuery" class="button btn-success" onclick="submitChips()">Exfoliate</button>
-
-                </div>
-            </div>
-
-
-            <!-- Console -->
-            <div id="console-container" class="card">
+            
+        <!-- Console -->
+        <div id="consoleView">
+            <div id="console" class="console">
                 <h2 class="card-title">
                     💻 Console
-                    <img id="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
                 </h2>
-                <div id="console" class="console">
-                    <div class="console-line">Machine control interface ready...</div>
-                </div>
-                
-                <div class="flex mt-3">
-                    <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
-                    <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
-                </div>
+                <div class="console-line">Machine control interface ready...</div>
             </div>
+            
+            <div class="flex mt-3">
+                <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
+                <button class="button btn-primary" onclick="sendCustomCommand()">Send</button>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
 
         </div>
+
+    
     </div>
 
     <!-- Macro Editor Modal -->
