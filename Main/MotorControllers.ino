@@ -113,7 +113,7 @@ bool tapeTorque(int commandedTorque) {
     }
 
     int dutyRequest = abs(commandedTorque);
-    bool direction = (commandedTorque >= 0); // Positive = false, Negative = true for direction
+    bool direction = (commandedTorque < 0);
     
     // Set direction and apply torque
     TakeUpMotor.MotorInAState(direction);
