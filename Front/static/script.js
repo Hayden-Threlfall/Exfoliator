@@ -687,16 +687,59 @@ function selectColumn(event) {
 }
 
 
+function addPlayPause(){
+    let runningButtons = document.querySelectorAll('.macro-running')
+
+    runningButtons.forEach(button =>{
+        button.style.display = 'block';
+
+    })
+
+    let notRunning = document.querySelectorAll('.not-running')
+
+    notRunning.forEach(button =>{
+        button.style.display = 'none';
+    })
+
+
+}
+
+function removePlayPause(){
+    let runningButtons = document.querySelectorAll('.macro-running')
+
+    runningButtons.forEach(button =>{
+        button.style.display = 'none';
+
+    })
+
+    let notRunning = document.querySelectorAll('.not-running')
+
+    notRunning.forEach(button =>{
+        button.style.display = '';
+    })
+
+
+}
+
 // Add these global variables at the top of script.js
 let macroQueue = [];
 let isMacroQueueRunning = false;
 
+// storing paused macros here to resume later
+let cachedQueue = []
+let macroPaused = false;
+
+
 // Replace the existing submitChips() function
 function submitChips() {
+    
     if (selectedChips.length === 0) {
         addLog('No chips selected');
         return;
     }
+
+    addPlayPause()
+
 
     selectedChips.sort();
     const columns = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5};
@@ -733,11 +776,24 @@ function submitChips() {
 
 // Add this new function
 function processNextMacro() {
-    if (macroQueue.length === 0) {
+    if (macroPaused) return;
+
+
+
+    if (macroQueue.length === 0 ) {
+        if (isMacroQueueRunning) addLog('All chip macros completed');
+        removePlayPause()
         isMacroQueueRunning = false;
-        addLog('All chip macros completed');
+
+        //reverting pause macro
+        const btn = document.querySelector('#pauseChips');
+        btn.innerHTML = 'Resume';
+        btn.classList.replace('btn-warning', 'btn-success');
+        btn.onclick = resumeMacro;
         return;
+
     }
+
 
     isMacroQueueRunning = true;
     const nextMacro = macroQueue.shift();
@@ -763,12 +819,42 @@ function processNextMacro() {
     runChipMacro(nextMacro.macro, nextMacro.x, nextMacro.y);
 }
 
-// Add this new function
 function stopMacroQueue() {
     macroQueue = [];
     isMacroQueueRunning = false;
     addLog('Macro queue stopped');
     sendWebSocketMessage('stop_macro', {});
+    removePlayPause();
+    
+}
+
+function pauseMacro(){
+    macroPaused = true
+    cachedQueue = macroQueue.slice()
+    macroQueue = []
+    addLog('Macro queue paused');
+    sendWebSocketMessage('stop_macro', {});
+    const btn = document.querySelector('#pauseChips');
+    btn.innerHTML = 'Resume';
+    btn.classList.replace('btn-warning', 'btn-success');
+    btn.onclick = resumeMacro;
+}
+
+function resumeMacro(){
+    addLog('Macro queue resumed')
+    macroQueue = cachedQueue
+    macroPaused = false
+
+    const btn = document.querySelector('#pauseChips');
+    btn.innerHTML = 'Pause macro';
+    btn.classList.replace('btn-success', 'btn-warning');
+    btn.onclick = pauseMacro;
+
+    processNextMacro(); 
+
+
+
+
 }
 
 function dropdownClick(event){

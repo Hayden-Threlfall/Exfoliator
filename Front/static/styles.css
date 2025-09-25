@@ -17,10 +17,14 @@ body {
 }
 
 .container {
-    margin: 0 auto;
+    justify-content: center;
+    margin: auto;
     display: flex;
+    flex-direction: row;
     gap: 24px;
 }
+
+
 .place{
     width: 30px;
     height: 30px;
@@ -67,6 +71,7 @@ body {
 }
 
 .grid {
+    justify-content: center;
     display: flex;
     flex-direction: row;
     gap: 24px;
@@ -74,15 +79,18 @@ body {
 
 
 .column{
+    width: 100%;
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 24px;
 }
+
 .card {
     background-color: #1F2937;
     border-radius: 12px;
     padding: 24px;
-    width: 25vw;
+    width: min(520px, 25vw);
 }
 
 .card-title {
@@ -104,8 +112,9 @@ body {
 }
 
 .button-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
@@ -191,16 +200,16 @@ body {
 }
 
 .input {
-    width: 100%;
+    width: 80%;
     padding: 8px 12px;
     background-color: #374151;
     border: 1px solid #4B5563;
-    border-radius: 6px;
     color: white;
 }
 
 .flex {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     align-items: center;
 }
@@ -230,13 +239,11 @@ body {
 
 .console {
     background-color: #000;
-    border-radius: 6px;
     padding: 12px;
     height: 70vh;
     overflow-y: auto;
     font-family: monospace;
     font-size: 0.875rem;
-    margin-bottom: 20px;
 }
 
 .console-line {
@@ -431,6 +438,10 @@ body {
     resize: vertical;
 }
 
+.macro-running{
+    display: none;
+}
+
 .overlay {
     display: none;
     position: fixed;
@@ -448,7 +459,7 @@ body {
 
 .chip {
     width: 1.8vw;
-    height: 1.8vw;
+    height: 1.8 vw;
     background-color: white;
     border: none;
     border-radius: 2px;
@@ -480,8 +491,10 @@ fieldset{
 }
 
 .chips {
-    display: flex;
-    flex-direction: column;
+    margin: auto;
+    display: grid;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
     justify-content: space-between;
 
@@ -499,6 +512,13 @@ fieldset{
     gap: 20px;
 }
 
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 20px;
+}
+
 .hide{
     rotate: -90deg;
 }
@@ -513,9 +533,7 @@ fieldset{
 }
 
 
-.chips > * {
-    margin: auto;
-}
+
 
 .row {
     display: flex;
@@ -523,18 +541,19 @@ fieldset{
 }
 
 .options {
+    margin: auto;
+    justify-content: flex-start;
     display: flex;
     gap: 20px;
-    width: 100%;
+    flex-direction: column;
+    flex-wrap: wrap;
 
 }
 
 .options > * {
-    justify-content: center;
-    margin: auto;
     padding: 8px 10px;
     border-radius: 10px;
-    width: 50%;
+    width: 100%;
     font-weight: 500;
 }
 
@@ -562,4 +581,48 @@ fieldset{
 
 .card-title{
     justify-content: space-between;
+}
+
+.mt-3{
+    display: flex;
+    justify-content: center;
+    background-color: #000;
+    width: 100%;
+
+}
+
+.mt-3 .button{
+    border-radius: 0;
+    width: 20%;
+}
+
+#consoleView{
+    height: 100%;
+    border: solid 1px black;
+    border-radius: 6px;
+}
+
+
+@media (max-width: 1200px){
+    
+.container {
+    flex-direction: column-reverse;
+
+}
+
+.console{
+    height: 200px !important;
+}
+
+.grid {
+
+    flex-wrap: wrap;
+}
+
+.card{
+    width: 100%;
+}
+
+
+
 }
