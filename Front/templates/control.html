@@ -13,7 +13,7 @@
         <div style="display: flex; align-items: center; gap: 16px;">
             <h1 class="title">
                 <span>🔬</span>
-                Exfoliator Control Interface
+                EXFOLIATOR CONTROL INTERFACE
             </h1>
         </div>
 
@@ -43,7 +43,7 @@
             <div class="column">
                 <div class="card">
                     <h2 class="card-title">
-                        📐Position Control
+                        📐 POSITION CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -84,16 +84,20 @@
                     <!-- Move to Position -->
                     <div>
                         <h3 class="section-title">Move to Position</h3>
-                        <div class="mb-3">
-                            <label class="text-sm">X Position (mm)</label>
-                            <input type="number" id="xPositionInput" class="input" value="0" step="0.1">
-                            <button class="button btn-success mb-2" onclick="moveToPosition('X')">Move X</button>
+
+                        <div class="move-position">
+                            <div class="mt-3">
+                                <label class="text-sm">X Position (mm)</label>
+                                <input type="number" id="xPositionInput" class="input" value="0" step="0.1">
+                                <button class="button btn-success" onclick="moveToPosition('X')">Move X</button>
+                            </div>
+                            <div class="mt-3">
+                                <label class="text-sm">Y Position (mm)</label>
+                                <input type="number" id="yPositionInput" class="input" value="0" step="0.1">
+                                <button class="button btn-success" onclick="moveToPosition('Y')">Move Y</button>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="text-sm">Y Position (mm)</label>
-                            <input type="number" id="yPositionInput" class="input" value="0" step="0.1">
-                            <button class="button btn-success" onclick="moveToPosition('Y')">Move Y</button>
-                        </div>
+
                     </div>
                 
                 
@@ -102,7 +106,7 @@
                 <!-- Temperature Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🌡️Chip Temperature Control
+                        🌡️ CHIP TEMPERATURE CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -117,7 +121,7 @@
                         <span id="targetTemp" class="temp-current" style="color: #F59E0B;">0°C</span>
                     </div>
                     
-                    <div class="flex mb-3">
+                    <div class="flex temp mt-3">
                         <input type="number" id="tempInput" class="input" value="0" min="0" max="200">
                         <button class="button btn-danger" onclick="setTemperature()">Set Temp</button>
                     </div>
@@ -135,7 +139,7 @@
                 <!-- Pneumatics Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        💨Pneumatic Controls
+                        💨 PNEUMATIC CONTROLS
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -178,8 +182,8 @@
 
                     <!-- Vacuum Controls -->
                     <div>
-                        <h3 class="section-title">
-                            🌪️Vacuum Controls
+                        <h3 class="card-title">
+                            🌪️ VACUUM CONTROLS
                         </h3>
                         
                         <!-- Vacuum Nozzle -->
@@ -211,7 +215,7 @@
                 <!-- Macro Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🎬 Macro Control
+                        🎬 MACRO CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -260,7 +264,7 @@
                 <!-- Tape Motor Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🎞️Tape Motor Control
+                        🎞️ TAPE MOTOR CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -305,7 +309,7 @@
                 <!-- Selector -->
                 <div class="card selector">
                     <h2 class="card-title">
-                        ⚙️ Selector
+                        ⚙️ SELECTOR
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -449,8 +453,6 @@
                             <button id="clearChipSelection" class="button not-running btn-danger" onclick="clearChips()">Clear selection</button>
                             <button id="pauseChips" class="button btn-warning macro-running" onclick="pauseMacro()">Pause</button>
                             <button id="stopChips" class="button btn-danger macro-running" onclick="stopMacroQueue()">STOP</button>
-
-
                             <button id="submitChipQuery" class="button not-running btn-success" onclick="submitChips()">Exfoliate</button>
 
                         </div>
@@ -467,10 +469,10 @@
                     
         <!-- Console -->
         <div id="consoleView">
+            <h2 class="card-title">
+                💻 CONSOLE
+            </h2>
             <div id="console" class="console">
-                <h2 class="card-title">
-                    💻 Console
-                </h2>
                 <div class="console-line">Machine control interface ready...</div>
             </div>
             
