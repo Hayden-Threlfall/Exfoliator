@@ -768,6 +768,8 @@ function submitChips() {
     }
 
     addLog(`Queued ${macroQueue.length} chips for sequential processing`);
+
+    clearChips()
     
     if (!isMacroQueueRunning) {
         processNextMacro();
@@ -781,15 +783,16 @@ function processNextMacro() {
 
 
     if (macroQueue.length === 0 ) {
+
+        const btn = document.querySelector('#pauseChips');
+        btn.innerHTML = 'Pause macro';
+        btn.classList.replace('btn-success', 'btn-warning');
+        btn.onclick = pauseMacro;
+
         if (isMacroQueueRunning) addLog('All chip macros completed');
         removePlayPause()
         isMacroQueueRunning = false;
 
-        //reverting pause macro
-        const btn = document.querySelector('#pauseChips');
-        btn.innerHTML = 'Resume';
-        btn.classList.replace('btn-warning', 'btn-success');
-        btn.onclick = resumeMacro;
         return;
 
     }
@@ -821,7 +824,13 @@ function processNextMacro() {
 
 function stopMacroQueue() {
     macroQueue = [];
+
+    //incase the button was on resume, set it back to pause
+    macroPaused = false;
+    cachedQueue = []
     isMacroQueueRunning = false;
+    pauseButton();
+
     addLog('Macro queue stopped');
     sendWebSocketMessage('stop_macro', {});
     removePlayPause();
@@ -834,10 +843,8 @@ function pauseMacro(){
     macroQueue = []
     addLog('Macro queue paused');
     sendWebSocketMessage('stop_macro', {});
-    const btn = document.querySelector('#pauseChips');
-    btn.innerHTML = 'Resume';
-    btn.classList.replace('btn-warning', 'btn-success');
-    btn.onclick = resumeMacro;
+
+    resumeButton()
 }
 
 function resumeMacro(){
@@ -845,15 +852,25 @@ function resumeMacro(){
     macroQueue = cachedQueue
     macroPaused = false
 
+    pauseButton()
+
+    processNextMacro(); 
+
+}
+
+function pauseButton(){
     const btn = document.querySelector('#pauseChips');
     btn.innerHTML = 'Pause macro';
     btn.classList.replace('btn-success', 'btn-warning');
     btn.onclick = pauseMacro;
+}
 
-    processNextMacro(); 
+function resumeButton(){
 
-
-
+    const btn = document.querySelector('#pauseChips');
+    btn.innerHTML = 'Resume';
+    btn.classList.replace('btn-warning', 'btn-success');
+    btn.onclick = resumeMacro;
 
 }
 

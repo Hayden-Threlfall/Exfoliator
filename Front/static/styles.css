@@ -542,18 +542,22 @@ fieldset{
 
 .options {
     margin: auto;
-    justify-content: flex-start;
+    align-items: flex-end;
+    justify-content: center;
     display: flex;
     gap: 20px;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
+}
 
+.options button{
+    width: 110px;
+    height: 30px;
 }
 
 .options > * {
     padding: 8px 10px;
     border-radius: 10px;
-    width: 100%;
     font-weight: 500;
 }
 
