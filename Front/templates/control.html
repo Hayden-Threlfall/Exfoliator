@@ -42,8 +42,10 @@
 
             <div class="column">
                 <div class="card">
-                    <h2 class="card-title">
-                        📐 POSITION CONTROL
+                    <h2 class="position card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/position.svg') }}">
+
+                        POSITION CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -70,14 +72,32 @@
                     <!-- Enable Controls -->
                     <div class="mb-4">
                         <h3 class="section-title">
-                            <span>🔌</span>
                             Motor Enable
                         </h3>
                         <div class="button-grid">
-                            <button class="button btn-success" onclick="enableAxis('X')">Enable X</button>
-                            <button class="button btn-success" onclick="enableAxis('Y')">Enable Y</button>
-                            <button class="button btn-danger" onclick="disableMotor('X')">Disable X</button>
-                            <button class="button btn-danger" onclick="disableMotor('Y')">Disable Y</button>
+
+                            <div class="pneumatic-control">
+                                <span class="button-label">X MOTOR</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="motorToggleX">
+                                    <div class="slider round">
+                                        <span class="on">ENABLED</span>
+                                        <span class="off">DISABLED</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div class="pneumatic-control">
+                                <span class="button-label">Y MOTOR</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="motorToggleY">
+                                    <div class="slider round">
+                                        <span class="on">ENABLED</span>
+                                        <span class="off">DISABLED</span>
+                                    </div>
+                                </label>
+                            </div>
+
                         </div>
                     </div>
 
@@ -106,7 +126,9 @@
                 <!-- Temperature Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🌡️ CHIP TEMPERATURE CONTROL
+                        <img class="icon" src="{{ url_for('static', filename='images/temp.svg') }}">
+
+                        CHIP TEMPERATURE CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -135,13 +157,14 @@
 
             </div>
 
+            <!-- Modified Pneumatic and Vacuum Controls sections in the HTML -->
             <div class="column">
                 <!-- Pneumatics Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        💨 PNEUMATIC CONTROLS
+                        <img class="icon" src="{{ url_for('static', filename='images/pneumatics.svg') }}">
+                        PNEUMATIC CONTROLS
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
-
                     </h2>
                     
                     <!-- Nozzle -->
@@ -150,10 +173,13 @@
                             <div id="nozzleStatus" class="status-indicator"></div>
                             <span>Nozzle</span>
                         </div>
-                        <div class="flex">
-                            <button class="button btn-success" onclick="controlPneumatic('nozzle', 'extend')">Extend</button>
-                            <button class="button btn-danger" onclick="controlPneumatic('nozzle', 'retract')">Retract</button>
-                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleNozzle">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Chip Stage -->
@@ -162,10 +188,13 @@
                             <div id="stageStatus" class="status-indicator"></div>
                             <span>Chip Stage</span>
                         </div>
-                        <div class="flex">
-                            <button class="button btn-success" onclick="controlPneumatic('stage', 'extend')">Extend</button>
-                            <button class="button btn-danger" onclick="controlPneumatic('stage', 'retract')">Retract</button>
-                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleStage">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Stamp -->
@@ -174,17 +203,21 @@
                             <div id="stampStatus" class="status-indicator"></div>
                             <span>Stamp</span>
                         </div>
-                        <div class="flex">
-                            <button class="button btn-success" onclick="controlPneumatic('stamp', 'extend')">Extend</button>
-                            <button class="button btn-danger" onclick="controlPneumatic('stamp', 'retract')">Retract</button>
-                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleStamp">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Vacuum Controls -->
                     <div>
-                        <h3 class="card-title">
-                            🌪️ VACUUM CONTROLS
-                        </h3>
+                        <h2 class="card-title">
+                            <img class="icon" src="{{ url_for('static', filename='images/vacuum.svg') }}">
+                            VACUUM CONTROLS
+                        </h2>
                         
                         <!-- Vacuum Nozzle -->
                         <div class="pneumatic-control">
@@ -192,10 +225,13 @@
                                 <div id="vacnozzleStatus" class="status-indicator"></div>
                                 <span>Nozzle</span>
                             </div>
-                            <div class="flex">
-                                <button class="button btn-success" onclick="controlVacuum('vacnozzle', 'on')">On</button>
-                                <button class="button btn-danger" onclick="controlVacuum('vacnozzle', 'off')">Off</button>
-                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleVacnozzle">
+                                <div class="slider round">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </div>
+                            </label>
                         </div>
 
                         <!-- Chuck Vacuum -->
@@ -204,10 +240,13 @@
                                 <div id="chuckStatus" class="status-indicator"></div>
                                 <span>Chuck</span>
                             </div>
-                            <div class="flex">
-                                <button class="button btn-success" onclick="controlVacuum('chuck', 'on')">On</button>
-                                <button class="button btn-danger" onclick="controlVacuum('chuck', 'off')">Off</button>
-                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleChuck">
+                                <div class="slider round">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -215,7 +254,9 @@
                 <!-- Macro Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🎬 MACRO CONTROL
+                        <img class="icon" src="{{ url_for('static', filename='images/macro.svg') }}">
+
+                        MACRO CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -264,7 +305,8 @@
                 <!-- Tape Motor Control -->
                 <div class="card">
                     <h2 class="card-title">
-                        🎞️ TAPE MOTOR CONTROL
+                        <img class="icon" src="{{ url_for('static', filename='images/tape.svg') }}">
+                        TAPE MOTOR CONTROL
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -309,7 +351,8 @@
                 <!-- Selector -->
                 <div class="card selector">
                     <h2 class="card-title">
-                        ⚙️ SELECTOR
+                        <img class="icon" src="{{ url_for('static', filename='images/selector.svg') }}">
+                        SELECTOR
                         <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
 
                     </h2>
@@ -470,7 +513,8 @@
         <!-- Console -->
         <div id="consoleView">
             <h2 class="card-title">
-                💻 CONSOLE
+                <img class="icon" src="{{ url_for('static', filename='images/command.svg') }}">
+                CONSOLE
             </h2>
             <div id="console" class="console">
                 <div class="console-line">Machine control interface ready...</div>
