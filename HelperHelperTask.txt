@@ -1,16 +1,20 @@
-::Selector:: 
-Style
-Add text like "Macro Used" "Macro Selector" above or bellow filter (or some other creative location)
-if you selct row once it selects all even if pre selected, second time deselect all
+Macro Controller ::
+-Add the ability to stop and pause this too
 
-Optional, build select rown into invisible button behind 1,2,3,4,F,E,D,ect that select row for numbers and column for leters
+Chip Selector :: 
+-Zoom out scales the table weird and it likes to shift when window shifts
+-Pause button does not always show up first
 
-::Drop Down Or Tabs::
-Lookup MainsailOS interface for inspiration
-Build 1 or both to compare
+Tape Motor Controller ::
+-Number text field leaves bounding box when shrinking window
 
-OR 
+Pneumatics :: 
+-Instead of assum button state will change wait for the json to be received to run button animation 
+-Stamp logic reversed due to activate state being retracted.
 
-Same thing but on the left side as a selector 
+General ::
+-Keep in mind js is not persistent between users and instances
+-Buttons need to be updated to same style
 
-We will start with this then can build it out maybe reorgonizing what goes where
+Extra:
+-Macros able to call other macros (infinite loop possible)
