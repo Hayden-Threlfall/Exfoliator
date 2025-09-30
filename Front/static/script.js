@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!toggle) return;
 
         toggle.addEventListener('change', function() {
-            const desiredState = toggle.checked;
+            const desiredState = component != 'stamp' ? toggle.checked : !toggle.checked;
             controlPneumatic(component, desiredState ? 'extend' : 'retract');
 
             // Wait for backend to confirm

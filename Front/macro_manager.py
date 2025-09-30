@@ -15,8 +15,8 @@ class MacroVariables:
     def __init__(self):
         # Default values
         self.X_AXIS_INITIAL_CHIPWELL = 105.5
-        self.Y_AXIS_INITIAL_CHIPWELL = 4.5
-        self.X_AXIS_VACUUM_CHUCK_POSITION = 8
+        self.Y_AXIS_INITIAL_CHIPWELL = 3.2
+        self.X_AXIS_VACUUM_CHUCK_POSITION = 8.3
 
         # User-definable values
         self.CHIP_X = self.X_AXIS_INITIAL_CHIPWELL
