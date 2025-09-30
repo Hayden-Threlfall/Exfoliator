@@ -54,6 +54,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+        const xToggle = document.getElementById("motorToggleX");
+        const yToggle = document.getElementById("motorToggleY");
+
+        let motorYConfirmed = false;
+
+        yToggle.addEventListener("change", function() {
+            if (yToggle.checked) {
+                enableAxis("Y");
+            } else {
+                disableMotor("Y");
+            }
+
+            // Wait for backend to confirm
+            setTimeout(() => {
+                if (yToggle.checked !== motorYConfirmed) {
+                    // revert to last confirmed state
+                    yToggle.checked = motorYConfirmed;
+                }
+            }, 1000); // adjust timeout to your system’s response speed
+        });
+
+
+        // Track last confirmed state from backend
+        let motorXConfirmed = false;
+
+        // When user tries to change state
+        xToggle.addEventListener("change", function() {
+            const desiredState = xToggle.checked;
+
+            if (desiredState) {
+                enableAxis("X");
+            } else {
+                disableMotor("X");
+            }
+
+            // Wait for backend to confirm
+            setTimeout(() => {
+                if (xToggle.checked !== motorXConfirmed) {
+                    // revert to last confirmed state
+                    xToggle.checked = motorXConfirmed;
+                }
+            }, 1000); // adjust timeout to your system’s response speed
+        });
+
+    // New: Pneumatic and Vacuum Toggles
+    setupPneumaticToggle('nozzle', 'toggleNozzle');
+    setupPneumaticToggle('stage', 'toggleStage');
+    setupPneumaticToggle('stamp', 'toggleStamp');
+    setupVacuumToggle('vacnozzle', 'toggleVacnozzle');
+    setupVacuumToggle('chuck', 'toggleChuck');
+
+    // New function to setup pneumatic toggles
+    function setupPneumaticToggle(component, toggleId) {
+        const toggle = document.getElementById(toggleId);
+        if (!toggle) return;
+
+        toggle.addEventListener('change', function() {
+            const desiredState = toggle.checked;
+            controlPneumatic(component, desiredState ? 'extend' : 'retract');
+
+            // Wait for backend to confirm
+            setTimeout(() => {
+                if (toggle.checked !== pneumatics[component]) {
+                    toggle.checked = pneumatics[component];
+                }
+            }, 1000);
+        });
+    }
+
+    // New function to setup vacuum toggles
+    function setupVacuumToggle(component, toggleId) {
+        const toggle = document.getElementById(toggleId);
+        if (!toggle) return;
+
+        toggle.addEventListener('change', function() {
+            const desiredState = toggle.checked;
+            controlVacuum(component, desiredState ? 'on' : 'off');
+
+            // Wait for backend to confirm
+            setTimeout(() => {
+                if (toggle.checked !== vacuums[component]) {
+                    toggle.checked = vacuums[component];
+                }
+            }, 1000);
+        });
+    }
+
+
+
     updatePneumaticsDisplay();
     updateVacuumsDisplay();
     loadMacroList();
@@ -295,6 +384,10 @@ function initializeChart() {
     });
 }
 
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 function updateConnectionStatus(connected) {
     isConnected = connected;
     const status = document.getElementById('connectionStatus');
@@ -328,26 +421,59 @@ function updateMotorStatesDisplay() {
             stateEl.textContent = state;
             stateEl.className = `motor-state ${stateClasses[state] || 'state-disabled'}`;
         }
+
+        const toggle = document.getElementById(`motorToggle${axis.toUpperCase()}`);
+        if (toggle) {
+            toggle.checked = (motorStates[axis] === "MOTOR_READY" || motorStates[axis] === "MOTOR_MOVING");
+        }
     });
 }
 
+
+function updateMotorSliders() {
+    const states = {
+        X: motorStates.x,
+        Y: motorStates.y
+    };
+
+    Object.entries(states).forEach(([axis, state]) => {
+        const slider = document.getElementById(`togBtn${axis}`);
+        if (!slider) return;
+
+        slider.checked = (state === "MOTOR_READY" || state === "MOTOR_MOVING");
+    });
+}
+
+
+
+// Modified updatePneumaticsDisplay to update sliders
 function updatePneumaticsDisplay() {
     Object.keys(pneumatics).forEach(component => {
-        const statusEl = document.getElementById(component + 'Status');
+        const statusEl = document.getElementById(`${component}Status`);
         if (statusEl) {
             statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
         }
-    });
-}
-
-function updateVacuumsDisplay() {
-    Object.keys(vacuums).forEach(component => {
-        const statusEl = document.getElementById(component + 'Status');
-        if (statusEl) {
-            statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
+        const toggle = document.getElementById(`toggle${capitalize(component)}`);
+        if (toggle) {
+            toggle.checked = pneumatics[component];
         }
     });
 }
+
+// Modified updateVacuumsDisplay to update sliders
+function updateVacuumsDisplay() {
+    Object.keys(vacuums).forEach(component => {
+        const statusEl = document.getElementById(`${component}Status`);
+        if (statusEl) {
+            statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
+        }
+        const toggle = document.getElementById(`toggle${capitalize(component)}`);
+        if (toggle) {
+            toggle.checked = vacuums[component];
+        }
+    });
+}
+
 
 function updateTapeDisplay() {
     document.getElementById('currentTapeSpeed').textContent = tape.speed || 0;
@@ -732,6 +858,11 @@ let macroPaused = false;
 
 // Replace the existing submitChips() function
 function submitChips() {
+
+    /*if (motorStates.x == 'MOTOR_DISABLED' || motorStates.y == 'MOTOR_DISABLED'){
+        addLog('Enable motors to exfoliate')
+        return;
+    } */
     
     if (selectedChips.length === 0) {
         addLog('No chips selected');
@@ -757,7 +888,7 @@ function submitChips() {
         const row = parseInt(chip.slice(1));
         
         let xcor = 105.5 + (row - 1) * 12.5;
-        let ycor = 67 - (columns[column] * 12.5);
+        let ycor = 65.7 - (columns[column] * 12.5);
         
         macroQueue.push({
             chip: chip,
@@ -873,6 +1004,9 @@ function resumeButton(){
     btn.onclick = resumeMacro;
 
 }
+
+
+
 
 function dropdownClick(event){
     let dropdown = event.target;
