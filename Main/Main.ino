@@ -2,8 +2,6 @@
 #include <SPI.h>
 #include <Ethernet.h>
 
-volatile bool eStopTriggered = false;
-
 // Static network configuration
 #define baudRate 9600
 
@@ -22,8 +20,12 @@ unsigned long lastJsonSend = 0;
 unsigned long lastHeartbeat = 0;
 const unsigned long JSON_SEND_INTERVAL = 500; 
 const unsigned long HEARTBEAT_INTERVAL = 7000;
+volatile bool eStopTriggered = false;
+bool eStopLedState = false;
 
+#define CcioPort      ConnectorCOM0
 #define EStopButton   ConnectorA11
+#define EStopLed      CLEARCORE_PIN_CCIOA0
 
 void setup() {
     Serial.begin(baudRate);
@@ -39,24 +41,32 @@ void setup() {
     Serial.print("Assigned static IP: ");
     Serial.println(Ethernet.localIP());
 
+    CcioPort.Mode(Connector::CCIO);
+    CcioPort.PortOpen();
+
     connectToServer();
-
-    // Motors Setup
-    motorSetup();
-
-    // Solenoid Setup
-    pnuematicSetup();
-
-    // Thermistor Setup
-    thermistorSetup();
-    
-    // Heater Setup
-    heaterSetup();
 
     //Estop Setup
     EStopButton.Mode(Connector::INPUT_DIGITAL);
     eStopTriggered = false;
 
+    pinMode(CLEARCORE_PIN_CCIOA0, OUTPUT);
+    eStopLedState = false;
+    digitalWrite(EStopLed, eStopLedState);
+
+    if (EStopButton.State() == 1) {
+        // Motors Setup
+        motorSetup();
+
+        // Solenoid Setup
+        pnuematicSetup();
+
+        // Thermistor Setup
+        thermistorSetup();
+        
+        // Heater Setup
+        heaterSetup();
+    }
     lastHeartbeat = millis();
     
 }
@@ -72,11 +82,19 @@ void loop() {
         
         while (true) {
             Serial.println("EMERGENCY STOPPED. Restart required.");
+            if (client.available()) {
+                size_t len = client.readBytesUntil('\n', incomingData, sizeof(incomingData) - 1);
+                incomingData[len] = '\0';
+                if (String(incomingData) == "PING")
+                    lastHeartbeat = millis();
+            }
             if (millis() - lastHeartbeat > HEARTBEAT_INTERVAL && checkTimer(lastConnectionAttempt, 5000)) {
                 connectToServer();
             }
             sendStatusJson();
-            delay(1000);
+            digitalWrite(EStopLed, eStopLedState);
+            eStopLedState = !eStopLedState;
+            delay(500);
         }
     }
     
@@ -180,8 +198,12 @@ void processCommand(String cmd) {
 
     // Pneumatic commands
     else if (cmd == "ExtendNozzle") {
-        lowerNozzle();
-        client.println("Nozzle Extended");
+        if (getMotorXStateString() != "MOTOR_MOVING" && getMotorYStateString() != "MOTOR_MOVING") {
+            lowerNozzle();
+            client.println("Nozzle Extended");
+        }
+        else
+            client.println("Motor Moving Will Not Extend Nozzle"); 
     }
     else if (cmd == "RetractNozzle") {
         raiseNozzle();
