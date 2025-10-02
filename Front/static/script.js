@@ -110,16 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById(toggleId);
         if (!toggle) return;
 
-        toggle.addEventListener('change', function() {
-            const desiredState = component != 'stamp' ? toggle.checked : !toggle.checked;
+        toggle.addEventListener('change', function(e) {
+            toggle.checked = pneumatics[component];
+            const desiredState = component != 'stamp' ? !pneumatics[component] : pneumatics[component];
             controlPneumatic(component, desiredState ? 'extend' : 'retract');
-
-            // Wait for backend to confirm
-            setTimeout(() => {
-                if (toggle.checked !== pneumatics[component]) {
-                    toggle.checked = pneumatics[component];
-                }
-            }, 1000);
         });
     }
 
@@ -128,16 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const toggle = document.getElementById(toggleId);
         if (!toggle) return;
 
-        toggle.addEventListener('change', function() {
-            const desiredState = toggle.checked;
+        toggle.addEventListener('change', function(e) {
+            toggle.checked = vacuums[component];
+            const desiredState = !vacuums[component];
             controlVacuum(component, desiredState ? 'on' : 'off');
-
-            // Wait for backend to confirm
-            setTimeout(() => {
-                if (toggle.checked !== vacuums[component]) {
-                    toggle.checked = vacuums[component];
-                }
-            }, 1000);
         });
     }
 
@@ -449,10 +437,6 @@ function updateMotorSliders() {
 // Modified updatePneumaticsDisplay to update sliders
 function updatePneumaticsDisplay() {
     Object.keys(pneumatics).forEach(component => {
-        const statusEl = document.getElementById(`${component}Status`);
-        if (statusEl) {
-            statusEl.className = `status-indicator ${pneumatics[component] ? 'active' : ''}`;
-        }
         const toggle = document.getElementById(`toggle${capitalize(component)}`);
         if (toggle) {
             toggle.checked = pneumatics[component];
@@ -463,10 +447,6 @@ function updatePneumaticsDisplay() {
 // Modified updateVacuumsDisplay to update sliders
 function updateVacuumsDisplay() {
     Object.keys(vacuums).forEach(component => {
-        const statusEl = document.getElementById(`${component}Status`);
-        if (statusEl) {
-            statusEl.className = `status-indicator ${vacuums[component] ? 'active' : ''}`;
-        }
         const toggle = document.getElementById(`toggle${capitalize(component)}`);
         if (toggle) {
             toggle.checked = vacuums[component];
@@ -887,8 +867,8 @@ function submitChips() {
         const column = chip[0];
         const row = parseInt(chip.slice(1));
         
-        let xcor = 105.5 + (row - 1) * 12.5;
-        let ycor = 65.7 - (columns[column] * 12.5);
+        let xcor = 105.41 + (row - 1) * 12.5;
+        let ycor = 65.63 - (columns[column] * 12.5);
         
         macroQueue.push({
             chip: chip,

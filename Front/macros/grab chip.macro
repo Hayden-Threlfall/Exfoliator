@@ -37,3 +37,28 @@ VacNozzleOff
 delay 250
 RetractNozzle
 delay 1000 
+
+
+delay 1000
+
+# Pickup From Stage
+ExtendNozzle
+delay 1000
+VacNozzleOn
+delay 500
+ChuckOff
+delay 250
+RetractNozzle
+delay 1000
+
+# Move and Place Chip Back
+MoveX CHIP_X
+delay 1000
+MoveY CHIP_Y
+delay 1000
+ExtendNozzle
+delay 500
+VacNozzleOff
+delay 500
+RetractNozzle
+delay 500 

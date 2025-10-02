@@ -10,10 +10,6 @@ RetractStamp
 delay 1000
 ExtendStamp
 delay 1000
-RetractStamp
-delay 1000
-ExtendStamp
-delay 1000
 Tape 0 10 1000
 delay 1000
 
