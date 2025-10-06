@@ -138,7 +138,7 @@ void processCommand(String cmd) {
     // Movement commands
     if (cmd.startsWith("MoveX ")) {
         float position = cmd.substring(6).toFloat();
-        if (!getNozzleExtended()) {
+        if (!getNozzleExtended() || (getXRelative(position) <= 3.0 && getXRelative(position) >= -3.0)) {
             Serial.print("Moving X to position: ");
             Serial.println(position);
             moveXandYAxes(position, getYPosition());
@@ -150,7 +150,7 @@ void processCommand(String cmd) {
     }
     else if (cmd.startsWith("MoveY ")) {
         float position = cmd.substring(6).toFloat();
-        if (!getNozzleExtended()) {
+        if (!getNozzleExtended() || (getYRelative(position) <= 3.0 && getYRelative(position) >= -3.0)) {
             Serial.print("Moving Y to position: ");
             Serial.println(position);
             moveXandYAxes(getXPosition(), position);

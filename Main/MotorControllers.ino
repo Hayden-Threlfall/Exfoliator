@@ -106,6 +106,14 @@ void setYPosition(double updatedYPosition) {
     YPosition = updatedYPosition;
 }
 
+double getXRelative(float newXPosition) {
+    return (getXPosition() - newXPosition);
+}
+
+double getYRelative(float newYPosition) {
+    return (getYPosition() - newYPosition);
+}
+
 bool tapeTorque(int commandedTorque) {
     if (abs(commandedTorque) > abs(tapeMaxTorque)) {
         Serial.println("Move rejected, invalid torque requested");
@@ -248,6 +256,7 @@ void disableXMotor() {
 
 void enableXMotor() {
     XAxis.EnableRequest(true);
+    XPosition = 0;
     Serial.println("X Motor Enabled");
 }
 
@@ -258,6 +267,7 @@ void disableYMotor() {
 
 void enableYMotor() {
     YAxis.EnableRequest(true);
+    YPosition = 0;
     Serial.println("Y Motor Enabled");
 }
 
