@@ -1,8 +1,4 @@
 # Setup Default States For Exfoliation
-EnableX
-delay 50
-EnableY
-delay 50
 ChuckOff
 delay 50
 VacNozzleOff
@@ -20,14 +16,18 @@ delay 2000
 MoveY CHIP_Y
 delay 2000
 ExtendNozzle
-delay 500
+delay 1000
 VacNozzleOn
-delay 500
+delay 1000
+MoveX CHIP_X + 0.6
+delay 1000
+MoveY CHIP_Y - 0.6
+delay 1000
 RetractNozzle
-delay 500 
+delay 1000
 
 # Go to Stage Place Down
-MoveX STAGE_X
+MoveX 8.0
 delay 2000
 ExtendNozzle
 delay 1000
@@ -38,8 +38,7 @@ delay 250
 RetractNozzle
 delay 1000 
 
-
-delay 1000
+delay 3000
 
 # Pickup From Stage
 ExtendNozzle
@@ -52,9 +51,9 @@ RetractNozzle
 delay 1000
 
 # Move and Place Chip Back
-MoveX CHIP_X
+MoveX CHIP_X + 0.45
 delay 1000
-MoveY CHIP_Y
+MoveY CHIP_Y - 0.45
 delay 1000
 ExtendNozzle
 delay 500

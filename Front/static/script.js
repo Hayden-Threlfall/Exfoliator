@@ -867,8 +867,8 @@ function submitChips() {
         const column = chip[0];
         const row = parseInt(chip.slice(1));
         
-        let xcor = 105.41 + (row - 1) * 12.5;
-        let ycor = 65.63 - (columns[column] * 12.5);
+        let xcor = 105.0 + (row - 1) * 12.5;
+        let ycor = 64.45 - (columns[column] * 12.5);
         
         macroQueue.push({
             chip: chip,

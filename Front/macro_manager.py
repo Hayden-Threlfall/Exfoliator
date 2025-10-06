@@ -14,9 +14,9 @@ class MacroVariables:
     """Class to hold and manage macro position variables"""
     def __init__(self):
         # Default values
-        self.X_AXIS_INITIAL_CHIPWELL = 105.41
-        self.Y_AXIS_INITIAL_CHIPWELL = 3.13
-        self.X_AXIS_VACUUM_CHUCK_POSITION = 7.85
+        self.X_AXIS_INITIAL_CHIPWELL = 105
+        self.Y_AXIS_INITIAL_CHIPWELL = 1.95
+        self.X_AXIS_VACUUM_CHUCK_POSITION = 8
 
         # User-definable values
         self.CHIP_X = self.X_AXIS_INITIAL_CHIPWELL
@@ -41,11 +41,37 @@ class MacroVariables:
         }
 
     def substitute_variables(self, command):
-        """Replace variables in command with their values"""
-        command = command.replace('CHIP_X', str(self.CHIP_X))
-        command = command.replace('CHIP_Y', str(self.CHIP_Y))
-        command = command.replace('STAGE_X', str(self.STAGE_X))
-        return command
+        """Replace variables in command with their values and evaluate expressions"""
+        # First, substitute variable names with their values
+        temp_command = command.replace('CHIP_X', str(self.CHIP_X))
+        temp_command = temp_command.replace('CHIP_Y', str(self.CHIP_Y))
+        temp_command = temp_command.replace('STAGE_X', str(self.STAGE_X))
+        
+        # Find and evaluate math expressions (e.g., "MoveX 105 + 1.2")
+        # Pattern: number followed by operator and number
+        pattern = r'(-?\d+\.?\d*)\s*([+\-*/])\s*(-?\d+\.?\d*)'
+        
+        def eval_match(match):
+            left = float(match.group(1))
+            operator = match.group(2)
+            right = float(match.group(3))
+            
+            if operator == '+':
+                result = left + right
+            elif operator == '-':
+                result = left - right
+            elif operator == '*':
+                result = left * right
+            elif operator == '/':
+                result = left / right if right != 0 else left
+            
+            return str(result)
+        
+        # Replace all math expressions with their results
+        while re.search(pattern, temp_command):
+            temp_command = re.sub(pattern, eval_match, temp_command)
+        
+        return temp_command
 
 class MacroExecutor:
     """Class to handle macro execution"""
@@ -120,6 +146,13 @@ class MacroExecutor:
             if match:
                 return 'delay', int(match.group(1))
         
+        # Check for macro command
+        if line.lower().startswith('macro'):
+            match = re.match(r'macro\s+(\S+)', line, re.IGNORECASE)
+            if match:
+                macro_name = match.group(1)
+                return 'macro', macro_name
+        
         # Substitute variables in the command
         command = self.variables.substitute_variables(line)
         return 'command', command
@@ -166,6 +199,10 @@ class MacroExecutor:
                     self.arduino_server.command_queue.put(cmd_data)
                     # Small delay between commands to avoid overwhelming Arduino
                     await asyncio.sleep(0.1)
+                elif cmd_type == 'macro':
+                    logging.info(f"Macro {name}: Executing nested macro {cmd_data}")
+                    # Execute nested macro synchronously to maintain order
+                    await self.execute_macro_async(cmd_data, None)
 
             if not self.stop_requested:
                 logging.info(f"Macro {name} completed successfully")
