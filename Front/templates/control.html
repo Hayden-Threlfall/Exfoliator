@@ -259,20 +259,21 @@
                     <!-- Variables Section -->
                     <div class="mb-4">
                         <h3 class="section-title">Position Variables</h3>
-                        <div class="macro-variables">
+                        <div class="parameters">
                             <div class="macro-variable-input">
                                 <label class="tape-input-label">CHIP_X</label>
                                 <input type="number" id="CHIP_X" class="input" value="105.0" step="0.1">
                             </div>
                             <div class="macro-variable-input">
                                 <label class="tape-input-label">CHIP_Y</label>
-                                <input type="number" id="CHIP_Y" class="input" value="65.45" step="0.1">
+                                <input type="number" id="CHIP_Y" class="input" value="64.65" step="0.1">
                             </div>
                             <div class="macro-variable-input">
                                 <label class="tape-input-label">STAGE_X</label>
                                 <input type="number" id="STAGE_X" class="input" value="8.0" step="0.1">
                             </div>
                         </div>
+                        <button class="button btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveVariablesManually()">Save Variables</button>
                     </div>
                     
                     <!-- Macro List -->
@@ -286,7 +287,7 @@
                     
                     <!-- New Macro -->
                     <div>
-                        <div class="flex mb-2">
+                        <div class="flex mt-3">
                             <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
                             <button class="button btn-success" onclick="createNewMacro()">Create New</button>
                         </div>
@@ -320,9 +321,9 @@
                     </div>
 
                     <!-- Tape Motor Controls -->
-                    <div>
+                    <div class="parameter-set">
                         <h3 class="section-title">Set Parameters</h3>
-                        <div class="tape-control-grid">
+                        <div class="parameters">
                             <div class="tape-input-group">
                                 <label class="tape-input-label">Speed</label>
                                 <input type="number" id="tapeSpeed" class="input" value="0">
@@ -331,12 +332,12 @@
                                 <label class="tape-input-label">Torque</label>
                                 <input type="number" id="tapeTorque" class="input" value="0">
                             </div>
-                        </div>
-                        <div class="tape-time-control">
-                            <div class="tape-input-group tape-time-input">
+                            <div class="tape-input-group">
                                 <label class="tape-input-label">Duration (ms)</label>
                                 <input type="number" id="tapeTime" class="input" value="1000">
                             </div>
+                        </div>
+                        <div class="tape-time-control">
                             <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
                             <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
                         </div>
