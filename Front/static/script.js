@@ -15,6 +15,18 @@ let currentEditingMacro = null;
 let macrosList = [];
 let commandHistory = [];
 let historyIndex = -1;
+let macroQueue = [];
+let isMacroQueueRunning = false;
+let cachedQueue = [];
+let macroPaused = false;
+let macros = [];
+
+// Macro variables - now pulled from backend
+let macroVariables = {
+    CHIP_X: 105.0,
+    CHIP_Y: 64.65,
+    STAGE_X: 8.0
+};
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeWebSocket();
@@ -72,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // revert to last confirmed state
                     yToggle.checked = motorYConfirmed;
                 }
-            }, 1000); // adjust timeout to your system’s response speed
+            }, 1000); // adjust timeout to your system's response speed
         });
 
 
@@ -95,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // revert to last confirmed state
                     xToggle.checked = motorXConfirmed;
                 }
-            }, 1000); // adjust timeout to your system’s response speed
+            }, 1000); // adjust timeout to your system's response speed
         });
 
     // New: Pneumatic and Vacuum Toggles
@@ -169,7 +181,45 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Add event listeners for macro variable inputs (Enter key only, removed blur)
+    ['CHIP_X', 'CHIP_Y', 'STAGE_X'].forEach(varName => {
+        const input = document.getElementById(varName);
+        if (input) {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    updateMacroVariables();
+                }
+            });
+        }
+    });
+    
+    // Request current macro variables on load
+    setTimeout(() => {
+        sendWebSocketMessage('get_macro_variables', {});
+    }, 500);
+
 });
+
+function updateMacroVariables() {
+    const variables = {
+        CHIP_X: parseFloat(document.getElementById('CHIP_X').value),
+        CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
+        STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
+    };
+    
+    // Validate the values
+    if (isNaN(variables.CHIP_X) || isNaN(variables.CHIP_Y) || isNaN(variables.STAGE_X)) {
+        addLog('Invalid macro variable values');
+        return;
+    }
+    
+    macroVariables = variables;
+    sendWebSocketMessage('update_macro_variables', { variables: variables });
+}
+
+function saveVariablesManually() {
+    updateMacroVariables();
+}
 
 function initializeWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -307,6 +357,26 @@ function initializeWebSocket() {
 
                 case 'macro_stopped':
                     addLog('Macro execution stopped');
+                    break;
+
+                case 'macro_variables_updated':
+                    macroVariables = data.variables || data;
+                    const changes = data.changes;
+                    
+                    // Update input fields if they exist and not currently being edited
+                    Object.keys(macroVariables).forEach(key => {
+                        const input = document.getElementById(key);
+                        if (input && document.activeElement !== input) {
+                            input.value = macroVariables[key];
+                        }
+                    });
+                    
+                    // Log the changes to console
+                    if (changes) {
+                        addLog(`Variables saved: ${changes}`);
+                    } else {
+                        addLog('Macro variables updated');
+                    }
                     break;
                     
                 default:
@@ -576,6 +646,8 @@ function getMacroTemplate() {
 `;
 }
 
+
+
 function openMacroEditor() {
     document.getElementById('overlay').classList.add('active');
     document.getElementById('macroEditor').classList.add('active');
@@ -590,15 +662,11 @@ function closeMacroEditor() {
 function saveMacro() {
     if (!currentEditingMacro) return;
     const content = document.getElementById('macroContent').value;
-    const variables = {
-        CHIP_X: parseFloat(document.getElementById('CHIP_X').value),
-        CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
-        STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
-    };
+    
     sendWebSocketMessage('save_macro', {
         name: currentEditingMacro,
         content: content,
-        variables: variables
+        variables: macroVariables
     });
     closeMacroEditor();
     document.getElementById('newMacroName').value = '';
@@ -611,22 +679,18 @@ function editMacro(name) {
 }
 
 function runMacro(name) {
-    const variables = {
-        CHIP_X: parseFloat(document.getElementById('CHIP_X').value),
-        CHIP_Y: parseFloat(document.getElementById('CHIP_Y').value),
-        STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
-    };
     sendWebSocketMessage('run_macro', {
         name: name,
-        variables: variables
+        variables: macroVariables
     });
 }
 
-function runChipMacro(name,x,y) {
+
+function runChipMacro(name, x, y, stageX) {
     const variables = {
         CHIP_X: x,
         CHIP_Y: y,
-        STAGE_X: parseFloat(document.getElementById('STAGE_X').value)
+        STAGE_X: stageX  // Use the queued value, not current
     };
     sendWebSocketMessage('run_macro', {
         name: name,
@@ -827,30 +891,13 @@ function removePlayPause(){
 
 }
 
-// Add these global variables at the top of script.js
-let macroQueue = [];
-let isMacroQueueRunning = false;
-
-// storing paused macros here to resume later
-let cachedQueue = []
-let macroPaused = false;
-
-
-// Replace the existing submitChips() function
 function submitChips() {
-
-    /*if (motorStates.x == 'MOTOR_DISABLED' || motorStates.y == 'MOTOR_DISABLED'){
-        addLog('Enable motors to exfoliate')
-        return;
-    } */
-    
     if (selectedChips.length === 0) {
         addLog('No chips selected');
         return;
     }
 
-    addPlayPause()
-
+    addPlayPause();
 
     selectedChips.sort();
     const columns = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5};
@@ -861,58 +908,76 @@ function submitChips() {
         return;
     }
 
-    // Build the macro queue
+    // Capture STAGE_X at queue time
+    const capturedStageX = macroVariables.STAGE_X;
+
     macroQueue = [];
     for (let chip of selectedChips) {
         const column = chip[0];
         const row = parseInt(chip.slice(1));
         
-        let xcor = 105.0 + (row - 1) * 12.5;
-        let ycor = 64.45 - (columns[column] * 12.5);
-        
+        //brooooo hardcoded values juts work better tho..... should make macrovariables constant if u wanna use that...
+        let xcor =  105.4 + (row - 1) * 12.5;
+        let ycor = 64.65 - (columns[column] * 12.5);
+
         macroQueue.push({
             chip: chip,
             macro: actionSelect,
             x: xcor,
-            y: ycor
+            y: ycor,
+            stageX: capturedStageX  // Store STAGE_X at queue time
         });
+
+        addChip(actionSelect, xcor, ycor, capturedStageX);
     }
 
     addLog(`Queued ${macroQueue.length} chips for sequential processing`);
 
-    clearChips()
+    //sendMacroQueue(macros)
     
     if (!isMacroQueueRunning) {
         processNextMacro();
     }
 }
 
-// Add this new function
+
+function addChip(name, x, y, stageX) {
+    macros.push({
+        name: name,
+        variables: {
+            CHIP_X: x,
+            CHIP_Y: y,
+            STAGE_X: stageX  // Use the passed value, not current
+        }
+    });
+}
+
+function sendMacroQueue(queue){
+    sendWebSocketMessage('send_macro_queue', {
+        queue: queue
+    });
+
+}
+
 function processNextMacro() {
     if (macroPaused) return;
-
-
-
     if (macroQueue.length === 0 ) {
 
         const btn = document.querySelector('#pauseChips');
         btn.innerHTML = 'Pause macro';
         btn.classList.replace('btn-success', 'btn-warning');
         btn.onclick = pauseMacro;
-
         if (isMacroQueueRunning) addLog('All chip macros completed');
         removePlayPause()
         isMacroQueueRunning = false;
-
         return;
-
     }
 
 
     isMacroQueueRunning = true;
     const nextMacro = macroQueue.shift();
     
-    addLog(`Processing chip ${nextMacro.chip}: X=${nextMacro.x.toFixed(1)}, Y=${nextMacro.y.toFixed(1)}`);
+    addLog(`Processing chip ${nextMacro.chip}: X=${nextMacro.x.toFixed(1)}, Y=${nextMacro.y.toFixed(1)}, StageX=${nextMacro.stageX.toFixed(1)}`);
     
     // Set up listener for macro completion
     const originalOnMessage = ws.onmessage;
@@ -930,7 +995,7 @@ function processNextMacro() {
         }
     };
     
-    runChipMacro(nextMacro.macro, nextMacro.x, nextMacro.y);
+    runChipMacro(nextMacro.macro, nextMacro.x, nextMacro.y, nextMacro.stageX);
 }
 
 function stopMacroQueue() {
@@ -943,7 +1008,9 @@ function stopMacroQueue() {
     pauseButton();
 
     addLog('Macro queue stopped');
+    sendWebSocketMessage('stop_queue', {});
     sendWebSocketMessage('stop_macro', {});
+
     removePlayPause();
     
 }
@@ -953,13 +1020,18 @@ function pauseMacro(){
     cachedQueue = macroQueue.slice()
     macroQueue = []
     addLog('Macro queue paused');
-    sendWebSocketMessage('stop_macro', {});
+
+    sendWebSocketMessage('pause_macro', {});
+
+    //sendWebSocketMessage('stop_macro', {});
 
     resumeButton()
 }
 
 function resumeMacro(){
     addLog('Macro queue resumed')
+    sendWebSocketMessage('resume_macro', {});
+
     macroQueue = cachedQueue
     macroPaused = false
 

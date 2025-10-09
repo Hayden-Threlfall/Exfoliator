@@ -6,7 +6,7 @@
 
 @font-face {
     font-family: 'Poppins';
-    src:url("/static/fonts/Poppins-regular.woff") format('woff');
+    src:url("/static/fonts/Poppins-Regular.woff") format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -211,13 +211,14 @@ body {
     50% { opacity: 0.5; }
 }
 
-
-
-.mt-3 .input {
-    width: 75%;
+.text-sm{
+    margin-right: 1rem;
 }
 
-
+.mt-3 .input {
+    border: 0;
+    flex: 1;
+}
 
 .move-position{
     padding: 0;
@@ -229,6 +230,19 @@ body {
 .input:focus{
     outline: none;
 }
+
+.parameters{
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+}
+
+.parameters .input{
+    flex: 1;
+    margin-top: 10px;
+    width: 100%;
+}
+
 
 
 .input{
@@ -277,12 +291,13 @@ body {
     background-color: #000;
     padding: 12px;
     height: 70vh;
-    overflow-y: auto;
+    overflow: auto;
     font-family: monospace;
     font-size: 0.875rem;
 }
 
 .console-line {
+    max-width: 380px;
     color: #10B981;
     margin-bottom: 2px;
 }
@@ -334,13 +349,15 @@ body {
 }
 
 .tape-control-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
     margin-bottom: 12px;
 }
 
 .tape-input-group {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -371,19 +388,6 @@ body {
     border-radius: 6px;
 }
 
-.macro-variables {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.macro-variable-input {
-    display: flex;
-    flex-direction: column;
-    max-width: 30%;
-    gap: 4px;
-}
 
 .macro-list {
     max-height: 200px;
@@ -484,16 +488,16 @@ body {
 }
 
 .chip {
-    width: 1.8vw;
-    height: 1.8 vw;
+    width: min(40px, 1.8vw);
+    height: min(40px, 1.8vw);
     background-color: white;
     border: none;
     border-radius: 2px;
 }
 
 .label {
-    width: 1.8vw;
-    height: 1.8vw;
+    width:min(40px, 1.8vw);
+    height:min(40px, 1.8vw);
     text-align: center;
     margin: auto;
     cursor: pointer;
@@ -607,22 +611,26 @@ fieldset{
 .dropdown{
     margin-left: auto;
     filter: brightness(0) saturate(100%) invert(71%) sepia(99%) saturate(1%) hue-rotate(314deg) brightness(80%) contrast(90%);
-    width: 30px;
+    width: 40px;
 }
 
+#newMacroName{
+    width: 66%;
+}
 
 .mt-3{
     display: flex;
-    justify-content: center;
     width: 100%;
+    gap: 0px;
 }
 
 .mt-3 .button{
+    border: 0;
     border-radius: 0;
-    width: 25%;
 }
 
 #consoleView{
+    width: 400px;
     height: 100%;
     border: solid 1px black;
     border-radius: 6px;
@@ -725,6 +733,10 @@ input:checked + .slider .off
     height: 200px !important;
 }
 
+#consoleView{
+    width: 100%;
+}
+
 .grid {
 
     flex-wrap: wrap;
@@ -732,6 +744,10 @@ input:checked + .slider .off
 
 .card{
     width: 100%;
+}
+
+.title{
+    display: none;
 }
 
 
