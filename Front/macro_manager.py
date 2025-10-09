@@ -9,28 +9,59 @@ from utils import broadcast_message
 
 # Directory to store macro files
 MACROS_DIR = 'macros'
+CONFIG_FILE = os.path.join(MACROS_DIR, 'variables.json')
 
 class MacroVariables:
     """Class to hold and manage macro position variables"""
     def __init__(self):
         # Default values
         self.X_AXIS_INITIAL_CHIPWELL = 105
-        self.Y_AXIS_INITIAL_CHIPWELL = 1.95
+        self.Y_AXIS_INITIAL_CHIPWELL = 64.65
         self.X_AXIS_VACUUM_CHUCK_POSITION = 8
 
         # User-definable values
         self.CHIP_X = self.X_AXIS_INITIAL_CHIPWELL
         self.CHIP_Y = self.Y_AXIS_INITIAL_CHIPWELL
         self.STAGE_X = self.X_AXIS_VACUUM_CHUCK_POSITION
+        
+        # Load saved values if they exist
+        self.load_from_file()
+
+    def load_from_file(self):
+        """Load variables from config file"""
+        try:
+            if os.path.exists(CONFIG_FILE):
+                with open(CONFIG_FILE, 'r') as f:
+                    data = json.load(f)
+                    self.CHIP_X = float(data.get('CHIP_X', self.CHIP_X))
+                    self.CHIP_Y = float(data.get('CHIP_Y', self.CHIP_Y))
+                    self.STAGE_X = float(data.get('STAGE_X', self.STAGE_X))
+                    logging.info(f"Loaded macro variables from file: {self.get_variables()}")
+        except Exception as e:
+            logging.error(f"Failed to load macro variables: {e}")
+
+    def save_to_file(self):
+        """Save variables to config file"""
+        try:
+            with open(CONFIG_FILE, 'w') as f:
+                json.dump(self.get_variables(), f, indent=2)
+            logging.info(f"Saved macro variables to file: {self.get_variables()}")
+            return True
+        except Exception as e:
+            logging.error(f"Failed to save macro variables: {e}")
+            return False
 
     def update(self, chip_x=None, chip_y=None, stage_x=None):
-        """Update variables with provided values"""
+        """Update variables with provided values and save to file"""
         if chip_x is not None:
             self.CHIP_X = float(chip_x)
         if chip_y is not None:
             self.CHIP_Y = float(chip_y)
         if stage_x is not None:
             self.STAGE_X = float(stage_x)
+        
+        # Save to file whenever values are updated
+        self.save_to_file()
 
     def get_variables(self):
         """Get current variable values as dictionary"""
@@ -82,6 +113,7 @@ class MacroExecutor:
         self.current_macro = None
         self.stop_requested = False
         self.websocket_clients = set()  # To be set by the main app
+        self.completion_event = threading.Event()  # Event to signal macro completion
 
     def set_websocket_clients(self, clients):
         self.websocket_clients = clients
@@ -161,11 +193,13 @@ class MacroExecutor:
         """Execute macro asynchronously to avoid blocking"""
         if self.is_running:
             broadcast_message(self.websocket_clients, 'macro_error', {'error': 'Another macro is already running'})
+            self.completion_event.set()  # Signal completion even on error
             return
 
         self.is_running = True
         self.current_macro = name
         self.stop_requested = False
+        self.completion_event.clear()  # Clear event at start for fresh wait
 
         try:
             # Update variables if provided
@@ -180,6 +214,7 @@ class MacroExecutor:
             content = self.load_macro(name)
             if not content:
                 broadcast_message(self.websocket_clients, 'macro_error', {'error': f'Macro {name} not found'})
+                self.completion_event.set()  # Signal completion even on error
                 return
             
             # Parse and execute commands
@@ -207,10 +242,12 @@ class MacroExecutor:
             if not self.stop_requested:
                 logging.info(f"Macro {name} completed successfully")
                 broadcast_message(self.websocket_clients, 'macro_completed', {'name': name})
+                self.completion_event.set()  # Signal completion
 
         except Exception as e:
             logging.error(f"Error executing macro {name}: {e}")
             broadcast_message(self.websocket_clients, 'macro_error', {'error': str(e)})
+            self.completion_event.set()  # Signal completion even on error
 
         finally:
             self.is_running = False

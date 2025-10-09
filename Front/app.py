@@ -17,6 +17,8 @@ app.config['SECRET_KEY'] = 'exfoliator-secure-key-2024'
 CORS(app)
 sock = Sock(app)
 
+logging.basicConfig(level=logging.INFO)
+
 # Configuration
 ARDUINO_HOST = '192.168.4.100'  # Arduino IP
 TCP_SERVER_PORT = 1053  # TCP port to listen for Arduino

@@ -1,6 +1,9 @@
 import json
 import logging
+import threading
+import time
 from utils import broadcast_message
+
 
 def setup_websocket_handlers(app, sock, arduino_server, macro_executor, websocket_clients):
     """
@@ -95,8 +98,19 @@ def setup_websocket_handlers(app, sock, arduino_server, macro_executor, websocke
                         handle_delete_macro_ws(event_data, ws, macro_executor)
                     elif event == 'run_macro':
                         handle_run_macro_ws(event_data, ws, arduino_server, macro_executor)
+                    elif event == 'send_macro_queue':
+                        handle_macro_queue(event_data, ws, arduino_server, macro_executor)
+                    elif event == 'pause_macro':
+                        handle_pause_macro_ws(ws, macro_executor)
+                    elif event == 'resume_macro':
+                        handle_resume_macro_ws(ws, macro_executor)
+
                     elif event == 'stop_macro':
                         handle_stop_macro_ws(ws, macro_executor)
+                    elif event == 'update_macro_variables':
+                        handle_update_macro_variables_ws(event_data, ws, macro_executor, websocket_clients)
+                    elif event == 'get_macro_variables':
+                        handle_get_macro_variables_ws(ws, macro_executor)
 
                 except json.JSONDecodeError as e:
                     logging.error(f"Invalid JSON received: {message}")
@@ -329,12 +343,12 @@ def handle_save_macro_ws(data, ws, macro_executor):
             'data': {'error': 'Macro name is required'}
         }))
         return
-    # Update variables if provided
+    # Update variables if provided  ✅ use keyword args
     if variables:
         macro_executor.variables.update(
-            variables.get('CHIP_X'),
-            variables.get('CHIP_Y'),
-            variables.get('STAGE_X')
+            chip_x=variables.get('CHIP_X'),
+            chip_y=variables.get('CHIP_Y'),
+            stage_x=variables.get('STAGE_X')
         )
     if macro_executor.save_macro(name, content):
         logging.info(f"Macro saved: {name}")
@@ -390,6 +404,92 @@ def handle_delete_macro_ws(data, ws, macro_executor):
             'data': {'error': f'Failed to delete macro {name}'}
         }))
 
+paused = False
+queue = []
+
+def handle_macro_queue(data, ws, arduino_server, macro_executor):
+    if paused:
+        return
+    queue = data.get('queue',[])
+    logging.info(f"Processing macro queue: {queue}")
+
+    startQueue(ws, arduino_server, macro_executor)
+
+def startQueue(ws, arduino_server, macro_executor):
+    if not arduino_server.connected:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Arduino not connected'}
+        }))
+        return
+    if not queue:
+        broadcast_message(macro_executor.websocket_clients, 'queue_completed', {'message': 'All chip macros completed'})
+        return
+
+    def process_chip(chip):
+        variables = chip.get('variables', {})
+        name = chip.get('name', '')
+
+        if not name:
+            broadcast_message(macro_executor.websocket_clients, 'macro_error', {'error': 'Macro name is required'})
+            return
+
+        logging.info(f"Running macro={name} x={variables.get('CHIP_X')} y={variables.get('CHIP_Y')}")
+
+        # Set up completion listener: Clear event before starting (ensures fresh wait)
+        macro_executor.completion_event.clear()
+
+        # Call handle_run_macro_ws to start the macro (non-blocking due to thread in execute_macro)
+        handle_run_macro_ws(chip, ws, arduino_server, macro_executor)
+
+        # Wait for completion signal (macro_completed or macro_error) or timeout
+        if not macro_executor.completion_event.wait(timeout=60):  # 60s timeout per macro
+            logging.error(f"Timeout while executing macro={name}")
+            broadcast_message(macro_executor.websocket_clients, 'macro_error', {
+                'error': f"Macro {name} timed out after 60 seconds"
+            })
+            return  # Stop queue on timeout
+
+        # 500ms delay after completion
+        time.sleep(0.5)
+    
+    # Process queue in a daemon thread to avoid blocking WebSocket handler
+    def process_queue():
+        global queue
+        while queue:
+            process_chip(queue[0])
+            queue = queue[1:]
+
+        # Queue fully processed
+        if not queue:
+            broadcast_message(macro_executor.websocket_clients, 'queue_completed', {
+                'message': 'All chip macros completed'
+            })
+            paused = False
+
+    # Start the processing thread
+    threading.Thread(target=process_queue, daemon=True).start()
+
+
+def handle_pause_macro_ws(ws, macro_executor):
+    paused = True
+    """Pause macro execution"""
+    ws.send(json.dumps({
+        'event': 'macro_paused',
+        'data': {'message': 'Macro paused'}
+    }))
+
+
+def handle_resume_macro_ws(ws, macro_executor):
+    """Resume paused macro"""
+    paused = False
+    handle_macro_queue(ws, arduino_server, macro_executor)
+    ws.send(json.dumps({
+        'event': 'macro_resumed',
+        'data': {'message': 'Macro resumed'}
+    }))
+
+
 def handle_run_macro_ws(data, ws, arduino_server, macro_executor):
     """Run a macro"""
     name = data.get('name', '').strip()
@@ -411,18 +511,55 @@ def handle_run_macro_ws(data, ws, arduino_server, macro_executor):
         'event': 'macro_executed',
         'data': {'name': name}
     }))
-    macro_executor.execute_macro(name, variables)
+    macro_executor.execute_macro(name, variables)  # This starts the threaded async execution, which will set completion_event
+
 
 def handle_stop_macro_ws(ws, macro_executor):
     """Stop currently running macro"""
     if macro_executor.stop_macro():
-        logging.info("Macro execution stopped")
+        logging.info("Macro execution stopped by user")
         ws.send(json.dumps({
             'event': 'macro_stopped',
-            'data': {'success': True}
+            'data': {'message': 'Macro stopped'}
         }))
     else:
         ws.send(json.dumps({
             'event': 'macro_error',
-            'data': {'error': 'No macro is currently running'}
+            'data': {'error': 'No macro currently running'}
         }))
+
+
+# NEW: Macro variable handlers
+def handle_update_macro_variables_ws(data, ws, macro_executor, websocket_clients):
+    """Update macro variables from frontend"""
+    variables = data.get('variables', {})
+    old_vars = macro_executor.variables.get_variables()
+    
+    macro_executor.variables.update(
+        chip_x=variables.get('CHIP_X'),
+        chip_y=variables.get('CHIP_Y'),
+        stage_x=variables.get('STAGE_X')
+    )
+    
+    new_vars = macro_executor.variables.get_variables()
+    
+    # Log what changed
+    changes = []
+    for key in ['CHIP_X', 'CHIP_Y', 'STAGE_X']:
+        if old_vars[key] != new_vars[key]:
+            changes.append(f"{key}: {old_vars[key]} → {new_vars[key]}")
+    
+    change_msg = ', '.join(changes) if changes else 'No changes'
+    
+    # Send back confirmation with updated values to all clients
+    broadcast_message(websocket_clients, 'macro_variables_updated', 
+                     {'variables': new_vars, 'changes': change_msg})
+    logging.info(f"Macro variables updated: {change_msg}")
+
+
+def handle_get_macro_variables_ws(ws, macro_executor):
+    """Send current macro variables to frontend"""
+    ws.send(json.dumps({
+        'event': 'macro_variables_updated',
+        'data': macro_executor.variables.get_variables()
+    }))
