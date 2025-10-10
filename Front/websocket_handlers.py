@@ -336,7 +336,6 @@ def handle_save_macro_ws(data, ws, macro_executor):
     """Save a macro"""
     name = data.get('name', '').strip()
     content = data.get('content', '')
-    variables = data.get('variables', {})
     if not name:
         ws.send(json.dumps({
             'event': 'macro_error',
@@ -344,12 +343,6 @@ def handle_save_macro_ws(data, ws, macro_executor):
         }))
         return
     # Update variables if provided  ✅ use keyword args
-    if variables:
-        macro_executor.variables.update(
-            chip_x=variables.get('CHIP_X'),
-            chip_y=variables.get('CHIP_Y'),
-            stage_x=variables.get('STAGE_X')
-        )
     if macro_executor.save_macro(name, content):
         logging.info(f"Macro saved: {name}")
         ws.send(json.dumps({
@@ -427,30 +420,39 @@ def startQueue(ws, arduino_server, macro_executor):
         return
 
     def process_chip(chip):
-        variables = chip.get('variables', {})
         name = chip.get('name', '')
+        
+        # GET variables from chip data (sent from frontend with X/Y positions)
+        chip_variables = chip.get('variables', {})
 
         if not name:
             broadcast_message(macro_executor.websocket_clients, 'macro_error', {'error': 'Macro name is required'})
             return
 
-        logging.info(f"Running macro={name} x={variables.get('CHIP_X')} y={variables.get('CHIP_Y')}")
+        # UPDATE the saved variables.json with the chip's specific X/Y position
+        # This ensures the macro uses the correct position for THIS chip
+        if chip_variables:
+            macro_executor.variables.update(
+                chip_x=chip_variables.get('CHIP_X'),
+                chip_y=chip_variables.get('CHIP_Y'),
+                stage_x=chip_variables.get('STAGE_X')
+            )
+            logging.info(f"Updated variables for chip: CHIP_X={chip_variables.get('CHIP_X')}, CHIP_Y={chip_variables.get('CHIP_Y')}")
 
-        # Set up completion listener: Clear event before starting (ensures fresh wait)
+        logging.info(f"Running macro={name} with variables from selector")
+
         macro_executor.completion_event.clear()
 
-        # Call handle_run_macro_ws to start the macro (non-blocking due to thread in execute_macro)
-        handle_run_macro_ws(chip, ws, arduino_server, macro_executor)
+        # Run macro - it will use the updated variables from variables.json
+        handle_run_macro_ws({'name': name}, ws, arduino_server, macro_executor)
 
-        # Wait for completion signal (macro_completed or macro_error) or timeout
-        if not macro_executor.completion_event.wait(timeout=60):  # 60s timeout per macro
+        if not macro_executor.completion_event.wait(timeout=60):
             logging.error(f"Timeout while executing macro={name}")
             broadcast_message(macro_executor.websocket_clients, 'macro_error', {
                 'error': f"Macro {name} timed out after 60 seconds"
             })
-            return  # Stop queue on timeout
+            return
 
-        # 500ms delay after completion
         time.sleep(0.5)
     
     # Process queue in a daemon thread to avoid blocking WebSocket handler

@@ -168,7 +168,7 @@ class MacroExecutor:
 
     def parse_command(self, line):
         """Parse a single macro command line"""
-        line = line.strip()  # Skip comments and empty lines
+        line = line.strip()
         if not line or line.startswith('#'):
             return None, None
         
@@ -178,7 +178,7 @@ class MacroExecutor:
             if match:
                 return 'delay', int(match.group(1))
         
-        # Check for macro command
+        # CHANGE THIS: Accept both "macro" and "Macro" (case-insensitive)
         if line.lower().startswith('macro'):
             match = re.match(r'macro\s+(\S+)', line, re.IGNORECASE)
             if match:
@@ -193,28 +193,34 @@ class MacroExecutor:
         """Execute macro asynchronously to avoid blocking"""
         if self.is_running:
             broadcast_message(self.websocket_clients, 'macro_error', {'error': 'Another macro is already running'})
-            self.completion_event.set()  # Signal completion even on error
+            self.completion_event.set()
             return
 
         self.is_running = True
         self.current_macro = name
         self.stop_requested = False
-        self.completion_event.clear()  # Clear event at start for fresh wait
+        self.completion_event.clear()
+
+        # SAVE current variables to restore after execution
+        saved_vars = {
+            'CHIP_X': self.variables.CHIP_X,
+            'CHIP_Y': self.variables.CHIP_Y,
+            'STAGE_X': self.variables.STAGE_X
+        }
 
         try:
-            # Update variables if provided
+            # TEMPORARILY set variables for this execution (don't save to file)
             if variables:
-                self.variables.update(
-                    variables.get('CHIP_X'),
-                    variables.get('CHIP_Y'),
-                    variables.get('STAGE_X')
-                )
+                self.variables.CHIP_X = float(variables.get('CHIP_X', self.variables.CHIP_X))
+                self.variables.CHIP_Y = float(variables.get('CHIP_Y', self.variables.CHIP_Y))
+                self.variables.STAGE_X = float(variables.get('STAGE_X', self.variables.STAGE_X))
+                logging.info(f"Temporarily using CHIP_X={self.variables.CHIP_X}, CHIP_Y={self.variables.CHIP_Y}, STAGE_X={self.variables.STAGE_X}")
             
             # Load macro content
             content = self.load_macro(name)
             if not content:
                 broadcast_message(self.websocket_clients, 'macro_error', {'error': f'Macro {name} not found'})
-                self.completion_event.set()  # Signal completion even on error
+                self.completion_event.set()
                 return
             
             # Parse and execute commands
@@ -232,24 +238,27 @@ class MacroExecutor:
                 elif cmd_type == 'command':
                     logging.info(f"Macro {name}: Executing {cmd_data}")
                     self.arduino_server.command_queue.put(cmd_data)
-                    # Small delay between commands to avoid overwhelming Arduino
                     await asyncio.sleep(0.1)
                 elif cmd_type == 'macro':
                     logging.info(f"Macro {name}: Executing nested macro {cmd_data}")
-                    # Execute nested macro synchronously to maintain order
                     await self.execute_macro_async(cmd_data, None)
 
             if not self.stop_requested:
                 logging.info(f"Macro {name} completed successfully")
                 broadcast_message(self.websocket_clients, 'macro_completed', {'name': name})
-                self.completion_event.set()  # Signal completion
+                self.completion_event.set()
 
         except Exception as e:
             logging.error(f"Error executing macro {name}: {e}")
             broadcast_message(self.websocket_clients, 'macro_error', {'error': str(e)})
-            self.completion_event.set()  # Signal completion even on error
+            self.completion_event.set()
 
         finally:
+            # RESTORE original variables (don't save)
+            self.variables.CHIP_X = saved_vars['CHIP_X']
+            self.variables.CHIP_Y = saved_vars['CHIP_Y']
+            self.variables.STAGE_X = saved_vars['STAGE_X']
+            
             self.is_running = False
             self.current_macro = None
 

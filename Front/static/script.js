@@ -72,27 +72,38 @@ document.addEventListener('DOMContentLoaded', function() {
         let motorYConfirmed = false;
 
         yToggle.addEventListener("change", function() {
+            // CHECK: Prevent enabling if nozzle is extended
+            if (yToggle.checked && pneumatics.nozzle) {
+                addLog('Cannot enable Y motor while nozzle is extended');
+                yToggle.checked = false;
+                return;
+            }
+            
             if (yToggle.checked) {
                 enableAxis("Y");
             } else {
                 disableMotor("Y");
             }
 
-            // Wait for backend to confirm
             setTimeout(() => {
                 if (yToggle.checked !== motorYConfirmed) {
-                    // revert to last confirmed state
                     yToggle.checked = motorYConfirmed;
                 }
-            }, 1000); // adjust timeout to your system's response speed
+            }, 1000);
         });
-
 
         // Track last confirmed state from backend
         let motorXConfirmed = false;
 
         // When user tries to change state
         xToggle.addEventListener("change", function() {
+            // CHECK: Prevent enabling if nozzle is extended
+            if (xToggle.checked && pneumatics.nozzle) {
+                addLog('Cannot enable X motor while nozzle is extended');
+                xToggle.checked = false;
+                return;
+            }
+            
             const desiredState = xToggle.checked;
 
             if (desiredState) {
@@ -101,13 +112,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 disableMotor("X");
             }
 
-            // Wait for backend to confirm
             setTimeout(() => {
                 if (xToggle.checked !== motorXConfirmed) {
-                    // revert to last confirmed state
                     xToggle.checked = motorXConfirmed;
                 }
-            }, 1000); // adjust timeout to your system's response speed
+            }, 1000);
         });
 
     // New: Pneumatic and Vacuum Toggles
@@ -562,8 +571,10 @@ function addLog(message) {
     logLine.className = 'console-line';
     logLine.textContent = `[${timestamp}] ${message}`;
     console.appendChild(logLine);
+    
     console.scrollTop = console.scrollHeight;
-    while (console.children.length > 10) {
+    
+    while (console.children.length > 200) {
         console.removeChild(console.firstChild);
     }
 }
@@ -908,7 +919,6 @@ function submitChips() {
         return;
     }
 
-    // Capture STAGE_X at queue time
     const capturedStageX = macroVariables.STAGE_X;
 
     macroQueue = [];
@@ -916,24 +926,22 @@ function submitChips() {
         const column = chip[0];
         const row = parseInt(chip.slice(1));
         
-        //brooooo hardcoded values juts work better tho..... should make macrovariables constant if u wanna use that...
-        let xcor =  105.4 + (row - 1) * 12.5;
-        let ycor = 64.65 - (columns[column] * 12.5);
+        // USE VARIABLES FROM macroVariables (loaded from variables.json)
+        let xcor = macroVariables.CHIP_X + (row - 1) * 12.5;
+        let ycor = macroVariables.CHIP_Y - (columns[column] * 12.5);
 
         macroQueue.push({
             chip: chip,
             macro: actionSelect,
             x: xcor,
             y: ycor,
-            stageX: capturedStageX  // Store STAGE_X at queue time
+            stageX: capturedStageX
         });
 
         addChip(actionSelect, xcor, ycor, capturedStageX);
     }
 
     addLog(`Queued ${macroQueue.length} chips for sequential processing`);
-
-    //sendMacroQueue(macros)
     
     if (!isMacroQueueRunning) {
         processNextMacro();
