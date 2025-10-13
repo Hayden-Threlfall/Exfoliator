@@ -40,6 +40,10 @@ def setup_websocket_handlers(app, sock, arduino_server, macro_executor, websocke
                 'data': arduino_server.motor_states
             }))
             ws.send(json.dumps({
+                'event': 'macro_queue_state_update',
+                'data': arduino_server.macroQueueStates
+            }))
+            ws.send(json.dumps({
                 'event': 'pneumatics_update',
                 'data': arduino_server.pneumatics
             }))
@@ -98,13 +102,16 @@ def setup_websocket_handlers(app, sock, arduino_server, macro_executor, websocke
                         handle_delete_macro_ws(event_data, ws, macro_executor)
                     elif event == 'run_macro':
                         handle_run_macro_ws(event_data, ws, arduino_server, macro_executor)
+                    #macro queue stuff
                     elif event == 'send_macro_queue':
                         handle_macro_queue(event_data, ws, arduino_server, macro_executor)
-                    elif event == 'pause_macro':
-                        handle_pause_macro_ws(ws, macro_executor)
-                    elif event == 'resume_macro':
-                        handle_resume_macro_ws(ws, macro_executor)
-
+                    elif event == 'stop_macro_queue':
+                        handle_stop_macro_queue(ws, arduino_server, macro_executor)
+                    elif event == 'pause_macro_queue':
+                        handle_pause_macro_queue(ws, arduino_server, macro_executor)
+                    elif event == 'resume_macro_queue':
+                        handle_resume_macro_queue(ws, arduino_server, macro_executor)
+                    
                     elif event == 'stop_macro':
                         handle_stop_macro_ws(ws, macro_executor)
                     elif event == 'update_macro_variables':
@@ -397,104 +404,40 @@ def handle_delete_macro_ws(data, ws, macro_executor):
             'data': {'error': f'Failed to delete macro {name}'}
         }))
 
-paused = False
-queue = []
+
+def handle_pause_macro_queue(ws, arduino_server, macro_executor):
+    logging.info('Stopping macro queue')
+    macro_executor.pause_queue()
+
+
+def handle_stop_macro_queue(ws, arduino_server, macro_executor):
+    logging.info('Stopping macro queue')
+    macro_executor.stop_queue()
+
+def handle_resume_macro_queue(ws, arduino_server, macro_executor):
+    macro_executor.resume_queue()
+
 
 def handle_macro_queue(data, ws, arduino_server, macro_executor):
-    if paused:
+    queue = data.get('queue')
+    if not queue:
+        ws.send(json.dumps({
+            'event': 'macro_error',
+            'data': {'error': 'Macro queue not found'}
+        }))
         return
-    queue = data.get('queue',[])
-    logging.info(f"Processing macro queue: {queue}")
-
-    startQueue(ws, arduino_server, macro_executor)
-
-def startQueue(ws, arduino_server, macro_executor):
     if not arduino_server.connected:
         ws.send(json.dumps({
             'event': 'macro_error',
             'data': {'error': 'Arduino not connected'}
         }))
         return
-    if not queue:
-        broadcast_message(macro_executor.websocket_clients, 'queue_completed', {'message': 'All chip macros completed'})
-        return
-
-    def process_chip(chip):
-        name = chip.get('name', '')
-        
-        # GET variables from chip data (sent from frontend with X/Y positions)
-        chip_variables = chip.get('variables', {})
-
-        if not name:
-            broadcast_message(macro_executor.websocket_clients, 'macro_error', {'error': 'Macro name is required'})
-            return
-
-        # UPDATE the saved variables.json with the chip's specific X/Y position
-        # This ensures the macro uses the correct position for THIS chip
-        if chip_variables:
-            macro_executor.variables.update(
-                chip_x=chip_variables.get('CHIP_X'),
-                chip_y=chip_variables.get('CHIP_Y'),
-                stage_x=chip_variables.get('STAGE_X')
-            )
-            logging.info(f"Updated variables for chip: CHIP_X={chip_variables.get('CHIP_X')}, CHIP_Y={chip_variables.get('CHIP_Y')}")
-
-        logging.info(f"Running macro={name} with variables from selector")
-
-        macro_executor.completion_event.clear()
-
-        # Run macro - it will use the updated variables from variables.json
-        handle_run_macro_ws({'name': name}, ws, arduino_server, macro_executor)
-
-        if not macro_executor.completion_event.wait(timeout=60):
-            logging.error(f"Timeout while executing macro={name}")
-            broadcast_message(macro_executor.websocket_clients, 'macro_error', {
-                'error': f"Macro {name} timed out after 60 seconds"
-            })
-            return
-
-        time.sleep(0.5)
-    
-    # Process queue in a daemon thread to avoid blocking WebSocket handler
-    def process_queue():
-        global queue
-        while queue:
-            process_chip(queue[0])
-            queue = queue[1:]
-
-        # Queue fully processed
-        if not queue:
-            broadcast_message(macro_executor.websocket_clients, 'queue_completed', {
-                'message': 'All chip macros completed'
-            })
-            paused = False
-
-    # Start the processing thread
-    threading.Thread(target=process_queue, daemon=True).start()
-
-
-def handle_pause_macro_ws(ws, macro_executor):
-    paused = True
-    """Pause macro execution"""
-    ws.send(json.dumps({
-        'event': 'macro_paused',
-        'data': {'message': 'Macro paused'}
-    }))
-
-
-def handle_resume_macro_ws(ws, macro_executor):
-    """Resume paused macro"""
-    paused = False
-    handle_macro_queue(ws, arduino_server, macro_executor)
-    ws.send(json.dumps({
-        'event': 'macro_resumed',
-        'data': {'message': 'Macro resumed'}
-    }))
-
+    logging.info(f"Running queue: {queue}")
+    macro_executor.execute_macro_queue(queue)  
 
 def handle_run_macro_ws(data, ws, arduino_server, macro_executor):
     """Run a macro"""
-    name = data.get('name', '').strip()
+    name = data.get('name' )
     variables = data.get('variables', {})
     if not name:
         ws.send(json.dumps({

@@ -467,7 +467,7 @@
 
                             <!-- Column labels (bottom) -->
                             <div class="row">
-                                <div class="place"></div> <!-- blank corner -->
+                                <div class="label" id="select-all"></div> <!-- blank corner -->
                                 <div class="label column-label">A</div>
                                 <div class="label column-label">B</div>
                                 <div class="label column-label">C</div>
@@ -512,6 +512,7 @@
                 <img class="icon" src="{{ url_for('static', filename='images/command.svg') }}">
                 CONSOLE
             </h2>
+            
             <div id="console" class="console">
                 <div class="console-line">Machine control interface ready...</div>
             </div>
@@ -521,13 +522,6 @@
                 <button class="button btn-primary" id="customcommand" onclick="sendCustomCommand()">Send</button> 
             </div>
         </div>
-
-
-
-
-
-
-
     
     </div>
 

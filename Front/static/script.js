@@ -21,6 +21,10 @@ let cachedQueue = [];
 let macroPaused = false;
 let macros = [];
 
+
+//selector states
+let macroQueueStates = {'macroQueueRunning': false, 'paused': false};
+
 // Macro variables - now pulled from backend
 let macroVariables = {
     CHIP_X: 105.0,
@@ -43,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
             row.addEventListener('click', selectRow);
         });
     }
-
     
     const grid = document.querySelector('.grid');
 
@@ -65,59 +68,65 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     }
 
+    const selectAll = document.querySelector('#select-all')
+    if (selectAll) {
+        selectAll.addEventListener('click', selectAllChips);
+    }
 
-        const xToggle = document.getElementById("motorToggleX");
-        const yToggle = document.getElementById("motorToggleY");
 
-        let motorYConfirmed = false;
 
-        yToggle.addEventListener("change", function() {
-            // CHECK: Prevent enabling if nozzle is extended
-            if (yToggle.checked && pneumatics.nozzle) {
-                addLog('Cannot enable Y motor while nozzle is extended');
-                yToggle.checked = false;
-                return;
+    const xToggle = document.getElementById("motorToggleX");
+    const yToggle = document.getElementById("motorToggleY");
+
+    let motorYConfirmed = false;
+
+    yToggle.addEventListener("change", function() {
+        // CHECK: Prevent enabling if nozzle is extended
+        if (yToggle.checked && pneumatics.nozzle) {
+            addLog('Cannot enable Y motor while nozzle is extended');
+            yToggle.checked = false;
+            return;
+        }
+        
+        if (yToggle.checked) {
+            enableAxis("Y");
+        } else {
+            disableMotor("Y");
+        }
+
+        setTimeout(() => {
+            if (yToggle.checked !== motorYConfirmed) {
+                yToggle.checked = motorYConfirmed;
             }
-            
-            if (yToggle.checked) {
-                enableAxis("Y");
-            } else {
-                disableMotor("Y");
+        }, 1000);
+    });
+
+    // Track last confirmed state from backend
+    let motorXConfirmed = false;
+
+    // When user tries to change state
+    xToggle.addEventListener("change", function() {
+        // CHECK: Prevent enabling if nozzle is extended
+        if (xToggle.checked && pneumatics.nozzle) {
+            addLog('Cannot enable X motor while nozzle is extended');
+            xToggle.checked = false;
+            return;
+        }
+        
+        const desiredState = xToggle.checked;
+
+        if (desiredState) {
+            enableAxis("X");
+        } else {
+            disableMotor("X");
+        }
+
+        setTimeout(() => {
+            if (xToggle.checked !== motorXConfirmed) {
+                xToggle.checked = motorXConfirmed;
             }
-
-            setTimeout(() => {
-                if (yToggle.checked !== motorYConfirmed) {
-                    yToggle.checked = motorYConfirmed;
-                }
-            }, 1000);
-        });
-
-        // Track last confirmed state from backend
-        let motorXConfirmed = false;
-
-        // When user tries to change state
-        xToggle.addEventListener("change", function() {
-            // CHECK: Prevent enabling if nozzle is extended
-            if (xToggle.checked && pneumatics.nozzle) {
-                addLog('Cannot enable X motor while nozzle is extended');
-                xToggle.checked = false;
-                return;
-            }
-            
-            const desiredState = xToggle.checked;
-
-            if (desiredState) {
-                enableAxis("X");
-            } else {
-                disableMotor("X");
-            }
-
-            setTimeout(() => {
-                if (xToggle.checked !== motorXConfirmed) {
-                    xToggle.checked = motorXConfirmed;
-                }
-            }, 1000);
-        });
+        }, 1000);
+    });
 
     // New: Pneumatic and Vacuum Toggles
     setupPneumaticToggle('nozzle', 'toggleNozzle');
@@ -286,7 +295,10 @@ function initializeWebSocket() {
                     motorStates = data;
                     updateMotorStatesDisplay();
                     break;
-                    
+                case 'macro_queue_state_update':
+                    macroQueueStates = data;
+                    updateSelectorDisplay();
+                    break;
                 case 'pneumatics_update':
                     pneumatics = data;
                     updatePneumaticsDisplay();
@@ -310,7 +322,20 @@ function initializeWebSocket() {
                 case 'command_sent':
                     addLog(`Sent: ${data.command}`);
                     break;
+
+                case 'macro_queue_completed':
+                    addLog('All macros completed!')
+                    removePlayPause()  
+                    break;
                     
+                case 'macro_queue_stopped':
+                    addLog('Macro queue stopped')
+                    break;
+
+                case 'macro_queue_paused':
+                    addLog('Macro execution paused');
+                    break;
+
                 case 'machine_response':
                     addLog(`Response: ${data.response}`);
                     break;
@@ -362,6 +387,10 @@ function initializeWebSocket() {
 
                 case 'macro_completed':
                     addLog(`Macro completed: ${data.name}`);
+                    break;
+
+                case 'running_chip':
+                    addLog(`Running macro: ${data.name}`)
                     break;
 
                 case 'macro_stopped':
@@ -472,6 +501,23 @@ function updatePositionDisplay() {
     document.getElementById('posY').textContent = `${position.y} mm`;
 }
 
+function updateSelectorDisplay(){
+    let running = macroQueueStates['macroQueueRunning'];
+    let paused = macroQueueStates['paused']
+
+    if (!running && !paused){
+        pauseButton();
+        removePlayPause();
+    } 
+    else if (!running && paused){
+        resumeButton();
+    }
+    else if  (running && !paused){
+        pauseButton();
+        addPlayPause();
+    }
+}
+
 function updateMotorStatesDisplay() {
     const stateClasses = {
         'MOTOR_DISABLED': 'state-disabled',
@@ -562,21 +608,6 @@ function updateTempChart() {
     tempChart.data.datasets[0].data.push(currentTemp);
     tempChart.data.datasets[1].data.push(targetTemp);
     tempChart.update('none');
-}
-
-function addLog(message) {
-    const console = document.getElementById('console');
-    const timestamp = new Date().toLocaleTimeString();
-    const logLine = document.createElement('div');
-    logLine.className = 'console-line';
-    logLine.textContent = `[${timestamp}] ${message}`;
-    console.appendChild(logLine);
-    
-    console.scrollTop = console.scrollHeight;
-    
-    while (console.children.length > 200) {
-        console.removeChild(console.firstChild);
-    }
 }
 
 function loadMacroList() {
@@ -811,61 +842,80 @@ function checkChips(chips){
 }
 
 function selectRow(event) {
-    var row = event.target;
+    const row = event.target;
+    const actionSelect = row.textContent.trim();
 
-    var actionSelect = row.textContent;
+    const selectedRow = document.querySelectorAll(`.row:nth-child(${11 - actionSelect}) button`);
+    const shouldSelect = checkChips(selectedRow);
 
-    selectedRow = document.querySelectorAll(`.row:nth-child(${11-actionSelect}) button`)
-    select = checkChips(selectedRow)
-
-    if (select){
-        for (chip of selectedRow){
-            if (!chip.classList.contains('selected') && chip.classList.add('selected'));
-                chip.classList.add('selected')
+    if (shouldSelect) {
+        for (const chip of selectedRow) {
+            if (!chip.classList.contains('selected')) {
+                chip.classList.add('selected');
                 selectedChips.push(chip.id);
-
+            }
         }
-    }
-    else{
-        for (chip of selectedRow){
-
+    } else {
+        for (const chip of selectedRow) {
             chip.classList.remove('selected');
-            var index = selectedChips.indexOf(chip.id);
+            const index = selectedChips.indexOf(chip.id);
             if (index !== -1) {
                 selectedChips.splice(index, 1);
             }
-            
         }
     }
-    
-
 }
+
+
 
 function selectColumn(event) {
-    var row = event.target;
-    var actionSelect = row.textContent;
-    selectedRow = document.querySelectorAll(`.col-${actionSelect}`)
-    select = checkChips(selectedRow)
-    if (select){
-        for (chip of selectedRow){
-            if (!chip.classList.contains('selected') && chip.classList.add('selected'));
-                chip.classList.add('selected')
+    const col = event.target;
+    const actionSelect = col.textContent.trim();
+
+    const selectedCol = document.querySelectorAll(`.col-${actionSelect}`);
+    const shouldSelect = checkChips(selectedCol);
+
+    if (shouldSelect) {
+        for (const chip of selectedCol) {
+            if (!chip.classList.contains('selected')) {
+                chip.classList.add('selected');
                 selectedChips.push(chip.id);
-
+            }
         }
-    }
-    else{
-        for (chip of selectedRow){
-
+    } else {
+        for (const chip of selectedCol) {
             chip.classList.remove('selected');
-            var index = selectedChips.indexOf(chip.id);
+            const index = selectedChips.indexOf(chip.id);
             if (index !== -1) {
                 selectedChips.splice(index, 1);
             }
-            
         }
     }
 }
+
+function selectAllChips(){
+    const  chips = document.querySelectorAll('.chip')
+    const shouldSelect = checkChips(chips);
+
+    if (shouldSelect) {
+        for (const chip of chips) {
+            if (!chip.classList.contains('selected')) {
+                chip.classList.add('selected');
+                selectedChips.push(chip.id);
+            }
+        }
+    } else {
+        for (const chip of chips) {
+            chip.classList.remove('selected');
+            const index = selectedChips.indexOf(chip.id);
+            if (index !== -1) {
+                selectedChips.splice(index, 1);
+            }
+        }
+    }
+
+}
+
 
 
 function addPlayPause(){
@@ -908,9 +958,8 @@ function submitChips() {
         return;
     }
 
-    addPlayPause();
 
-    selectedChips.sort();
+
     const columns = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5};
     const actionSelect = document.querySelector('#action').value;
     
@@ -931,34 +980,24 @@ function submitChips() {
         let ycor = macroVariables.CHIP_Y - (columns[column] * 12.5);
 
         macroQueue.push({
-            chip: chip,
+            name: chip,
             macro: actionSelect,
-            x: xcor,
-            y: ycor,
-            stageX: capturedStageX
+            variables: {
+                CHIP_X: xcor,
+                CHIP_Y: ycor,
+                STAGE_X: capturedStageX  // Use the passed value, not current
+            }
         });
-
-        addChip(actionSelect, xcor, ycor, capturedStageX);
     }
+
+
+    sendMacroQueue(macroQueue) 
+
 
     addLog(`Queued ${macroQueue.length} chips for sequential processing`);
     
-    if (!isMacroQueueRunning) {
-        processNextMacro();
-    }
 }
 
-
-function addChip(name, x, y, stageX) {
-    macros.push({
-        name: name,
-        variables: {
-            CHIP_X: x,
-            CHIP_Y: y,
-            STAGE_X: stageX  // Use the passed value, not current
-        }
-    });
-}
 
 function sendMacroQueue(queue){
     sendWebSocketMessage('send_macro_queue', {
@@ -967,86 +1006,18 @@ function sendMacroQueue(queue){
 
 }
 
-function processNextMacro() {
-    if (macroPaused) return;
-    if (macroQueue.length === 0 ) {
-
-        const btn = document.querySelector('#pauseChips');
-        btn.innerHTML = 'Pause macro';
-        btn.classList.replace('btn-success', 'btn-warning');
-        btn.onclick = pauseMacro;
-        if (isMacroQueueRunning) addLog('All chip macros completed');
-        removePlayPause()
-        isMacroQueueRunning = false;
-        return;
-    }
-
-
-    isMacroQueueRunning = true;
-    const nextMacro = macroQueue.shift();
-    
-    addLog(`Processing chip ${nextMacro.chip}: X=${nextMacro.x.toFixed(1)}, Y=${nextMacro.y.toFixed(1)}, StageX=${nextMacro.stageX.toFixed(1)}`);
-    
-    // Set up listener for macro completion
-    const originalOnMessage = ws.onmessage;
-    ws.onmessage = function(event) {
-        originalOnMessage.call(this, event);
-        
-        try {
-            const message = JSON.parse(event.data);
-            if (message.event === 'macro_completed' || message.event === 'macro_error') {
-                ws.onmessage = originalOnMessage;
-                setTimeout(() => processNextMacro(), 500);
-            }
-        } catch (error) {
-            // Ignore parsing errors
-        }
-    };
-    
-    runChipMacro(nextMacro.macro, nextMacro.x, nextMacro.y, nextMacro.stageX);
-}
-
 function stopMacroQueue() {
-    macroQueue = [];
-
-    //incase the button was on resume, set it back to pause
-    macroPaused = false;
-    cachedQueue = []
-    isMacroQueueRunning = false;
-    pauseButton();
-
-    addLog('Macro queue stopped');
-    sendWebSocketMessage('stop_queue', {});
-    sendWebSocketMessage('stop_macro', {});
-
-    removePlayPause();
+    sendWebSocketMessage('stop_macro_queue', {});
     
 }
 
 function pauseMacro(){
-    macroPaused = true
-    cachedQueue = macroQueue.slice()
-    macroQueue = []
-    addLog('Macro queue paused');
-
-    sendWebSocketMessage('pause_macro', {});
-
-    //sendWebSocketMessage('stop_macro', {});
-
-    resumeButton()
+    sendWebSocketMessage('pause_macro_queue', {});
 }
 
 function resumeMacro(){
     addLog('Macro queue resumed')
-    sendWebSocketMessage('resume_macro', {});
-
-    macroQueue = cachedQueue
-    macroPaused = false
-
-    pauseButton()
-
-    processNextMacro(); 
-
+    sendWebSocketMessage('resume_macro_queue', {});
 }
 
 function pauseButton(){
@@ -1057,15 +1028,12 @@ function pauseButton(){
 }
 
 function resumeButton(){
-
     const btn = document.querySelector('#pauseChips');
     btn.innerHTML = 'Resume';
     btn.classList.replace('btn-warning', 'btn-success');
     btn.onclick = resumeMacro;
 
 }
-
-
 
 
 function dropdownClick(event){
@@ -1095,4 +1063,26 @@ function dropdownClick(event){
     }
 
 
+}
+
+function isScrolledToBottom(element, threshold = 50) {
+    return element.scrollHeight - element.scrollTop - element.clientHeight < threshold;
+}
+
+function addLog(message) {
+    const console = document.getElementById('console');
+    const shouldScroll = isScrolledToBottom(console);
+    const timestamp = new Date().toLocaleTimeString();
+    const logLine = document.createElement('div');
+    logLine.className = 'console-line';
+    logLine.textContent = `[${timestamp}] ${message}`;
+    console.appendChild(logLine);
+    
+    if (shouldScroll) {
+        console.scrollTop = console.scrollHeight;
+    }
+    
+    while (console.children.length > 200) {
+        console.removeChild(console.firstChild);
+    }
 }
