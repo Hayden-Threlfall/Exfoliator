@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exfoliator Control Interface</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="header">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <h1 class="title">
+                <span>🔬</span>
+                EXFOLIATOR CONTROL INTERFACE
+            </h1>
+        </div>
+
+        <div class="buttons">
+
+            <button id="emergencyButton" class="button btn-emergency" onclick="emergencyStop()">EMERGENCY STOP</button>
+            <div id="restartMessage" class="restart-message" style="display: none;">
+                ⚠️ RESTART MACHINE ⚠️
+            </div>
+
+            <div id="connectionStatus" class="status disconnected">
+                <div class="status-dot"></div>
+                <span>Disconnected</span>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <div class="container">
+        <!-- Header -->
+
+        <div class="grid">
+            <!-- Position Controls -->
+
+            <div class="column">
+                <div class="card">
+                    <h2 class="position card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/position.svg') }}">
+
+                        POSITION CONTROL
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Current Position -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Current Position</h3>
+                        <div class="position-display">
+                            <span>X Position:</span>
+                            <div style="display: flex; align-items: center;">
+                                <span id="posX">0.0 mm</span>
+                                <span id="motorStateX" class="motor-state state-disabled">MOTOR_DISABLED</span>
+                            </div>
+                        </div>
+                        <div class="position-display">
+                            <span>Y Position:</span>
+                            <div style="display: flex; align-items: center;">
+                                <span id="posY">0.0 mm</span>
+                                <span id="motorStateY" class="motor-state state-disabled">MOTOR_DISABLED</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Enable Controls -->
+                    <div class="mb-4">
+                        <h3 class="section-title">
+                            Motor Enable
+                        </h3>
+                        <div class="button-grid">
+
+                            <div class="pneumatic-control">
+                                <span class="button-label">X MOTOR</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="motorToggleX">
+                                    <div class="slider round">
+                                        <span class="on">ENABLED</span>
+                                        <span class="off">DISABLED</span>
+                                    </div>
+                                </label>
+                                <div class="switchPlaceholder">State Unavailable</div>
+                            </div>
+
+                            <div class="pneumatic-control">
+                                <span class="button-label">Y MOTOR</span>
+                                <label class="switch">
+                                    <input type="checkbox" id="motorToggleY">
+                                    <div class="slider round">
+                                        <span class="on">ENABLED</span>
+                                        <span class="off">DISABLED</span>
+                                    </div>
+                                </label>
+                                <div class="switchPlaceholder">State Unavailable</div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Move to Position -->
+                    <div>
+                        <h3 class="section-title">Move to Position</h3>
+
+                        <div class="move-position">
+                            <div class="mt-3">
+                                <label class="text-sm">X Position (mm)</label>
+                                <input type="number" id="xPositionInput" class="input" value="0" step="0.1">
+                                <button class="button btn-success" onclick="moveToPosition('X')">Move X</button>
+                            </div>
+                            <div class="mt-3">
+                                <label class="text-sm">Y Position (mm)</label>
+                                <input type="number" id="yPositionInput" class="input" value="0" step="0.1">
+                                <button class="button btn-success" onclick="moveToPosition('Y')">Move Y</button>
+                            </div>
+                        </div>
+
+                    </div>
+                
+                
+                </div> 
+
+                <!-- Temperature Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/temp.svg') }}">
+
+                        CHIP TEMPERATURE CONTROL
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <div class="temp-display mb-3">
+                        <span>Current Temperature:</span>
+                        <span id="currentTemp" class="temp-current">0°C</span>
+                    </div>
+                    
+                    <div class="temp-display mb-3">
+                        <span>Target Temperature:</span>
+                        <span id="targetTemp" class="temp-current" style="color: #F59E0B;">0°C</span>
+                    </div>
+                    
+                    <div class="flex temp mt-3">
+                        <input type="number" id="tempInput" class="input" value="0" min="0" max="200">
+                        <button class="button btn-danger" onclick="setTemperature()">Set Temp</button>
+                    </div>
+
+                    <!-- Temperature Chart -->
+                    <div class="chart-container">
+                        <canvas id="tempChart"></canvas>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Modified Pneumatic and Vacuum Controls sections in the HTML -->
+            <div class="column">
+                <!-- Pneumatics Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/pneumatics.svg') }}">
+                        PNEUMATIC CONTROLS
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+                    </h2>
+                    
+                    <!-- Nozzle -->
+                    <div class="pneumatic-control">
+                        <div class="pneumatic-status">
+                            <span>Nozzle</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleNozzle">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
+                        <div class="switchPlaceholder">State Unavailable</div>
+                    </div>
+
+                    <!-- Chip Stage -->
+                    <div class="pneumatic-control">
+                        <div class="pneumatic-status">
+                            <span>Chip Stage</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleStage">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
+                        <div class="switchPlaceholder">State Unavailable</div>
+                    </div>
+
+                    <!-- Stamp -->
+                    <div class="pneumatic-control">
+                        <div class="pneumatic-status">
+                            <span>Stamp</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggleStamp">
+                            <div class="slider round">
+                                <span class="on">EXTENDED</span>
+                                <span class="off">RETRACTED</span>
+                            </div>
+                        </label>
+                        <div class="switchPlaceholder">State Unavailable</div>
+
+                    </div>
+
+                    <!-- Vacuum Controls -->
+                    <div>
+                        <h2 class="card-title">
+                            <img class="icon" src="{{ url_for('static', filename='images/vacuum.svg') }}">
+                            VACUUM CONTROLS
+                        </h2>
+                        
+                        <!-- Vacuum Nozzle -->
+                        <div class="pneumatic-control">
+                            <div class="pneumatic-status">
+                                <span>Nozzle</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleVacnozzle">
+                                <div class="slider round">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </div>
+                            </label>
+                            <div class="switchPlaceholder">State Unavailable</div>
+                        </div>
+
+                        <!-- Chuck Vacuum -->
+                        <div class="pneumatic-control">
+                            <div class="pneumatic-status">
+                                <span>Chuck</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="toggleChuck">
+                                <div class="slider round">
+                                    <span class="on">ON</span>
+                                    <span class="off">OFF</span>
+                                </div>
+                            </label>
+                            <div class="switchPlaceholder">State Unavailable</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Macro Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/macro.svg') }}">
+
+                        MACRO CONTROL
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Variables Section -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Position Variables</h3>
+                        <div class="parameters">
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">CHIP_X</label>
+                                <input type="number" id="CHIP_X" class="input" value="105.0" step="0.1">
+                            </div>
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">CHIP_Y</label>
+                                <input type="number" id="CHIP_Y" class="input" value="64.65" step="0.1">
+                            </div>
+                            <div class="macro-variable-input">
+                                <label class="tape-input-label">STAGE_X</label>
+                                <input type="number" id="STAGE_X" class="input" value="8.0" step="0.1">
+                            </div>
+                        </div>
+                        <button class="button btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveVariablesManually()">Save Variables</button>
+                    </div>
+                    
+                    <!-- Macro List -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Saved Macros</h3>
+                        <div id="macroList" class="macro-list">
+                            <!-- Macros will be populated here -->
+                            <div style="color: #6B7280; text-align: center; padding: 20px;">No macros saved yet</div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Macro -->
+                    <div>
+                        <div class="flex mt-3">
+                            <input type="text" id="newMacroName" class="input" placeholder="Enter macro name...">
+                            <button class="button btn-success" onclick="createNewMacro()">Create New</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="column">
+                
+                <!-- Tape Motor Control -->
+                <div class="card">
+                    <h2 class="card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/tape.svg') }}">
+                        TAPE MOTOR CONTROL
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+                    
+                    <!-- Current Tape State -->
+                    <div class="mb-4">
+                        <h3 class="section-title">Current State</h3>
+                        <div class="tape-state-display">
+                            <span>Speed:</span>
+                            <span id="currentTapeSpeed">0</span>
+                        </div>
+                        <div class="tape-state-display">
+                            <span>Torque:</span>
+                            <span id="currentTapeTorque">0</span>
+                        </div>
+                    </div>
+
+                    <!-- Tape Motor Controls -->
+                    <div class="parameter-set">
+                        <h3 class="section-title">Set Parameters</h3>
+                        <div class="parameters">
+                            <div class="tape-input-group">
+                                <label class="tape-input-label">Speed</label>
+                                <input type="number" id="tapeSpeed" class="input" value="0">
+                            </div>
+                            <div class="tape-input-group">
+                                <label class="tape-input-label">Torque</label>
+                                <input type="number" id="tapeTorque" class="input" value="0">
+                            </div>
+                            <div class="tape-input-group">
+                                <label class="tape-input-label">Duration (ms)</label>
+                                <input type="number" id="tapeTime" class="input" value="1000">
+                            </div>
+                        </div>
+                        <div class="tape-time-control">
+                            <button class="button btn-primary" onclick="runTapeMotor()">Run Tape</button>
+                            <button class="button btn-danger" onclick="stopTapeMotor()">Stop Tape</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Selector -->
+                <div class="card selector">
+                    <h2 class="card-title">
+                        <img class="icon" src="{{ url_for('static', filename='images/selector.svg') }}">
+                        SELECTOR
+                        <img class="dropdown" src="{{ url_for('static', filename='images/dropdown.png') }}">
+
+                    </h2>
+
+                    <div class="content">
+                        <div class="chips">
+
+                            <div class="row row-10">
+                                <div class="label row-label">10</div>
+                                <button id="A10" class="chip col-A"></button>
+                                <button id="B10" class="chip col-B"></button>
+                                <button id="C10" class="chip col-C"></button>
+                                <button id="D10" class="chip col-D"></button>
+                                <button id="E10" class="chip col-E"></button>
+                                <button id="F10" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 9 -->
+                            <div class="row row-9">
+                                <div class="label row-label">9</div>
+                                <button id="A9" class="chip col-A"></button>
+                                <button id="B9" class="chip col-B"></button>
+                                <button id="C9" class="chip col-C"></button>
+                                <button id="D9" class="chip col-D"></button>
+                                <button id="E9" class="chip col-E"></button>
+                                <button id="F9" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 8 -->
+                            <div class="row row-8">
+                                <div class="label row-label">8</div>
+                                <button id="A8" class="chip col-A"></button>
+                                <button id="B8" class="chip col-B"></button>
+                                <button id="C8" class="chip col-C"></button>
+                                <button id="D8" class="chip col-D"></button>
+                                <button id="E8" class="chip col-E"></button>
+                                <button id="F8" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 7 -->
+                            <div class="row row-7">
+                                <div class="label row-label">7</div>
+                                <button id="A7" class="chip col-A"></button>
+                                <button id="B7" class="chip col-B"></button>
+                                <button id="C7" class="chip col-C"></button>
+                                <button id="D7" class="chip col-D"></button>
+                                <button id="E7" class="chip col-E"></button>
+                                <button id="F7" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 6 -->
+                            <div class="row row-6">
+                                <div class="label row-label">6</div>
+                                <button id="A6" class="chip col-A"></button>
+                                <button id="B6" class="chip col-B"></button>
+                                <button id="C6" class="chip col-C"></button>
+                                <button id="D6" class="chip col-D"></button>
+                                <button id="E6" class="chip col-E"></button>
+                                <button id="F6" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 5 -->
+                            <div class="row row-5">
+                                <div class="label row-label">5</div>
+                                <button id="A5" class="chip col-A"></button>
+                                <button id="B5" class="chip col-B"></button>
+                                <button id="C5" class="chip col-C"></button>
+                                <button id="D5" class="chip col-D"></button>
+                                <button id="E5" class="chip col-E"></button>
+                                <button id="F5" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 4 -->
+                            <div class="row row-4">
+                                <div class="label row-label">4</div>
+                                <button id="A4" class="chip col-A"></button>
+                                <button id="B4" class="chip col-B"></button>
+                                <button id="C4" class="chip col-C"></button>
+                                <button id="D4" class="chip col-D"></button>
+                                <button id="E4" class="chip col-E"></button>
+                                <button id="F4" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 3 -->
+                            <div class="row row-3">
+                                <div class="label row-label">3</div>
+                                <button id="A3" class="chip col-A"></button>
+                                <button id="B3" class="chip col-B"></button>
+                                <button id="C3" class="chip col-C"></button>
+                                <button id="D3" class="chip col-D"></button>
+                                <button id="E3" class="chip col-E"></button>
+                                <button id="F3" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 2 -->
+                            <div class="row row-2">
+                                <div class="label row-label">2</div>
+                                <button id="A2" class="chip col-A"></button>
+                                <button id="B2" class="chip col-B"></button>
+                                <button id="C2" class="chip col-C"></button>
+                                <button id="D2" class="chip col-D"></button>
+                                <button id="E2" class="chip col-E"></button>
+                                <button id="F2" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Row 1 (bottom) -->
+                            <div class="row row-1">
+                                <div class="label row-label">1</div>
+                                <button id="A1" class="chip col-A"></button>
+                                <button id="B1" class="chip col-B"></button>
+                                <button id="C1" class="chip col-C"></button>
+                                <button id="D1" class="chip col-D"></button>
+                                <button id="E1" class="chip col-E"></button>
+                                <button id="F1" class="chip col-F"></button>
+                            </div>
+
+                            <!-- Column labels (bottom) -->
+                            <div class="row">
+                                <div class="label" id="select-all"></div> <!-- blank corner -->
+                                <div class="label column-label">A</div>
+                                <div class="label column-label">B</div>
+                                <div class="label column-label">C</div>
+                                <div class="label column-label">D</div>
+                                <div class="label column-label">E</div>
+                                <div class="label column-label">F</div>
+                            </div>
+                        </div>
+
+
+                        <div class="options">
+
+                            <fieldset>     
+                                <legend for="action">select macro</legend>
+                                <select class="button" id="action" name="action">
+                                    <!--macro options go here-->
+                                </select>
+                            </fieldset>
+
+
+
+                            <button id="clearChipSelection" class="button not-running btn-danger" onclick="clearChips()">Clear selection</button>
+                            <button id="pauseChips" class="button btn-warning macro-running" onclick="pauseMacro()">Pause</button>
+                            <button id="stopChips" class="button btn-danger macro-running" onclick="stopMacroQueue()">STOP</button>
+                            <button id="submitChipQuery" class="button not-running btn-success" onclick="submitChips()">Exfoliate</button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+                    
+        <!-- Console -->
+        <div id="consoleView">
+            <h2 class="card-title">
+                <img class="icon" src="{{ url_for('static', filename='images/command.svg') }}">
+                CONSOLE
+            </h2>
+            
+            <div id="console" class="console">
+                <div class="console-line">Machine control interface ready...</div>
+            </div>
+            
+            <div class="mt-3">
+                <input type="text" id="customCommand" class="input" placeholder="Enter custom command...">
+                <button class="button btn-primary" id="customcommand" onclick="sendCustomCommand()">Send</button> 
+            </div>
+        </div>
+    
+    </div>
+
+    <!-- Macro Editor Modal -->
+    <div class="overlay" id="overlay" onclick="closeMacroEditor()"></div>
+    <div class="macro-editor" id="macroEditor">
+        <div class="macro-editor-header">
+            <h2>Edit Macro: <span id="editingMacroName"></span></h2>
+            <button class="button btn-danger" onclick="closeMacroEditor()">Close</button>
+        </div>
+        <textarea id="macroContent" placeholder="Enter macro commands..."></textarea>
+        <div class="flex" style="margin-top: 16px; justify-content: flex-end;">
+            <button class="button btn-primary" onclick="saveMacro()">Save Macro</button>
+        </div>
+    </div>
+
+</body>
+</html>

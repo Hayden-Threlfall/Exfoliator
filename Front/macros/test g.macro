@@ -1,0 +1,61 @@
+# Macro: Test G
+# Created: 9/19/2025, 12:13:01 PM
+# 
+# Available Commands:
+# - MoveX <position> or MoveX CHIP_X
+# - MoveY <position> or MoveY CHIP_Y
+# - EnableX / EnableY
+# - DisableX / DisableY
+# - ExtendNozzle / RetractNozzle
+# - ExtendChipStage / RetractChipStage
+# - ExtendStamp / RetractStamp
+# - VacNozzleOn / VacNozzleOff
+# - ChuckOn / ChuckOff
+# - SetTemperature <temp>
+# - Tape <speed> <torque> <time_ms>
+# - StopTape
+# - delay <milliseconds>
+# - STOP (emergency stop)
+#
+# Variables:
+# - CHIP_X, CHIP_Y, STAGE_X can be used in place of numeric values
+#
+# Example sequence:
+# EnableX
+# EnableY
+# delay 500
+# MoveX CHIP_X
+# MoveY CHIP_Y
+# delay 1000
+# ExtendNozzle
+# delay 500
+# VacNozzleOn
+# delay 1000
+# RetractNozzle
+
+# Your macro commands below:
+Tape 0 6 15000 
+RetractStamp
+delay 700
+ExtendStamp
+delay 700 
+RetractStamp
+delay 700
+ExtendStamp
+delay 1000
+RetractChipStage
+delay 1000
+RetractStamp
+delay 300
+Tape 10 0 1500
+delay 2000
+ExtendStamp
+delay 1000
+Tape 0 5 2000
+delay 3000
+ExtendChipStage
+Tape 15 0 2000
+delay 1000
+Tape 0 10 1500
+
+
