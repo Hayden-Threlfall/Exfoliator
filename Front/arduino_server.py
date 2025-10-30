@@ -22,6 +22,8 @@ class ArduinoTCPServer:
         self.position = {'x': 0, 'y': 0}
         self.motor_states = {'x': 'MOTOR_DISABLED', 'y': 'MOTOR_DISABLED'}
         self.macroQueueStates = {'macroQueueRunning': False, 'paused': False}
+        self.macroStates = {'macroRunning': False, 'paused': False}
+
 
         self.tape = {'speed': 0, 'torque': 0}
         self.pneumatics = {

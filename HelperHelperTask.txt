@@ -1,20 +1,24 @@
 Macro Controller ::
--Add the ability to stop and pause this too
+-Add the ability to stop and pause this too --> stop added
+
+//do we need to make it so the macro pauses though? i feel like stop is end. if the user wants 
+to pause maybe they should jsut test a clipped version of their macro 
+//(i just dont want to implement something where when it parses every macro command it has to check if user sent a pause..)
 
 Chip Selector :: 
--Zoom out scales the table weird and it likes to shift when window shifts
--Pause button does not always show up first
+-Zoom out scales the table weird and it likes to shift when window shifts --> should b fixed
+-Pause button does not always show up first --> should b fixed
 
 Tape Motor Controller ::
--Number text field leaves bounding box when shrinking window
+-Number text field leaves bounding box when shrinking window --> should b fixed 
 
 Pneumatics :: 
--Instead of assum button state will change wait for the json to be received to run button animation 
+-Instead of assum button state will change wait for the json to be received to run button animation --> did this
 -Stamp logic reversed due to activate state being retracted.
 
 General ::
--Keep in mind js is not persistent between users and instances
+-Keep in mind js is not persistent between users and instances --> works for most stuff
 -Buttons need to be updated to same style
 
 Extra:
--Macros able to call other macros (infinite loop possible)
+-Macros able to call other macros (infinite loop possible) 

@@ -1,6 +1,6 @@
 # Setup tape
-Tape 5 12 1000
-delay 1200
+Tape 5 12 8000
+delay 8500
 
 # Transfer Tape 
 # Hold Torque
@@ -19,11 +19,11 @@ delay 1000
 tape -1 0 1000
 delay 1500
 RetractStamp
-delay 1000
+delay 60000
 ExtendStamp
 delay 1000
-Tape 5 12 1000
-delay 1000
+Tape 5 12 12000
+delay 8000
 Tape 0 6 8000
 
 ExtendChipStage

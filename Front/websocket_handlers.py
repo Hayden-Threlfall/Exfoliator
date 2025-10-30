@@ -111,7 +111,6 @@ def setup_websocket_handlers(app, sock, arduino_server, macro_executor, websocke
                         handle_pause_macro_queue(ws, arduino_server, macro_executor)
                     elif event == 'resume_macro_queue':
                         handle_resume_macro_queue(ws, arduino_server, macro_executor)
-                    
                     elif event == 'stop_macro':
                         handle_stop_macro_ws(ws, macro_executor)
                     elif event == 'update_macro_variables':

@@ -13,17 +13,23 @@ delay 50
 # Go to Chip Grab Chip
 MoveX CHIP_X
 MoveY CHIP_Y
-delay 5500
+delay 5000
 ExtendNozzle
 delay 1000
 VacNozzleOn
 delay 1000
+MoveX CHIP_X + 0.7
+MoveY CHIP_Y - 0.7
+delay 2000
+MoveX CHIP_X + 0.5
+MoveY CHIP_Y - 0.5
+delay 2000
 RetractNozzle
 delay 1000
 
 # Go to Stage Place Down
 MoveX STAGE_X
-delay 5500
+delay 5000
 ExtendNozzle
 delay 1000
 ChuckOn
@@ -34,24 +40,3 @@ RetractNozzle
 delay 1000 
 
 delay 3000
-
-# Pickup From Stage
-ExtendNozzle
-delay 1000
-VacNozzleOn
-delay 500
-ChuckOff
-delay 250
-RetractNozzle
-delay 1000
-
-# Move and Place Chip Back
-MoveX CHIP_X
-MoveY CHIP_Y
-delay 5500
-ExtendNozzle
-delay 500
-VacNozzleOff
-delay 500
-RetractNozzle
-delay 500

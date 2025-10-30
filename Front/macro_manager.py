@@ -270,10 +270,17 @@ class MacroExecutor:
     def execute_macro(self, name, variables=None):
         """Execute macro in a separate thread"""
         def run_async():
+            # update macro states..........
+            self.arduino_server.macroStates = {'macro': name,'macroRunning': True, 'paused': False}
+            broadcast_message(self.websocket_clients, 'macro_state_update',self.arduino_server.macroStates)
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             loop.run_until_complete(self.execute_macro_async(name, variables))
             loop.close()
+            self.arduino_server.macroStates = {'macro': name, 'macroRunning': False, 'paused': False}
+            broadcast_message(self.websocket_clients, 'macro_state_update',self.arduino_server.macroStates)
+
+
 
         thread = threading.Thread(target=run_async, daemon=True)
         thread.start()
@@ -293,8 +300,9 @@ class MacroExecutor:
                 for index in range(len(macroQueue)):
                     #if user wants to stop queue
                     if self.stopQueue:
-                        if self.pauseQueue:
-                            self.cachedQueue = macroQueue[index:]
+                        return
+                    if self.pauseQueue:
+                        self.cachedQueue = macroQueue[index:]
                         return
                     
                     chip = macroQueue[index]
@@ -310,12 +318,11 @@ class MacroExecutor:
 
 
             loop.run_until_complete(runner())
-
+            loop.close()
             if self.stopQueue or self.pauseQueue:
                 return
-            loop.close()
+            
             broadcast_message(self.websocket_clients, 'macro_queue_completed',{})
-
             self.arduino_server.macroQueueStates = {'macroQueueRunning': False, 'paused': False}
             broadcast_message(self.websocket_clients, 'macro_queue_state_update',self.arduino_server.macroQueueStates)
 
@@ -330,7 +337,6 @@ class MacroExecutor:
         broadcast_message(self.websocket_clients, 'macro_queue_stopped',{})
 
     def pause_queue(self):
-        self.stopQueue = True
         self.pauseQueue = True
         self.arduino_server.macroQueueStates = {'macroQueueRunning': False, 'paused': True}
         broadcast_message(self.websocket_clients, 'macro_queue_state_update',self.arduino_server.macroQueueStates)

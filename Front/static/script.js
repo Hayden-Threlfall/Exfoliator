@@ -25,6 +25,10 @@ let macros = [];
 //selector states
 let macroQueueStates = {'macroQueueRunning': false, 'paused': false};
 
+//single macro states
+
+let macroStates = {'macro': '', 'macroRunning': false, 'paused': false};
+
 // Macro variables - now pulled from backend
 let macroVariables = {
     CHIP_X: 105.0,
@@ -88,17 +92,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (yToggle.checked) {
+        yToggle.checked = !yToggle.checked;
+
+        if (!yToggle.checked) {
             enableAxis("Y");
         } else {
             disableMotor("Y");
         }
 
-        setTimeout(() => {
-            if (yToggle.checked !== motorYConfirmed) {
-                yToggle.checked = motorYConfirmed;
-            }
-        }, 1000);
     });
 
     // Track last confirmed state from backend
@@ -112,20 +113,16 @@ document.addEventListener('DOMContentLoaded', function() {
             xToggle.checked = false;
             return;
         }
-        
-        const desiredState = xToggle.checked;
+        xToggle.checked = !xToggle.checked;
 
-        if (desiredState) {
+
+        if (!xToggle.checked) {
             enableAxis("X");
         } else {
             disableMotor("X");
         }
 
-        setTimeout(() => {
-            if (xToggle.checked !== motorXConfirmed) {
-                xToggle.checked = motorXConfirmed;
-            }
-        }, 1000);
+
     });
 
     // New: Pneumatic and Vacuum Toggles
@@ -248,12 +245,17 @@ function initializeWebSocket() {
     ws.onopen = function() {
         updateConnectionStatus(false);
         addLog('Connected to web server');
+
         sendWebSocketMessage('get_arduino_status', {});
         loadMacroList();
+        configureButtons();
     };
 
     ws.onclose = function() {
         updateConnectionStatus(false);
+
+        configSwitches(false);
+
         addLog('Disconnected from server');
         // Attempt to reconnect after 3 seconds
         setTimeout(initializeWebSocket, 3000);
@@ -273,6 +275,7 @@ function initializeWebSocket() {
                 case 'arduino_connection_status':
                     updateConnectionStatus(data.connected);
                     addLog(data.connected ? 'Arduino connected' : 'Arduino disconnected');
+                    configSwitches(data.connected);
                     break;
                     
                 case 'connection_status':
@@ -294,6 +297,12 @@ function initializeWebSocket() {
                 case 'motor_states_update':
                     motorStates = data;
                     updateMotorStatesDisplay();
+                    break;
+
+                case 'macro_state_update':
+                    macroStates = data;
+                    console.log(macroStates);
+                    updateMacroDisplay(data['macro']);
                     break;
                 case 'macro_queue_state_update':
                     macroQueueStates = data;
@@ -518,6 +527,39 @@ function updateSelectorDisplay(){
     }
 }
 
+function updateMacroDisplay(macro){
+    //update macros so they show pause and stop when theyre running
+
+
+    const macroClass = macro.replace(/ /g, '-');
+    const macroActions = document.querySelector(`.${macroClass}.macro-actions`)
+
+    //not paused or running
+    if (!macroStates['macroRunning'] && !macroStates['paused']){
+        macroActions.innerHTML = `
+            <div class="${macroClass} macro-actions">
+                <button class="button btn-success" onclick="runMacro('${macro}')">Run</button>
+                <button class="button btn-warning" onclick="editMacro('${macro}')">Edit</button>
+                <button class="button btn-danger" onclick="deleteMacro('${macro}')">Delete</button>
+            </div>
+        `;
+    }
+
+    //running, we switch the macroactions to stop buttons
+    else if (macroStates['macroRunning'] && !macroStates['paused']){
+            macroActions.innerHTML = `
+            <div class="${macroClass} macro-actions">
+                <button class="button btn-danger" onclick="stopMacro()">STOP MACRO</button>
+            </div>
+        `;
+    }
+
+    //paused
+
+
+
+}
+
 function updateMotorStatesDisplay() {
     const stateClasses = {
         'MOTOR_DISABLED': 'state-disabled',
@@ -621,12 +663,15 @@ function updateMacroList() {
         return;
     }
     listContainer.innerHTML = '';
+
     macrosList.forEach(macro => {
         const macroItem = document.createElement('div');
+        const macroClass = macro.replace(/ /g, '-');
+
         macroItem.className = 'macro-item';
         macroItem.innerHTML = `
             <span class="macro-name">${macro}</span>
-            <div class="macro-actions">
+            <div class="${macroClass} macro-actions">
                 <button class="button btn-success" onclick="runMacro('${macro}')">Run</button>
                 <button class="button btn-warning" onclick="editMacro('${macro}')">Edit</button>
                 <button class="button btn-danger" onclick="deleteMacro('${macro}')">Delete</button>
@@ -976,8 +1021,8 @@ function submitChips() {
         const row = parseInt(chip.slice(1));
         
         // USE VARIABLES FROM macroVariables (loaded from variables.json)
-        let xcor = macroVariables.CHIP_X + (row - 1) * 12.5;
-        let ycor = macroVariables.CHIP_Y - (columns[column] * 12.5);
+        let xcor = macroVariables.CHIP_X + (row - 1) * 11.75;
+        let ycor = macroVariables.CHIP_Y - (columns[column] * 11.75);
 
         macroQueue.push({
             name: chip,
@@ -1005,17 +1050,19 @@ function sendMacroQueue(queue){
     });
 
 }
-
+function stopMacro(){
+    sendWebSocketMessage('stop_macro')
+}
 function stopMacroQueue() {
     sendWebSocketMessage('stop_macro_queue', {});
     
 }
 
-function pauseMacro(){
+function pauseMacroQueue(){
     sendWebSocketMessage('pause_macro_queue', {});
 }
 
-function resumeMacro(){
+function resumeMacroQueue(){
     addLog('Macro queue resumed')
     sendWebSocketMessage('resume_macro_queue', {});
 }
@@ -1024,14 +1071,14 @@ function pauseButton(){
     const btn = document.querySelector('#pauseChips');
     btn.innerHTML = 'Pause macro';
     btn.classList.replace('btn-success', 'btn-warning');
-    btn.onclick = pauseMacro;
+    btn.onclick = pauseMacroQueue;
 }
 
 function resumeButton(){
     const btn = document.querySelector('#pauseChips');
     btn.innerHTML = 'Resume';
     btn.classList.replace('btn-warning', 'btn-success');
-    btn.onclick = resumeMacro;
+    btn.onclick = resumeMacroQueue;
 
 }
 
@@ -1085,4 +1132,19 @@ function addLog(message) {
     while (console.children.length > 200) {
         console.removeChild(console.firstChild);
     }
+}
+
+function configSwitches(connected){
+    let switches = document.querySelectorAll('.switch');
+    let available = document.querySelectorAll('.switchPlaceholder');
+
+    switches.forEach(toggle => {
+        if (!connected) toggle.style.display = 'none';
+        else toggle.style.display = 'block';
+    })
+
+    available.forEach(toggle => {
+        if (!connected) toggle.style.display = 'block';
+        else toggle.style.display = 'none';
+    })
 }
