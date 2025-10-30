@@ -4,7 +4,7 @@ interfacing with the exfoliator v2.
 
 [logo]: /images/interface.png "Exfoliator Control Interface"
 
-#Setup
+# Setup
 
 1. Follow this guide to setup the Arduino IDE with the Teknic drivers and example code.
    https://teknic-inc.github.io/ClearCore-library/_arduino_i_d_e_install.html
