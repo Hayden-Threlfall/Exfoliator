@@ -2,7 +2,7 @@
 This code is for both the Teknic Clearcore (controls the motors/low level logic) and Raspberry Pi (middle-end python and frontend UI) for
 interfacing with the exfoliator v2.
 
-![Interface]: /images/interface.png
+![Interface]: images/interface.png
 
 ## Setup
 
