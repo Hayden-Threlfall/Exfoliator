@@ -8,7 +8,7 @@ import json
 from utils import parse_json_status, broadcast_message
 
 # Configuration from main app
-SERVER_HOST = '192.168.4.120'
+SERVER_HOST ='192.168.3.4'
 TCP_SERVER_PORT = 1053
 
 class ArduinoTCPServer:

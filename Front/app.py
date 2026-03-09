@@ -20,11 +20,11 @@ sock = Sock(app)
 logging.basicConfig(level=logging.INFO)
 
 # Configuration
-ARDUINO_HOST = '192.168.4.100'  # Arduino IP
-TCP_SERVER_PORT = 1053  # TCP port to listen for Arduino
-HTTP_PORT = 80  # HTTP port for Flask
-HTTP_HOST = '192.168.3.80'  # Flask server IP
-SERVER_HOST = '192.168.4.120'  # Raspberry Pi server IP for TCP
+ARDUINO_HOST = '192.168.3.20'  
+TCP_SERVER_PORT = 1053
+HTTP_PORT = 80
+HTTP_HOST = '0.0.0.0'           # listen on all interfaces
+SERVER_HOST = '192.168.3.4'     # PC's IP on the Netgear network
 
 # Create macros directory if it doesn't exist
 if not os.path.exists(MACROS_DIR):
